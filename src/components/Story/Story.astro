@@ -1,0 +1,95 @@
+---
+// Story.astro: pinned device story shared by home #how and the recorder page. Copy scrolls past one phone that holds a scene per step (library: sticky-showcase).
+// One set of images serves every layout. Story.css stacks step, text and phone by default (no script, reduced motion, short screens) and pins the stage otherwise.
+// Hooks for motion.css (MOTION.md 3.2, 5.2): .story, .story--js, .story__step, .story__scene, .story__dot, .story__chip, each with .is-active from Story.ts; del.pen, ins.pen.
+import { svgFile } from '../Icon/svg-files';
+import { labels } from '../../data/site';
+import type { PhoneScreen } from '../../data/screens';
+import Amount from '../Amount/Amount.astro';
+import TextLink from '../TextLink/TextLink.astro';
+import PhoneFrame from '../PhoneFrame/PhoneFrame.astro';
+import './Story.css';
+
+/** A callout on the phone: plain text, or text with the red pen's strike and write-in. */
+export interface StoryCallout {
+  text?: string;
+  /** Struck out in black: the play that was made. */
+  del?: string;
+  /** A live amount printed inside the strike, after `del` ("Call" then 65 bb): it follows the BB/$ switch, like every amount on the site (Amount.astro). */
+  delBb?: number;
+  /** Dollars per big blind for `delBb`. Default $1/$2. */
+  delUsdPerBb?: number;
+  /** Written in with the red pen: the better play. */
+  ins?: string;
+  after?: string;
+}
+
+export interface StoryStep {
+  /** One word: Log, Coach, Practice. */
+  label: string;
+  title: string;
+  body: string;
+  /** Up to three short tags under the body. */
+  chips?: readonly string[];
+  /** Two callouts beside the phone; one line of text under 768. */
+  callouts: readonly StoryCallout[];
+  link?: { label: string; href: string };
+  screen: PhoneScreen;
+  /** Own alt text, when this screen already appears elsewhere on the page. */
+  alt?: string;
+}
+
+interface Props {
+  steps: readonly StoryStep[];
+  class?: string;
+}
+
+const { steps, class: className } = Astro.props;
+const Frame = svgFile('frame-phone');
+// The pinned phone is at most 320 wide from 768. Under 768 it is the pinned width, or 240 when the story is stacked.
+const sizes = '(min-width: 768px) 320px, (max-height: 599px) 240px, (prefers-reduced-motion: reduce) 240px, 200px';
+---
+<div class:list={['story', className]} data-story>
+  <ol class="story__steps" role="list">
+    {steps.map((step, index) => (
+      <li class:list={['story__step', index === 0 && 'is-active']}>
+        <h3 class="story__head">
+          <span class="story__label">{step.label}</span><span class="visually-hidden">. </span>
+          <span class="story__title">{step.title}</span>
+        </h3>
+        <p class="story__body">{step.body}</p>
+        {step.chips && (
+          <ul class="story__tags" role="list">
+            {step.chips.map((chip) => <li class="slip">{chip}</li>)}
+          </ul>
+        )}
+        {step.link && <TextLink href={step.link.href} class="story__link">{step.link.label}</TextLink>}
+      </li>
+    ))}
+  </ol>
+
+  <div class="story__stage">
+    <span class="story__ghost" aria-hidden="true"></span>
+    <div class="story__phone">
+      {/* The pinned frame: scenes cross-fade on it, so the bezel stays solid. Hidden when the story is stacked, where each scene shows its own. */}
+      <div class="story__base device device--phone" aria-hidden="true">
+        <span class="slip device__chip">{labels.sampleData}</span>
+        <div class="device__body"><Frame class="device__frame" width="100%" height="100%" focusable="false" /></div>
+      </div>
+      {steps.map((step, index) => (
+        <figure class:list={['story__scene', index === 0 && 'is-active']}>
+          <PhoneFrame screen={step.screen} alt={step.alt} sizes={sizes} class="story__device" />
+          <figcaption class="story__chips">
+            {step.callouts.map((callout) => (
+              <span class="story__chip slip">{callout.text}{callout.del && <> <del class="pen">{callout.del}{callout.delBb !== undefined && <> <Amount bb={callout.delBb} usdPerBb={callout.delUsdPerBb} usdDecimals="exact" /></>}</del></>}{callout.ins && <> <ins class="pen">{callout.ins}</ins></>}{callout.after && ` ${callout.after}`}</span>
+            ))}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="story__dots" aria-hidden="true">
+      {steps.map((_, index) => <span class:list={['story__dot', index === 0 && 'is-active']}></span>)}
+    </div>
+  </div>
+</div>
+<script src="./Story.ts"></script>

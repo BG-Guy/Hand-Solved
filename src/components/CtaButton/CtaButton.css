@@ -1,0 +1,83 @@
+/* CtaButton.css: the button and text-link system (DESIGN.md 9.1). SiteLayout loads it on every page, so a plain <a class="btn btn--primary"> works too.
+   The ground scopes (.on-ink, .on-red, .on-paper) change the --btn-* tokens, so nothing here is written per section. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-lg);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-2),
+    border-color var(--dur-2),
+    color var(--dur-2),
+    transform var(--dur-1);
+}
+
+.btn--sm {
+  min-block-size: var(--control-h-sm);
+  font-size: var(--text-sm);
+}
+
+.btn--lg {
+  min-block-size: var(--control-h-lg);
+  padding-inline: calc(var(--space-lg) + var(--space-xs));
+}
+
+.btn--full {
+  inline-size: 100%;
+}
+
+.btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--btn-secondary-edge);
+  color: var(--btn-secondary-fg);
+}
+
+/* Hover never carries meaning alone, so it is limited to devices that hover. Nothing lifts. */
+@media (hover: hover) {
+  .btn--primary:hover {
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg-hover);
+  }
+
+  .btn--secondary:hover {
+    background: var(--btn-secondary-bg-hover);
+    border-color: var(--btn-secondary-bg-hover);
+    color: var(--btn-secondary-fg-hover);
+  }
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Disabled is never dimmed with opacity: muted ground, muted label, and the label still passes contrast. */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  background: var(--surface-muted);
+  border-color: transparent;
+  color: var(--text-muted);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Without script a pop-up button cannot do anything, so it steps aside for its <noscript> link. */
+html:not([data-js]) .btn[data-dialog-open] {
+  display: none;
+}

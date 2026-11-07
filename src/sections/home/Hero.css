@@ -1,0 +1,493 @@
+/* Hero.css: the static hero, complete without motion.css. One phone on the screened chart (DESIGN.md 7.1). --u is one chart cell at every width.
+   Under 768: one column, phone cropped at the bottom, proof stacked under it. From 768: copy left, plate flush to the viewport's right edge. */
+
+.hero {
+  --u: var(--chart-u-hero);
+  --hero-art-h: calc(var(--u) * 15); /* Under 768: phone cropped at the bottom */
+  container-type: inline-size;
+  position: relative;
+  z-index: 1; /* A proof tip can hang past the hero's bottom edge: it stays above the next section. */
+  overflow-x: clip;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding-block-start: calc(var(--nav-inset) + var(--nav-h-top) + var(--space-md));
+  padding-block-end: var(--space-2xl);
+}
+
+.hero__copy,
+.hero__proof {
+  padding-inline: var(--gutter);
+}
+
+/* The H1: kicker, then three display lines. Each line is a mask, padded for descenders (DESIGN.md 4.4), so motion.css can rise the text inside it. */
+.hero__h1 {
+  font-size: var(--display-xl);
+  line-height: var(--leading-display);
+}
+
+.hero__kicker {
+  display: block;
+  margin-block-end: var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0;
+  line-height: var(--leading-tight);
+}
+
+/* On a phone the kicker takes two lines in its own face and can take one in the fallback. Holding both lines means the font swap moves nothing. */
+@media (max-width: 26.99rem) {
+  .hero__kicker {
+    min-block-size: calc(var(--leading-tight) * 2em);
+  }
+}
+
+.hero__h1 .line {
+  display: block;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-block-end: var(--display-mask-pad);
+  margin-block-end: calc(var(--display-mask-pad) * -1);
+}
+
+.hero__h1 .line__in {
+  display: block;
+  /* The face's side bearing sets the big letters in from the kicker and the subhead. This pulls their stems back onto the column edge. */
+  margin-inline-start: -0.025em;
+}
+
+.hero__red {
+  color: var(--text-red);
+}
+
+.hero__sub {
+  max-inline-size: var(--measure-lead);
+  margin-block-start: var(--space-md);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+/* The subhead is 3 or 4 lines on a phone, depending on the width and on which font is in. Holding 4 means the swap moves nothing. */
+@media (max-width: 29.99rem) {
+  .hero__sub {
+    min-block-size: calc(var(--leading-body) * 4em);
+  }
+}
+
+.hero__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-block-start: var(--space-md);
+}
+
+/* Under 768 the button fills the column. Under 1024 the link always sits on the next line: left to wrap by itself, it would jump when the body font swaps in. */
+.hero__cta {
+  inline-size: 100%;
+}
+
+.hero__link .icon {
+  transition: transform var(--dur-2);
+}
+
+@media (hover: hover) {
+  .hero__link:hover .icon {
+    transform: translateY(calc(var(--border-hair) * 2));
+  }
+}
+
+.hero__micro {
+  margin-block-start: var(--space-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* The art: plate, ring grid, phone, caption and slip. It moves as one piece, so nothing here shifts against anything else. */
+.hero__art {
+  position: relative;
+  inline-size: calc(var(--u) * 13);
+  max-inline-size: 100%;
+  margin-block-start: var(--space-xl);
+  margin-inline-start: auto;
+  padding-block-start: var(--hero-art-h);
+}
+
+.hero__art .plate {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: block;
+  inline-size: calc(var(--u) * 13);
+}
+
+.hero__art .plate--wide {
+  display: none;
+}
+
+/* Sits on the printed chart, cell for cell. Rings are at opacity 0 until motion.css lights them. */
+.plate__grid {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+  grid-template: repeat(13, var(--u)) / repeat(13, var(--u));
+}
+
+.plate__grid > i {
+  position: relative;
+}
+
+.plate__grid > i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border: var(--border-mark) solid var(--line-ink);
+}
+
+/* The phone. Under 768 it is 8 cells wide, starts at 4.5 x 2 cells and is cut by the bottom of the art; the chip on its top edge stays uncut. */
+.hero__device {
+  --device-w: 100%;
+  position: absolute;
+  inset-block-start: calc(var(--u) * 2);
+  inset-inline-start: calc(var(--u) * 4.5);
+  inline-size: var(--phone-w-hero);
+  clip-path: inset(calc(var(--space-md) * -1) calc(var(--space-md) * -1) calc(100% - var(--u) * 13) calc(var(--space-md) * -1));
+}
+
+.tilt {
+  position: relative;
+}
+
+.tilt__zones {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.hero__device.tilt {
+  position: absolute;
+}
+
+/* Under 768 the phone is cut by a printed rule, so the crop reads as the edge of the plate and not as a mistake. */
+.hero__art::after {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(var(--hero-art-h) - var(--border-hair));
+  inset-inline: 0;
+  block-size: var(--border-hair);
+  background: var(--line-strong);
+}
+
+/* Caption below the plate under 1024, left of the phone from 1024. */
+.hero__caption span {
+  display: block;
+  text-wrap: balance;
+}
+
+.hero__caption {
+  padding-block-start: var(--space-md);
+  padding-inline: var(--gutter);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* Under 768 the caption is the last thing in the art, and the art lags 32 px behind the proof strip as the hero leaves (motion.css, E15). The strip is opaque, so the caption needs 32 px of
+   air under it to stay whole: 24 px between the art and the strip, plus these 16, less the lag, leaves 8 px at the lowest point. */
+@media (max-width: 47.99rem) {
+  .hero__caption {
+    padding-block-end: var(--space-md);
+  }
+}
+
+/* Pen slip: hidden, never removed, under 768. */
+.hero__slip {
+  display: none;
+  white-space: normal;
+}
+
+.hero__pen {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.hero__worth {
+  margin-block-start: var(--space-xs);
+}
+
+/* Proof strip: rows with a hairline above each, a real 44 px target, and a help tip on hover, focus or tap. */
+.proof {
+  position: relative;
+  margin-block: var(--space-lg) 0;
+  padding-block: 0;
+  list-style: none;
+}
+
+.proof__item {
+  position: relative;
+  border-block-start: var(--border-hair) solid var(--line);
+}
+
+.proof__item:last-child {
+  border-block-end: var(--border-hair) solid var(--line);
+}
+
+.proof__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  inline-size: 100%;
+  min-block-size: var(--touch-min);
+  padding: var(--space-sm) 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  text-align: start;
+  cursor: help;
+}
+
+.proof__tip {
+  position: absolute;
+  inset-block-start: calc(100% + var(--space-xs));
+  inset-inline-start: 0;
+  z-index: 3;
+  max-inline-size: 18rem;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--surface-ink);
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  line-height: var(--leading-mono);
+  visibility: hidden;
+}
+
+/* The tip sits inside the item, so the pointer can move onto it and it stays. */
+.proof__item:hover .proof__tip,
+.proof__row:focus + .proof__tip {
+  visibility: visible;
+}
+
+/* From 768: copy left, plate flush right, column widths set by the plate. --hero-left lines the copy up with the navbar's container. */
+@media (min-width: 48rem) {
+  .hero {
+    --hero-art-h: calc(var(--u) * 18.75);
+    --hero-left: max(var(--gutter), calc((100cqi - var(--container-max)) / 2 + var(--gutter)));
+    grid-template-columns: minmax(0, 1fr) calc(var(--u) * 13);
+    grid-template-rows: auto 1fr;
+  }
+
+
+
+  .hero__copy,
+  .hero__proof {
+    grid-column: 1;
+    padding-inline: var(--hero-left) var(--space-xl);
+  }
+
+  .hero__art {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    margin-block-start: 0;
+  }
+
+  .hero__kicker {
+    margin-block-end: var(--space-md);
+  }
+
+  .hero__sub,
+  .hero__actions {
+    margin-block-start: var(--space-lg);
+  }
+
+  /* The subhead and the button are 16 px apart from here, so the micro-line takes 8 px and does not read as pasted on. */
+  .hero__micro {
+    margin-block-start: var(--space-sm);
+  }
+
+  .hero__cta {
+    inline-size: auto;
+  }
+
+  .hero__device {
+    clip-path: none;
+  }
+
+  .hero__art::after {
+    display: none;
+  }
+
+  .hero__caption {
+    padding-inline: 0 var(--gutter);
+  }
+
+  /* Below the plate from 768 to 1023. */
+  .hero__slip {
+    display: block;
+    margin-block-start: var(--space-sm);
+    max-inline-size: max(12rem, calc(var(--u) * 4.7));
+  }
+}
+
+/* From 1024: a 6-cell phone on the wide plate, with the caption and the slip placed on the chart's fold cells. */
+@media (min-width: 64rem) {
+  .hero {
+    --hero-art-h: calc(var(--u) * 14.07);
+    padding-block-end: var(--section-y-compact);
+  }
+
+  .hero__art .plate--wide {
+    display: block;
+  }
+
+  .hero__art .plate--narrow {
+    display: none;
+  }
+
+  .hero__device {
+    inset-block-start: calc(var(--u) * 1.5);
+    inset-inline-start: calc(var(--u) * 6.5);
+  }
+
+  .hero__caption {
+    position: absolute;
+    inset-block-start: calc(var(--u) * 13.2);
+    inset-inline-start: 0;
+    inline-size: calc(var(--u) * 6.3);
+    padding: 0;
+  }
+
+  .hero__slip {
+    position: absolute;
+    inset-block-start: calc(var(--u) * 8.2); /* Over rows 8 and 9 whole, so no label peeks out above or below it */
+    inset-inline-end: calc(var(--u) * 6.1); /* Right edge at 6.9 cells: 0.4 of a cell over the phone */
+    z-index: 2;
+    display: grid;
+    align-content: center;
+    inline-size: calc(var(--u) * 4.9); /* Left edge at 2 cells: over fold cells only and whole labels, so it hides no ink at any width */
+    min-block-size: calc(var(--u) * 1.6);
+    max-inline-size: none;
+    margin: 0;
+  }
+
+  .hero__actions {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  /* The proof strip closes the hero as one row under both columns, on one rule, so the art column does not end in a gap beside it. Columns fit their text, so no item leaves an orphan. */
+  .hero__proof {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding-inline: var(--hero-left);
+  }
+
+  .proof {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-xl);
+  }
+
+  .proof::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: var(--hero-left);
+    block-size: var(--border-hair);
+    background: var(--line-strong);
+  }
+
+  .proof__item,
+  .proof__item:last-child {
+    flex: 0 1 auto;
+    border: 0;
+  }
+
+  .proof__row > span {
+    text-wrap: balance;
+  }
+
+  .hero__art {
+    grid-row: 1;
+  }
+
+  .hero {
+    grid-template-rows: auto 1fr;
+  }
+}
+
+/* Just over 768 the subhead is 3 lines in its own face and can be 4 in the fallback. The held line stands in for the gap, so the spacing looks the same and the swap moves nothing. */
+@media (min-width: 48rem) and (max-width: 50.99rem) {
+  .hero__sub {
+    min-block-size: calc(var(--leading-body) * 4em);
+  }
+
+  .hero__actions {
+    margin-block-start: 0;
+  }
+}
+
+/* A short phone, under 700 px tall (375 x 667): the headline is capped by the screen's height, 64 px at 667 against 83, so the first row of the chart peeks above the fold and the page
+   shows its product on the first screen. The button, the subhead and the proof of the three lines keep their sizes. Taller phones are untouched. */
+@media (max-width: 47.99rem) and (max-height: 43.74rem) {
+  .hero__h1 {
+    font-size: min(var(--display-xl), var(--display-xl-short));
+  }
+}
+
+/* A short phone (320 x 568): the top gap goes, so the whole button is above the fold. */
+@media (max-width: 47.99rem) and (max-height: 37.5rem) {
+  .hero {
+    padding-block-start: calc(var(--nav-inset) + var(--nav-h-top));
+  }
+}
+
+/* With no script and under 1024 the navbar sits in the page's flow (Navbar.css), so the hero does not need to clear it. */
+@media (max-width: 63.99rem) {
+  html:not([data-js]) .hero {
+    padding-block-start: var(--space-xl);
+  }
+}
+
+/* 800 px tall and up the hero fills the screen, and the proof strip rests on the fold (UX.md 4.1). */
+@media (min-width: 64rem) and (min-height: 50rem) {
+  .hero {
+    min-block-size: 100svh;
+  }
+
+  .hero__proof {
+    align-self: end;
+  }
+}
+
+/* A laptop screen: tighter gaps, so the headline, the button and the proof strip all land above the fold. */
+@media (min-width: 64rem) and (max-height: 56rem) {
+  .hero {
+    padding-block-end: var(--space-2xl);
+  }
+
+  .hero__kicker {
+    margin-block-end: var(--space-sm);
+  }
+
+  .hero__sub,
+  .hero__actions,
+  .hero__proof {
+    margin-block-start: var(--space-md);
+  }
+}
+
+/* Motion is not written here. Under reduced motion the hero is this same layout. */

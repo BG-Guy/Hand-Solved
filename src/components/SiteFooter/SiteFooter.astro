@@ -1,0 +1,49 @@
+---
+// SiteFooter.astro: the card-back reveal footer (DESIGN.md 7.3). A stock border around a red lattice card: the closing band, three link groups, the
+// medallion in the middle, and a plain red legal row with the copyright and the concept note. SiteLayout wraps <main> in the reveal sheet
+// (.reveal-footer > .reveal-footer__sheet) and prints this as the wrapper's last child; SiteFooter.ts drives the lift.
+//
+// Hooks for the motion task (MOTION.md E32): --reveal-footer-p on .reveal-footer (0 covered, 1 revealed; 1 with no script), .cardback__stage (the card),
+// .cardback__dim (the flat scrim), .medallion with .med-plate, .med-mark and .mark-cell from art-medallion.svg (already turned 45 degrees: scale it, do not rotate it).
+import ClosingBand from '../ClosingBand/ClosingBand.astro';
+import ConceptNote from '../ConceptNote/ConceptNote.astro';
+import { svgFile } from '../Icon/svg-files';
+import { copyright, footerGroups, labels } from '../../data/site';
+import './SiteFooter.css';
+
+interface Props {
+  /** Print the closing band (H2, line, demo button, pricing link). False on privacy, terms and the 404. Default true. */
+  closingBand?: boolean;
+  /** True on the home page, where the band's pricing link stays on the page. */
+  home?: boolean;
+}
+
+const { closingBand = true, home = false } = Astro.props;
+const Medallion = svgFile('art-medallion');
+---
+<footer class="site-footer reveal-footer__footer" data-site-footer>
+  <div class="site-footer__card cardback__stage on-red">
+    <div class:list={['site-footer__inner', !closingBand && 'site-footer__inner--bare']}>
+      {closingBand && <ClosingBand home={home} inFooter />}
+      <nav class="site-footer__nav" aria-label={labels.navFooter}>
+        {
+          footerGroups.map((group, index) => (
+            <div class="site-footer__group">
+              <p class="site-footer__heading" id={`footer-group-${index}`}>{group.heading}</p>
+              <ul role="list" aria-labelledby={`footer-group-${index}`}>
+                {group.links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+      <Medallion class="medallion" aria-hidden="true" focusable="false" />
+    </div>
+    <div class="site-footer__legal">
+      <p>{copyright}</p>
+      <ConceptNote />
+    </div>
+  </div>
+  <span class="cardback__dim" aria-hidden="true"></span>
+</footer>
+<script src="./SiteFooter.ts"></script>

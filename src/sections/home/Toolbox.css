@@ -1,0 +1,249 @@
+/* Toolbox.css: #toolbox. Card Stock ground, a row of tabs, one panel at a time: text on one side, a real screen on the other (UX.md 4.6, DESIGN.md 9.6).
+   The static layout is complete without script: every panel shows, one after another, and the tab row stays hidden until Toolbox.ts adds .toolbox--js.
+   Motion hooks for motion.css: .toolbox__thumb (--x, --w), .toolbox__panel.is-leaving, .toolbox__device, .toolbox__chips li, [data-reveal="up"] on the head. */
+
+.toolbox {
+  background: var(--surface-page);
+  color: var(--text-main);
+}
+
+.toolbox__inner {
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.toolbox__head {
+  display: grid;
+  gap: var(--space-md);
+  margin-block-end: var(--space-2xl);
+}
+
+.toolbox__title {
+  max-inline-size: 12em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.toolbox__lead {
+  max-inline-size: var(--measure-lead);
+  color: var(--text-muted);
+  font-size: var(--text-lg);
+}
+
+/* The tab row ------------------------------------------------------------------ */
+
+.toolbox__tablist {
+  position: relative;
+  display: none;
+  gap: var(--space-xs);
+  padding-block-end: var(--space-sm);
+  overflow-x: auto;
+  border-block-end: var(--border-hair) solid var(--line);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.toolbox__tablist::-webkit-scrollbar {
+  display: none;
+}
+
+.toolbox--js .toolbox__tablist {
+  display: flex;
+}
+
+/* The Key Black thumb sits under the selected tab. Toolbox.ts sets --x and --w. */
+.toolbox__thumb {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--w, 0);
+  block-size: var(--control-h-sm);
+  border-radius: var(--radius-md);
+  background: var(--surface-ink);
+  transform: translateX(var(--x, 0));
+}
+
+.toolbox__tab {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  min-block-size: var(--control-h-sm);
+  padding-inline: var(--space-md);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-main);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition:
+    background-color var(--dur-2),
+    color var(--dur-2),
+    transform var(--dur-1);
+}
+
+@media (hover: hover) {
+  .toolbox__tab:hover {
+    background: var(--surface-muted);
+  }
+
+  .toolbox__tab[aria-selected='true']:hover {
+    background: transparent;
+  }
+}
+
+/* The row scrolls, so it clips an outer ring: the ring goes inside the tab. */
+.toolbox__tab:focus-visible {
+  box-shadow: var(--focus-ring-inset);
+}
+
+.toolbox__tab:active {
+  transform: scale(0.98);
+}
+
+.toolbox__tab[aria-selected='true'] {
+  color: var(--text-inverse);
+}
+
+/* Panels ------------------------------------------------------------------------- */
+
+.toolbox__panels {
+  margin-block-start: var(--space-2xl);
+}
+
+.toolbox__panel {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: center;
+  border-radius: var(--radius-md);
+}
+
+/* No script: the panels stack, with a rule and air between them. */
+.toolbox__panel + .toolbox__panel {
+  margin-block-start: var(--space-3xl);
+  padding-block-start: var(--space-3xl);
+  border-block-start: var(--border-hair) solid var(--line);
+}
+
+.toolbox--js .toolbox__panel + .toolbox__panel {
+  margin-block-start: 0;
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+
+.toolbox__text {
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+  min-inline-size: 0;
+}
+
+.toolbox__headline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.toolbox__panel-title {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+.toolbox__body {
+  max-inline-size: var(--measure);
+  color: var(--text-muted);
+  font-size: var(--text-base);
+}
+
+.toolbox__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The session stamp beside the History heading: a letter in the coach's pen, one rim around it. Decorative. */
+.session-stamp {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: var(--space-3xl);
+  block-size: var(--space-3xl);
+  border: var(--border-error) solid var(--pen-ink);
+  border-radius: var(--radius-md);
+  outline: var(--border-hair) solid var(--pen-ink);
+  outline-offset: 2px;
+  color: var(--pen-ink);
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+  transform: rotate(var(--stamp-tilt-session));
+}
+
+/* The device side. The Sample data tag hangs on the top edge of a frame, so the side keeps room above it. */
+.toolbox__device {
+  display: grid;
+  justify-items: center;
+  min-inline-size: 0;
+  padding-block-start: var(--space-md);
+}
+
+/* The Insights panel has a phone and a laptop: the phone below 1024, the laptop from 1024. */
+.toolbox__laptop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .toolbox__panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+}
+
+@media (min-width: 1024px) {
+  .toolbox__panel {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .toolbox__text {
+    grid-column: span 5;
+    grid-row: 1;
+  }
+
+  .toolbox__device {
+    grid-column: span 7;
+    grid-row: 1;
+  }
+
+  /* The sides alternate from one tab to the next. */
+  .toolbox__panel:nth-child(even) .toolbox__text {
+    grid-column: 8 / span 5;
+  }
+
+  .toolbox__panel:nth-child(even) .toolbox__device {
+    grid-column: 1 / span 7;
+  }
+
+  .toolbox__phone-narrow {
+    display: none;
+  }
+
+  .toolbox__laptop {
+    display: block;
+  }
+}
+
+.toolbox__equity {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-3xl);
+  padding-block-start: var(--space-md);
+  border-block-start: var(--border-hair) solid var(--line);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}

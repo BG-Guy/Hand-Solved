@@ -1,0 +1,32 @@
+---
+// PlayingCard.astro: one small face-up card for a hand row (DESIGN.md 9.9, "Playing card"). Rank in the display face, suit as inline SVG, so the suit differs by shape and
+// colour is never the only cue. Spade and club are Key Black, heart and diamond Pip Red. The words ("8 of hearts") are the label, so a screen reader hears the hand.
+//
+//   <PlayingCard code="Ah" />     codes are rank then suit, ten is T: As Kd Th 7c
+import Icon from '../Icon/Icon.astro';
+import './Bento.css';
+
+interface Props {
+  code: string;
+  class?: string;
+}
+
+const { code, class: className } = Astro.props;
+const rankWords: Record<string, string> = { A: 'ace', K: 'king', Q: 'queen', J: 'jack', T: '10' };
+const suits: Record<string, { word: string; icon: string }> = {
+  s: { word: 'spades', icon: 'suit-spade' },
+  h: { word: 'hearts', icon: 'suit-heart' },
+  d: { word: 'diamonds', icon: 'suit-diamond' },
+  c: { word: 'clubs', icon: 'suit-club' },
+};
+
+const rank = code[0];
+const suit = suits[code[1]];
+if (!suit) throw new Error(`PlayingCard: "${code}" is not a card code (rank, then s, h, d or c).`);
+const name = `${rankWords[rank] ?? rank} of ${suit.word}`;
+const red = code[1] === 'h' || code[1] === 'd';
+---
+<span class:list={['pcard', red && 'pcard--red', className]} role="img" aria-label={name}>
+  <span class="pcard__rank" aria-hidden="true">{rank === 'T' ? '10' : rank}</span>
+  <Icon name={suit.icon} size={12} class="pcard__suit" />
+</span>

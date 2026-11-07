@@ -1,0 +1,10 @@
+---
+// Slip.astro: a small flat tag in the mono face: the Sample data chip, plan tags and readouts (DESIGN.md 9.2). Never tilted, never lifted.
+//   <Slip>Sample data</Slip>
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+<span class:list={['slip', className]}><slot /></span>

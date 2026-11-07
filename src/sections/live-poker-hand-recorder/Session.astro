@@ -1,0 +1,24 @@
+---
+// Session.astro: "The whole session, in one place" (UX.md 5.2 block 4, COPY.md "4. The whole session"): the text, the History capture, and the session stamp, the coach's letter for a graded session (DESIGN.md 9.4).
+// Words are COPY.md's. The stamp is decorative: the text beside it says the grade. Hooks for motion.css (MOTION.md 8): [data-reveal="up"] on the head, [data-reveal="rise"] on the phone.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import './Session.css';
+---
+<section class="ses" id="session" aria-labelledby="ses-title">
+  <div class="ses__frame">
+    <CornerIndex rank="Q" suit="club" />
+
+    <div class="ses__text">
+      <header class="ses__head" data-reveal="up">
+        <span class="ses__stamp" aria-hidden="true">A</span>
+        <h2 class="ses__title" id="ses-title">The whole session, in one place</h2>
+      </header>
+      <p class="ses__body">A hand lives inside a session. Log the game, stakes, venue and buy-in, add notes and rebuys as you play, then finish with a cash-out, a star rating and a tilt score from 1 to 5. History grades each session A to F.</p>
+    </div>
+
+    <div class="ses__device" data-reveal="rise">
+      <PhoneFrame screen="phone-history" sizes="(min-width: 1024px) 301px, (min-width: 768px) 280px, 245px" class="ses__phone" />
+    </div>
+  </div>
+</section>

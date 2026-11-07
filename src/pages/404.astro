@@ -1,0 +1,12 @@
+---
+// 404.astro: the not-found page, built to dist/404.html. GitHub Pages serves it with a real 404 status; SeoHead prints it noindex. No closing band and no mobile bar (SiteLayout: bare).
+// Thin on purpose: the block, its markup and its styles are in src/sections/404/.
+import SiteLayout from '../layouts/SiteLayout.astro';
+import NotFound from '../sections/404/NotFound.astro';
+import { pages } from '../data/pages';
+
+const page = pages.notFound;
+---
+<SiteLayout page={page}>
+  <NotFound page={page} />
+</SiteLayout>

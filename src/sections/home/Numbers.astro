@@ -1,0 +1,178 @@
+---
+// Numbers.astro: #numbers, the tracker half (UX.md 4.5). The one Key Black section: the heading and lead on the ink, the dashboard on a Face White .on-paper sheet,
+// then the call to action. The sheet holds the BB/$ switch, four tiles, the bankroll chart that draws itself, a data table and the caption.
+//
+// The chart is built here from src/data/bankroll.json (the app's own sample sessions, session by session, in big blinds against hours played). Nothing is typed by hand.
+// Two plots print, one for narrow and one for wide containers (the CSS shows one), so a phone gets a taller plot. Axis words are HTML at real pixel sizes; only the line,
+// the grid and the dots are SVG. Numbers.ts reads the plot by pointer, touch and arrow keys, and copies its readout from the data table, which the unit switch keeps in step.
+// Motion hooks (MOTION.md 3.2): .plot[data-draw], .chart__line[pathLength=1], .dot[data-t 0 to 20], .chart__last, .kpi[data-counter], .num > .num__v on every figure. No motion is written here.
+import Amount from '../../components/Amount/Amount.astro';
+import AmountUnit from '../../components/Bento/AmountUnit.astro';
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import '../../components/TextLink/TextLink.css';
+import UnitSwitch from '../../components/UnitSwitch/UnitSwitch.astro';
+import bankroll from '../../data/bankroll.json';
+import { labels } from '../../data/site';
+import './Numbers.css';
+
+// The figures the copy prints. They come from the data, and the build stops if the data and COPY.md 4.5 ever disagree.
+const points = bankroll.points;
+const hourly = Math.round(bankroll.netBb / bankroll.hours); // +11 bb/h (10.98 unrounded)
+const winRate = Math.round((bankroll.netBb / bankroll.hands) * 1000) / 10; // 15.7 bb/100 (15.65 unrounded). Dollars are this times 2: $31.40, as COPY.md prints.
+const winning = Math.round((bankroll.winningSessions / bankroll.sessions) * 100); // 61 percent
+const hoursRounded = Math.round(bankroll.hours); // 67
+if (bankroll.netBb !== 733 || hourly !== 11 || winRate !== 15.7 || winning !== 61 || bankroll.sessions !== 18 || bankroll.winningSessions !== 11 || hoursRounded !== 67) {
+  throw new Error('Numbers: src/data/bankroll.json no longer gives the figures in COPY.md 4.5 (+733 bb, +11 bb/h, 15.7 bb/100, 61%, 18 sessions, 67 hours).');
+}
+
+// The plot. x is hours played from 0 to 70, y is bankroll from 0 to 1000 bb. The top quarter is left empty on purpose: the last value sits there.
+const X_MAX = 70;
+const Y_MAX = 1000;
+const GRID = [250, 500, 750];
+const round = (n: number) => Math.round(n * 100) / 100;
+const plots = [
+  { id: 'wide', w: 660, h: 300 },
+  { id: 'narrow', w: 300, h: 250 },
+].map(({ id, w, h }) => {
+  const xy = points.map((p) => [(p.hours / X_MAX) * w, h - (p.bb / Y_MAX) * h] as const);
+  const path = [[0, h] as const, ...xy];
+  // Arc length to each dot as a share of the whole line, 0 to 20: motion.css reveals each dot as the drawn line reaches it (MOTION.md E24).
+  let length = 0;
+  const reached = path.slice(1).map((point, i) => (length += Math.hypot(point[0] - path[i][0], point[1] - path[i][1])));
+  return {
+    id,
+    w,
+    h,
+    d: path.map(([x, y], i) => `${i ? 'L' : 'M'}${round(x)} ${round(y)}`).join(''),
+    rules: GRID.map((value) => round(h - (value / Y_MAX) * h)),
+    dots: xy.map(([x, y], i) => ({ cx: round(x), cy: round(y), t: Math.round((reached[i] / length) * 20) })),
+  };
+});
+
+const hours = (h: number) => String(Math.round(h * 10) / 10);
+---
+<section id="numbers" class="nm on-ink" aria-labelledby="numbers-title">
+  <div class="nm__inner">
+    <CornerIndex rank="10" suit="spade" />
+
+    <div class="nm__layout">
+      <header class="nm__copy" data-reveal="up">
+        <h2 id="numbers-title" class="nm__title">Your results, in big blinds or dollars</h2>
+        <p class="nm__lead">Net profit, hourly, win rate and a bankroll line that draws as you scroll. Flip the switch and every amount on this page changes units.</p>
+        <p class="nm__hint">
+          Flip the switch.
+          <Icon name="arrow-right" size={16} class="nm__arrow nm__arrow--side" />
+          <Icon name="arrow-down" size={16} class="nm__arrow nm__arrow--down" />
+        </p>
+      </header>
+
+      <div class="chart-card on-paper">
+        <span class="slip nm__chip">{labels.sampleData}</span>
+
+        <header class="chart-card__head">
+          <h3 id="bankroll-title" class="chart-card__title">Bankroll</h3>
+          <UnitSwitch />
+        </header>
+
+        <dl class="kpis">
+          <div class="kpi" data-counter>
+            <dt class="kpi__label">Net profit</dt>
+            <dd class="kpi__value"><Amount bb={bankroll.netBb} signed bbSuffix="" usdSuffix="" /><AmountUnit bb=" bb" /></dd>
+          </div>
+          <div class="kpi" data-counter>
+            <dt class="kpi__label">Hourly</dt>
+            <dd class="kpi__value"><Amount bb={hourly} signed bbSuffix="" usdSuffix="" /><AmountUnit bb=" bb/h" usd="/h" /></dd>
+          </div>
+          <div class="kpi" data-counter>
+            <dt class="kpi__label">Win rate</dt>
+            <dd class="kpi__value"><Amount bb={winRate} bbSuffix="" usdSuffix="" usdDecimals={2} /><AmountUnit bb=" bb/100" usd="/100 hands" /></dd>
+          </div>
+          <div class="kpi" data-counter>
+            <dt class="kpi__label">Winning sessions</dt>
+            <dd class="kpi__value"><span class="num"><span class="num__v">{winning}%</span></span><span class="amt-unit"> ({bankroll.winningSessions} of {bankroll.sessions})</span></dd>
+          </div>
+        </dl>
+        <p class="kpis__note">bb/h is big blinds won per hour. bb/100 is big blinds won per 100 hands.</p>
+
+        <div class="bankroll">
+          <p id="chart-summary" class="visually-hidden">Bankroll line over {hoursRounded} hours of play in {bankroll.sessions} sessions, ending at <Amount bb={bankroll.netBb} signed />. Sample data.</p>
+
+          <div class="plot" data-draw data-bankroll-plot role="img" aria-labelledby="chart-summary" aria-describedby="chart-hint">
+            <div class="plot__y" aria-hidden="true">
+              <span class="plot__yl"><Amount bb={750} /></span>
+              <span class="plot__yl"><Amount bb={500} /></span>
+              <span class="plot__yl"><Amount bb={250} /></span>
+              <span class="plot__yl"><Amount bb={0} /></span>
+            </div>
+
+            <div class="plot__area">
+              {
+                plots.map((plot) => (
+                  <svg class={`plot__svg plot__svg--${plot.id}`} viewBox={`0 0 ${plot.w} ${plot.h}`} focusable="false" aria-hidden="true">
+                    <g class="chart__grid">
+                      {plot.rules.map((y) => <line x1="0" x2={plot.w} y1={y} y2={y} />)}
+                    </g>
+                    <line class="chart__zero" x1="0" x2={plot.w} y1={plot.h} y2={plot.h} />
+                    <path class="chart__line" d={plot.d} pathLength="1" />
+                    <line class="chart__rule" x1="0" x2="0" y1="0" y2={plot.h} />
+                    {plot.dots.map((dot, i) => (
+                      <circle class={i === plot.dots.length - 1 ? 'dot dot--last' : 'dot'} cx={dot.cx} cy={dot.cy} r="3" data-t={dot.t} />
+                    ))}
+                  </svg>
+                ))
+              }
+              <p class="plot__end chart__last"><Amount bb={bankroll.netBb} signed /></p>
+              <p class="plot__readout slip" aria-hidden="true"></p>
+            </div>
+
+            <div class="plot__x" aria-hidden="true">
+              <span class="plot__xl plot__xl--0">0h</span>
+              <span class="plot__xl plot__xl--1">20h</span>
+              <span class="plot__xl plot__xl--2">40h</span>
+              <span class="plot__xl plot__xl--3">60h</span>
+            </div>
+          </div>
+
+          <p class="chart__axis">Hours played</p>
+          <p id="chart-hint" class="chart__hint">Use the left and right arrow keys to read each point.</p>
+          <p class="visually-hidden" role="status" data-bankroll-live></p>
+
+          <details class="chart__details">
+            <summary class="chart__summary text-link"><span>View data as a table</span><Icon name="chevron-down" size={16} class="chart__chevron" /></summary>
+            <div class="chart__scroll" tabindex="0" role="region" aria-labelledby="bankroll-title">
+              <table class="chart__table" data-bankroll-table>
+                <thead>
+                  <tr><th scope="col">Session</th><th scope="col">Hours played</th><th scope="col">Bankroll</th></tr>
+                </thead>
+                <tbody>
+                  {
+                    points.map((p) => (
+                      <tr>
+                        <th scope="row">{p.session}</th>
+                        <td>{hours(p.hours)}</td>
+                        <td><Amount bb={p.bb} signed /></td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </div>
+
+        <footer class="chart-card__foot">
+          <p>Sample data from {bankroll.sessions} sessions and {hoursRounded} hours.</p>
+          <p class="chart-card__usd">Dollar view assumes a $1/$2 table. 1 bb is $2.</p>
+        </footer>
+      </div>
+    </div>
+
+    <div class="nm__cta">
+      <p class="nm__cta-line">That is the tracker half. Now grade a hand.</p>
+      <CtaButton dialog="dlg-sample" cta="numbers" size="lg" />
+    </div>
+  </div>
+</section>
+<script src="./Numbers.ts"></script>

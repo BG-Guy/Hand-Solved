@@ -1,0 +1,173 @@
+/* Highlights.css: #highlights. Card Stock ground, the heading row with the unit switch, the grid stage and the notes under it (UX.md 4.4, DESIGN.md 6 and 9.3).
+   The tiles, rows and cards live in components/Bento/Bento.css. Motion hooks are on the rows (data-reveal="row") and are driven by motion.css. */
+
+.hl {
+  background: var(--surface-page);
+  color: var(--text-main);
+}
+
+.hl__inner {
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+/* Heading row: the words on the left, the switch at the right edge from 768. */
+.hl__head {
+  display: grid;
+  gap: var(--space-lg);
+  margin-block-end: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .hl__head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+}
+
+.hl__intro {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.hl__title {
+  max-inline-size: 12em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.hl__lead {
+  max-inline-size: var(--measure-lead);
+  color: var(--text-muted);
+  font-size: var(--text-lg);
+}
+
+/* The stage holds the grid, and the Sample data tag hangs on its top edge like the tag on a device. */
+.hl__stage {
+  position: relative;
+}
+
+.hl__chip {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: calc(var(--space-sm) * -1.5);
+  inset-inline-end: var(--space-md);
+  min-block-size: var(--space-lg);
+  padding-block: 0;
+  font-size: var(--text-xs);
+}
+
+.hl__more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-xl);
+  font-size: var(--text-base);
+}
+
+.hl__plain {
+  max-inline-size: var(--measure);
+  margin-block-start: var(--space-sm);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Phones: each list shows its first two rows. The grid is one column here and the four lists reuse the same seven hands, so three rows each ran 2,881 px. This is CSS only: nothing is
+   reworded and nothing opens. The hands are all still counted, in the Hands stat (7) and on 768 and up, where every list shows its three rows. The breakpoint is the grid's own, in Bento.css. */
+@media (max-width: 767.98px) {
+  .hl .tile__rows > .tile__row:nth-child(n + 3) {
+    display: none;
+  }
+
+  .hl .tile__rows > .tile__row:nth-child(2) {
+    padding-block-end: 0;
+  }
+}
+
+/* Hand insights: the one ink tile. Big figures in the display face, the app's own line under them. ---------------- */
+
+.hand-insights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.hand-insights__stat {
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-xs);
+  min-inline-size: 0;
+  min-block-size: var(--space-5xl);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.hand-insights__stat dt {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.hand-insights__stat dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-xs);
+  margin: 0;
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+/* Five stars: the filled ones are Face White on ink, the rest are outlines. The fourth is filled 40 percent of the way, because the rating is 3.4. */
+.stars {
+  display: flex;
+  flex-basis: 100%;
+  margin-block-start: var(--space-sm);
+}
+
+.stars__star {
+  inline-size: var(--text-base);
+  block-size: var(--text-base);
+}
+
+.stars__star.is-on {
+  fill: currentColor;
+}
+
+.stars__part {
+  position: relative;
+  display: inline-flex;
+}
+
+.stars__star--fill {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 60% 0 0);
+}
+
+.hand-insights__line {
+  margin-block-start: var(--space-lg);
+  font-size: var(--text-xl);
+}
+
+.hand-insights__line strong {
+  font-weight: var(--weight-semibold);
+}
+
+.hand-insights__note {
+  margin-block-start: auto;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}

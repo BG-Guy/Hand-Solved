@@ -1,0 +1,17 @@
+---
+// AmountUnit.astro: the small unit word printed right after a big live figure, in the unit that is showing. Use it next to an <Amount> printed with an empty suffix,
+// so the figure can be set large and the unit small (a dashboard tile cannot fit "+11 bb/h" in display type at 320 px).
+//   <Amount bb={11} signed bbSuffix="" usdSuffix="" /><AmountUnit bb=" bb/h" usd="/h" />     +11 bb/h   /   +$22/h
+// html[data-unit] picks which one shows, so a returning visitor's choice has no flash and the page reads in big blinds without script.
+import './AmountUnit.css';
+
+interface Props {
+  /** Text after the figure in big blinds, with its leading space. */
+  bb: string;
+  /** Text after the figure in dollars. Leave out when there is none. */
+  usd?: string;
+}
+
+const { bb, usd } = Astro.props;
+---
+<span class="amt-unit amt-unit--bb">{bb}</span>{usd && <span class="amt-unit amt-unit--usd">{usd}</span>}

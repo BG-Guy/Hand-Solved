@@ -1,0 +1,15 @@
+/* Slip.css: the .slip tag. SiteLayout loads it on every page, so any section can write class="slip" by hand. */
+.slip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--border-hair) solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  white-space: nowrap;
+}

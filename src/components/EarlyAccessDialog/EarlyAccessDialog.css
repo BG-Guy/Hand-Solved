@@ -1,0 +1,224 @@
+/* EarlyAccessDialog.css: the inside of pop-up 2 (#dlg-early). Tokens only. Spec: docs/site/DESIGN.md 9.10, docs/site/UX.md 6.2.
+   The box, backdrop, sheet, close button and header row come from the shared Dialog shell (Dialog.css).
+   Motion hooks for MOTION.md: the check ring (.ea-ring circle and path draw with stroke-dashoffset) and the --dur-* / --ease-* tokens. */
+
+.ea-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.ea-view {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.ea-body {
+  display: grid;
+}
+
+/* ---------- Form ---------- */
+.ea-form {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.ea-chips {
+  display: grid;
+}
+
+.ea-chip {
+  justify-self: start;
+  margin: 0;
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--border-hair) solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-page);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+}
+
+.ea-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.ea-field {
+  position: relative;
+}
+
+.ea-input {
+  inline-size: 100%;
+  block-size: var(--control-h-field);
+  padding-block: 0;
+  padding-inline: calc(var(--space-md) + 1px) 2.75rem;
+  border: var(--border-hair) solid var(--line-control);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-main);
+  font-size: var(--text-base); /* 16px or more, so iOS does not zoom */
+}
+
+.ea-input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.ea-input:focus {
+  border-color: var(--text-main);
+}
+
+.ea-field[data-state='error'] .ea-input {
+  padding-inline-start: var(--space-md);
+  border: var(--border-error) solid var(--danger);
+}
+
+.ea-field__ok,
+.ea-field__bad {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--space-md);
+  display: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.ea-field[data-state='valid'] .ea-field__ok {
+  display: block;
+  color: var(--success);
+}
+
+.ea-field[data-state='error'] .ea-field__bad {
+  display: block;
+  color: var(--danger);
+}
+
+/* One line is always reserved, so nothing jumps when a message appears. */
+.ea-msg {
+  min-block-size: 1.55em;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.ea-field[data-state='error'] ~ .ea-msg {
+  color: var(--danger);
+}
+
+.ea-use {
+  min-block-size: var(--touch-min);
+  padding: 0 var(--space-xs);
+  border: 0;
+  background: none;
+  color: var(--link-fg);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.ea-help {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.ea-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: var(--control-h-lg);
+  padding-inline: var(--space-lg);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-1),
+    color var(--dur-1),
+    transform var(--dur-1);
+}
+
+.ea-btn:active {
+  transform: scale(0.98);
+}
+
+.ea-btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.ea-btn--primary:disabled {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.ea-btn--link {
+  min-block-size: var(--touch-min);
+  background: none;
+  color: var(--link-fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------- Success step ---------- */
+.ea-done {
+  justify-items: start;
+}
+
+.ea-done > p {
+  margin: 0;
+}
+
+.ea-ring {
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 2;
+  stroke-linecap: square;
+}
+
+.ea-ring circle,
+.ea-ring path {
+  stroke-dasharray: 1;
+}
+
+.ea-addr__v {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  overflow-wrap: anywhere;
+}
+
+.ea-actions {
+  display: grid;
+  inline-size: 100%;
+  gap: var(--space-xs);
+}
+
+@media (hover: hover) {
+  .ea-input:hover {
+    border-color: var(--text-main);
+  }
+
+  .ea-btn--primary:not(:disabled):hover {
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg-hover);
+  }
+
+  .ea-btn--link:hover,
+  .ea-use:hover {
+    color: var(--link-fg-hover);
+  }
+}
+
+/* The ring and tick draw once when the success step appears (motion.css, MOTION.md E36). Under reduced motion they are simply drawn. */

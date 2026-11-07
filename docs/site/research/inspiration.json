@@ -1,0 +1,127 @@
+[
+  {
+    "id": "gtowizard",
+    "took": "Its range grid is the most recognisable picture in poker study but stays small on a laptop beside a pro, so HandSolved makes that grid the main picture and drops the pro, the chips and the mint on black.",
+    "used": "Hero graphic and the lattice bands; its plain no-real-money note also informs the footer note."
+  },
+  {
+    "id": "upswing",
+    "took": "HandSolved keeps its small mono line of plain counts under the buttons and avoids its two-tier nav, handwritten NEW tags and a green button fighting the red.",
+    "used": "Mono fact line near the hero button; the nav stays a single row."
+  },
+  {
+    "id": "pokercoaching",
+    "took": "HandSolved avoids the whole recipe: a cut-out pro over tilted thumbnails, a gradient headline clause, left-border accent cards and a money-back seal.",
+    "used": "Nowhere on the page; it serves as the checklist the first screen is reviewed against."
+  },
+  {
+    "id": "runitonce",
+    "took": "HandSolved takes its big equation headline (2 x 5,083 = 10,166) and redoes it with a real pot-odds sum from the app, 65 ÷ 320 = 20%, while avoiding the dark face close-up and the sale banner.",
+    "used": "Coach section, as a large numeric moment explaining why the call was wrong."
+  },
+  {
+    "id": "pokertracker",
+    "took": "It is the one poker page here that leads with a real table of numbers, and HandSolved keeps that honesty without the box shot, glossy buttons or bullet list.",
+    "used": "Insights and session history blocks, with figures set in mono beside the screens."
+  },
+  {
+    "id": "flighty",
+    "took": "HandSolved takes the phone ringed by real app messages, and printed objects like its boarding pass standing in for icons.",
+    "used": "Staging around the hero phone; hand slips and grade stamps in the feature blocks; a nav that shrinks to a floating pill with the main button inside."
+  },
+  {
+    "id": "copilot",
+    "took": "HandSolved takes the privacy band's dotted-leader list that reads like a receipt and leaves the pastel mist behind.",
+    "used": "The data block: backups, import and export set as a receipt."
+  },
+  {
+    "id": "linear",
+    "took": "HandSolved takes the section header with the title on the left and the explanation on the right under a hairline, but not the near-black ground, where our dark screens would vanish.",
+    "used": "Feature section headers at desktop widths."
+  },
+  {
+    "id": "raycast",
+    "took": "HandSolved takes a background grown from the brand's own geometry, as with its giant logo-like stripes, and domain objects like its keycaps in place of icons.",
+    "used": "Lattice bands grown from the range grid and the mark; playing cards in place of feature icons."
+  },
+  {
+    "id": "stripe",
+    "took": "HandSolved takes the two-tone headline sentence and the one-line fact above it, using a true product fact instead of a usage figure because it has no usage numbers to show.",
+    "used": "Hero headline and the small mono line above it."
+  },
+  {
+    "id": "apple-iphone",
+    "took": "HandSolved takes the row of small labelled devices under the page title as a visual index, and the dry section titles like 'Significant others.'",
+    "used": "A row of small phones under the hero if the wireframes keep one, and the tone of section titles."
+  },
+  {
+    "id": "superhuman",
+    "took": "HandSolved takes UI crops bleeding off solid colour tiles and text corrected in place, and its oxblood beside deep teal suggests red will flatter our teal screens.",
+    "used": "Feature tiles in red, black and stock; the You against GTO correction as a red strike-through in the Coach section."
+  },
+  {
+    "id": "attio",
+    "took": "HandSolved takes the side list of chapter names with the current one lit, and the tick strip used as a section divider.",
+    "used": "Long feature areas on desktop if the wireframes keep them; the tick strip becomes a strip of lattice."
+  },
+  {
+    "id": "mercury",
+    "took": "HandSolved takes section heads sitting on a hairline and a demo button beside the main one, and avoids the painted landscape because it says nothing about the product.",
+    "used": "Section heads across the page and the second button style in the hero."
+  },
+  {
+    "id": "oura",
+    "took": "HandSolved takes dark app screens fanned at stepped sizes on a light page, its best proof that dark screens read well on a pale ground, and avoids its warm cream and condensed serif.",
+    "used": "A fan of phone screens on Card Stock in the hero or product overview."
+  },
+  {
+    "id": "strava",
+    "took": "HandSolved takes the giant stamped badge and the strip of verbs under the hero, and avoids the black-to-orange gradient.",
+    "used": "Session grades A to F as red stamps; a verb strip under the hero if the wireframes keep one."
+  },
+  {
+    "id": "aimchess",
+    "took": "It is the closest product in spirit, a coach for a game, and shows what to avoid in its purple gradient and glossy 3D pieces, though HandSolved keeps the white king breaking out of its panel.",
+    "used": "A phone breaking the top edge of a red band."
+  },
+  {
+    "id": "duolingo",
+    "took": "HandSolved takes permission to be funny about learning a game, without a mascot.",
+    "used": "The Highlights block, with Wall of Shame and Tilt Tower named large in display type."
+  },
+  {
+    "id": "things",
+    "took": "HandSolved takes the app icon shown large as an object in its own right, and avoids the wall of social posts because it has no real quotes to show.",
+    "used": "The Add to Home Screen block, with the new mark large."
+  },
+  {
+    "id": "vercel",
+    "took": "HandSolved takes one black geometric mark holding the middle of a pale field with almost nothing around it.",
+    "used": "The spade mark alone at the centre of the footer's card back."
+  },
+  {
+    "id": "resend",
+    "took": "HandSolved avoids the metallic gradient serif on black, which would put it back in the dark look the poker sites already own.",
+    "used": "Nowhere; headlines stay flat ink."
+  },
+  {
+    "id": "arc",
+    "took": "HandSolved takes the scalloped edge where black meets white and the fixed bottom bar with one button, and that is all, because the capture is a sunset notice rather than a normal home page.",
+    "used": "The diamond-cut edge of the red bands, and a fixed main button on phones if the wireframes keep one."
+  },
+  {
+    "id": "framer",
+    "took": "HandSolved avoids the electric-blue glowing prompt box on black, which looks like stock AI product styling.",
+    "used": "Nowhere; the site has no glows."
+  },
+  {
+    "id": "godly",
+    "took": "The URL redirected to the recent.design gallery, where flat colour fields and big type hold up at thumbnail size better than dark glowing windows, so HandSolved must work as a small red and white image.",
+    "used": "The social share image and a thumbnail check of the first screen."
+  },
+  {
+    "id": "landbook",
+    "took": "Nothing, because the capture shows only a Cloudflare security check and no design was visible.",
+    "used": "Nowhere."
+  }
+]

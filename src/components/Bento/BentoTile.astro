@@ -1,0 +1,31 @@
+---
+// BentoTile.astro: one tile of the bento grid: icon, name, description, an optional red-pen margin note, then whatever rows go in the slot (DESIGN.md 9.3).
+// `ink` makes it the one Key Black tile (the .on-ink scope), `tall` makes it span two rows in the third column from 1024.
+//
+//   <BentoTile name="Wall of Shame" icon="tile-shame" description="Your lowest-rated hands" note="Every wall needs something on it."><ol class="tile__rows">…</ol></BentoTile>
+import Icon from '../Icon/Icon.astro';
+import './Bento.css';
+
+interface Props {
+  name: string;
+  /** The part of the file name after "icon-": tile-fame, tile-shame, tile-tilt, tile-pots or tile-insights. */
+  icon: string;
+  description?: string;
+  /** The dry margin note in the coach's red pen. One per tile at most, never on an ink tile (the scope turns the pen white). */
+  note?: string;
+  ink?: boolean;
+  tall?: boolean;
+  class?: string;
+}
+
+const { name, icon, description, note, ink = false, tall = false, class: className } = Astro.props;
+---
+<li class:list={['tile', ink && 'tile--ink on-ink', tall && 'tile--tall', className]}>
+  <div class="tile__head">
+    <Icon name={icon} size={24} class="tile__icon" />
+    <h3 class="tile__name">{name}</h3>
+    {description && <p class="tile__desc">{description}</p>}
+  </div>
+  {note && <p class="tile__note">{note}</p>}
+  <slot />
+</li>

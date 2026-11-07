@@ -1,0 +1,81 @@
+---
+// HowItWorks.astro: #how, pinned device story that steps Log, Coach, Practice, then the red band with the one strong phone and the demo button (DESIGN.md 6, 7.2, 8).
+// Hooks for motion.css (MOTION.md 3.2): .story and its parts (Story.astro), .band__lattice, [data-reveal] on the head and the band phone, .tilt on the band phone.
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import Story from '../../components/Story/Story.astro';
+import type { StoryStep } from '../../components/Story/Story.astro';
+import { sampleCall } from '../../scripts/format-check';
+import './HowItWorks.css';
+
+// COPY.md 4.2, word for word.
+const steps: StoryStep[] = [
+  {
+    label: 'Log',
+    title: 'Log the session, rebuild the hand',
+    body: 'Start a session with the game, stakes, venue and buy-in. Add notes and rebuys as you play. When a hand matters, rebuild it on a table with the seats, stacks, cards and every action.',
+    chips: ['Live session log', 'Rebuilt on a table', 'Notes and rebuys'],
+    callouts: [{ text: 'All-ins and side pots' }, { text: 'Tap any step to go back' }],
+    link: { label: 'Record a hand at the table', href: '/live-poker-hand-recorder' },
+    screen: 'phone-recorder',
+  },
+  {
+    label: 'Coach',
+    title: 'Every decision graded against GTO',
+    body: 'Every choice gets a score from 0 to 100. See how often GTO takes each option, what each is worth in big blinds (bb, the unit stakes are counted in), and your chance of winning the hand.',
+    chips: ['Score 0 to 100', 'Worth of each option', 'Odds and equity'],
+    // The call is sample hand 1's, checked against the JSON at build (scripts/format-check.ts). It is a live amount, so the chip follows the BB/$ switch like the hero's.
+    // The phone beside it is a capture and stays in big blinds ("App screens are shown in big blinds").
+    callouts: [{ text: 'You:', del: 'Call', delBb: sampleCall.bb, delUsdPerBb: sampleCall.usdPerBb }, { text: 'GTO:', ins: 'Fold', after: '96%' }],
+    link: { label: 'See how a decision is graded', href: '/gto-hand-review' },
+    screen: 'phone-coach-decision',
+  },
+  {
+    label: 'Practice',
+    title: 'Play the spot again, against GTO',
+    body: 'Replay any hand from the flop, turn or river, or deal random hands against an 8-handed table of GTO opponents. Every decision is graded, so you can compare the second try with the first.',
+    chips: ['Replay from any street', 'Random hands', 'Every decision graded'],
+    callouts: [{ text: 'Full-screen table' }, { text: 'Same runout or a new one' }],
+    link: { label: 'See what Pro includes', href: '#pricing' },
+    screen: 'phone-practice',
+  },
+];
+const zones = ['z1', 'z2', 'z3', 'z4', 'z5', 'z6', 'z7', 'z8', 'z9'];
+---
+<section class="how" id="how" aria-labelledby="how-title">
+  <div class="how__frame">
+    <CornerIndex rank="A" suit="spade" />
+    <header class="how__head" data-reveal="up">
+      <h2 class="how__title" id="how-title"><span>Log it.</span> <span>Coach it.</span> <span>Practice it.</span></h2>
+      <p class="how__lead">Every hand goes through the same three steps. Record it, see it graded, then play the spot again.</p>
+    </header>
+    <Story steps={steps} class="how__story" />
+    <p class="how__note">App screens are shown in big blinds. Sample data on every screen.</p>
+  </div>
+
+  <div class="band on-red">
+    <span class="band__lattice" aria-hidden="true"></span>
+    <div class="band__frame">
+      <CornerIndex rank="K" suit="heart" end={false} />
+      <div class="band__copy">
+        <p class="band__line"><span>Three of a kind.</span> <span>Still a fold.</span></p>
+        <p class="band__sub">Three eights on a board with four cards in a row, facing an all-in. GTO folds 96% of the time.</p>
+        <p class="band__close">Pick your move on a sample hand. See the grade.</p>
+        <CtaButton dialog="dlg-sample" cta="story" size="lg" class="band__cta" />
+      </div>
+      <div class="band__art on-paper" data-reveal="rise">
+        <div class="tilt">
+          <div class="tilt__body">
+            <PhoneFrame
+              screen="phone-coach-decision"
+              alt="River decision on a phone: calling is worth minus 60.8 big blinds, and GTO folds 96 percent. Sample data."
+              sizes="(min-width: 1120px) 352px, (min-width: 560px) calc(128px + 20vw), 240px"
+            />
+          </div>
+          <div class="tilt__zones" aria-hidden="true">{zones.map((zone) => <i class={zone}></i>)}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

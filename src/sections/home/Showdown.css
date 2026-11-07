@@ -1,0 +1,2321 @@
+/* Showdown.css: the look and layout of the Showdown section, every state at rest (docs/site/SHOWDOWN.md). Choreography is in Showdown.deal.css.
+   The table is a canvas in unitless coordinates, scaled by one length, --u, so it fits one screen at any size: every position below is a number times --u.
+   Three canvases: phone (the base), tablet portrait and landscape. Only coordinates and type sizes change between them. New values are scoped here, from tokens.
+   The section's box, the canvas size and --u itself are in Showdown.shell.css, the one part the page loads up front. This file loads with the script, or by <noscript>. */
+
+.sd {
+  /* One step up from Key Black, so a card can cast a shadow in Key Black itself. Nothing is darker than the app's ink. */
+  --sd-felt: color-mix(in srgb, var(--surface-muted) 34%, var(--surface-ink));
+  --sd-cast: var(--surface-ink);
+  --sd-sh: 0.9; /* The strength of a cast shadow: Key Black over the felt. */
+  --sd-ring-w: calc(var(--border-mark) + var(--border-hair));
+  --sd-puck-edge: var(--line-control);
+  /* Labels that only orient: the muted ink at 70%, still 4.7:1 on the felt (AA). */
+  --sd-quiet: color-mix(in srgb, var(--text-muted) 70%, transparent);
+}
+
+/* The flat layer that dims the page above as the table arrives. Only scroll timelines drive it. */
+.sd__dusk {
+  display: none;
+}
+
+/* ---------- The canvas: phone is the base ---------- */
+.sd__canvas {
+  /* Table, in the shape of the one in the app. Cropped by the screen on a phone: only its two long curves show. */
+  --tb-x: -70;
+  --tb-y: 2;
+  --tb-w: 530;
+  --tb-h: 824;
+  --tb-r: 50% / 12%;
+  --tb-in: 9;
+  --seat: 16;
+
+  /* Cards: --cd is the largest a card gets on this canvas, and everything scales down from it, because a layer scaled up goes soft (DECK.md). */
+  --cd: 186;
+  --fw: 88;
+  --bw: 62;
+  --hw: 44;
+  --dw: 54;
+  --ww: 40;
+
+  /* Board */
+  --s1: 54;
+  --s2: 121;
+  --s3: 188;
+  --s4: 262;
+  --s5: 336;
+  --sly: 246;
+  --ly: 177;
+
+  /* Seats */
+  --hl: 58;
+  --hr: 332;
+  --hy: 92;
+  --ho: 15;
+  --hrot: 5deg;
+
+  /* Deck, burn, puck */
+  --dx: 214;
+  --dy: 774;
+  --bx: 150;
+  --by: 770;
+  --px: 318;
+  --py: 760;
+  --pd: 108;
+  --pe: 5;
+
+  /* Fan */
+  --fx: 195;
+  --fy: 148;
+  --fr: 176;
+  --fa: 11deg;
+
+  /* Where the losers go at the finale */
+  --ly1: 252;
+  --lx1: 24;
+  --lx2: 72;
+  --lx3: 332;
+  --lx4: 366;
+
+  /* Rope */
+  --rx: 16;
+  --ry: 158;
+  --rl: 358;
+  --rh: 5;
+
+  --flood: 4.4;
+
+  /* Type */
+  --fs-who: max(var(--text-xs), calc(12.5 * var(--u)));
+  --fs-hand: max(var(--text-xs), calc(13 * var(--u)));
+  --fs-num: calc(30 * var(--u));
+  --fs-mono: max(var(--text-xs), calc(12 * var(--u)));
+  --fs-call: max(var(--text-xs), calc(13.5 * var(--u)));
+  --fs-title: calc(86 * var(--u));
+  --fs-line: max(var(--text-sm), calc(15.5 * var(--u)));
+  --fs-why: calc(28 * var(--u));
+  --fs-why-line: max(var(--text-sm), calc(17.5 * var(--u)));
+  --why-y: 318;
+  --why-h: 380;
+  --why-pad: calc(10 * var(--u));
+  --sd-band: max(5px, calc(6 * var(--u)));
+  --fs-why-pt: max(var(--text-xs), calc(14.5 * var(--u)));
+  --fs-finale: calc(68 * var(--u));
+
+  /* Derived */
+  --card-w: calc(var(--cd) * var(--u));
+  --bs: calc(var(--bw) / var(--cd));
+  --hs: calc(var(--hw) / var(--cd));
+  --ds: calc(var(--dw) / var(--cd));
+  --ws: calc(var(--ww) / var(--cd));
+  --fs: calc(var(--fw) / var(--cd));
+}
+
+.sd__stage,
+.sd__jolt {
+  position: absolute;
+  inset: 0;
+}
+
+.sd__stage {
+  transform-origin: calc(var(--s5) * var(--u)) calc(var(--sly) * var(--u));
+}
+
+/* ---------- The table ---------- */
+.sd__table {
+  position: absolute;
+  inset-inline-start: calc(var(--tb-x) * var(--u));
+  inset-block-start: calc(var(--tb-y) * var(--u));
+  inline-size: calc(var(--tb-w) * var(--u));
+  block-size: calc(var(--tb-h) * var(--u));
+  border: var(--border-hair) solid var(--line);
+  border-radius: var(--tb-r);
+}
+
+.sd__table::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--tb-in) * var(--u));
+  border: var(--border-mark) solid var(--line);
+  border-radius: inherit;
+  background: var(--sd-felt);
+}
+
+/* The six empty seats of the app's 8-handed table, printed on the rail. Only two players are in this hand. */
+.sd__table i {
+  position: absolute;
+  inline-size: calc(var(--seat) * var(--u));
+  aspect-ratio: 1;
+  margin-inline-start: calc(var(--seat) * -0.5 * var(--u));
+  margin-block-start: calc(var(--seat) * -0.5 * var(--u));
+  border: var(--border-hair) solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface-ink);
+}
+
+.sd__table i:nth-child(1) { inset-inline-start: 30%; inset-block-start: 0.45%; }
+.sd__table i:nth-child(2) { inset-inline-start: 50%; inset-block-start: 0; }
+.sd__table i:nth-child(3) { inset-inline-start: 70%; inset-block-start: 0.45%; }
+.sd__table i:nth-child(4) { inset-inline-start: 30%; inset-block-start: 99.55%; }
+.sd__table i:nth-child(5) { inset-inline-start: 50%; inset-block-start: 100%; }
+.sd__table i:nth-child(6) { inset-inline-start: 70%; inset-block-start: 99.55%; }
+
+/* The red ink, under the type and the cards. Two circles: Overprint Red runs just ahead of Pip Red, like a wet edge. */
+.sd__flood i {
+  position: absolute;
+  inset-inline-start: calc(var(--s5) * var(--u));
+  inset-block-start: calc(var(--sly) * var(--u));
+  inline-size: 100cqi;
+  aspect-ratio: 1;
+  margin-inline-start: -50cqi;
+  margin-block-start: -50cqi;
+  border-radius: var(--radius-full);
+  visibility: hidden;
+}
+
+.sd__flood i:first-child {
+  background: var(--primary-hover);
+}
+
+.sd__flood i:last-child {
+  background: var(--surface-red);
+}
+
+/* The section's last ground: Pip Red plus the lattice file. Past the screen on every side, so a jolt never shows its edge. The camera has pulled out before it appears. */
+.sd__lattice {
+  position: absolute;
+  inset-block: -50%;
+  inset-inline-start: 50%;
+  inline-size: 110cqi;
+  margin-inline-start: -55cqi;
+  background: var(--surface-red) url('../../assets/svg/bg-lattice-red.svg');
+  background-size: var(--lattice-size) var(--lattice-size);
+  visibility: hidden;
+}
+
+.sd__dim {
+  position: absolute;
+  inset: -100%;
+  z-index: 8;
+  background: var(--surface-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Before the flop: the headline printed on the felt ---------- */
+.sd-intro {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: calc(20 * var(--u));
+  inset-block-start: calc(304 * var(--u));
+  inline-size: calc(350 * var(--u));
+}
+
+.sd-intro__kicker,
+.sd-race__label,
+.sd-slots__label,
+.sd-hint {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  color: var(--text-muted);
+}
+
+.sd-race__label,
+.sd-slots__label,
+.sd-hint {
+  color: var(--sd-quiet);
+}
+
+.sd-intro__title {
+  margin-block-start: calc(6 * var(--u));
+  font-size: var(--fs-title);
+  line-height: var(--leading-display);
+}
+
+.sd-intro__line {
+  margin-block-start: calc(14 * var(--u));
+  font-size: var(--fs-line);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* ---------- Street labels and the five empty places ---------- */
+.sd-slots {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sd-slots__label {
+  position: absolute;
+  inset-block-start: calc(var(--ly) * var(--u));
+  inline-size: calc(var(--bw) * var(--u));
+  margin-inline-start: calc(var(--bw) * -0.5 * var(--u));
+  padding-block-end: calc(2 * var(--u));
+  border-block-end: var(--border-hair) solid var(--line);
+  text-align: start;
+}
+
+.sd-slots__label--flop {
+  inset-inline-start: calc(var(--s1) * var(--u));
+  inline-size: calc((var(--s3) - var(--s1) + var(--bw)) * var(--u));
+}
+
+.sd-slots__label--turn {
+  inset-inline-start: calc(var(--s4) * var(--u));
+}
+
+.sd-slots__label--river {
+  inset-inline-start: calc(var(--s5) * var(--u));
+}
+
+.sd-slot {
+  position: absolute;
+  inset-block-start: calc(var(--sly) * var(--u));
+  inline-size: calc(var(--bw) * var(--u));
+  aspect-ratio: 5 / 7;
+  margin-inline-start: calc(var(--bw) * -0.5 * var(--u));
+  margin-block-start: calc(var(--bw) * -0.7 * var(--u));
+  border: var(--border-hair) dashed var(--line);
+  border-radius: 6.154% / 4.396%;
+}
+
+.sd[data-street='preflop'] .sd-slot:nth-child(-n + 6),
+.sd[data-street='flop'] .sd-slot:nth-child(7),
+.sd[data-street='turn'] .sd-slot:nth-child(8) {
+  border-color: var(--line-control);
+}
+
+@media (hover: hover) {
+  .sd[data-street='preflop']:has(.sd-puck:hover) .sd-slot:nth-child(-n + 6),
+  .sd[data-street='flop']:has(.sd-puck:hover) .sd-slot:nth-child(7),
+  .sd[data-street='turn']:has(.sd-puck:hover) .sd-slot:nth-child(8) {
+    border-color: var(--text-main);
+  }
+}
+
+.sd-slot:nth-child(4) { inset-inline-start: calc(var(--s1) * var(--u)); }
+.sd-slot:nth-child(5) { inset-inline-start: calc(var(--s2) * var(--u)); }
+.sd-slot:nth-child(6) { inset-inline-start: calc(var(--s3) * var(--u)); }
+.sd-slot:nth-child(7) { inset-inline-start: calc(var(--s4) * var(--u)); }
+.sd-slot:nth-child(8) { inset-inline-start: calc(var(--s5) * var(--u)); }
+
+/* ---------- The race: both hands, always ---------- */
+.sd-race > *,
+.sd-seat > * {
+  position: absolute;
+  z-index: 2;
+}
+
+.sd-seat {
+  display: contents;
+}
+
+/* The race is context, not the point: names and hands are small, in the mono label face and the quiet ink, so the reason below is what the eye lands on.
+   Still 4.7:1 on the felt, so they stay readable (owner's call, 2026-11-04: quieter by face and size, not by more fade). */
+.sd-seat__who {
+  inset-block-start: calc(32 * var(--u));
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--weight-mono);
+  color: var(--sd-quiet);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.sd-seat__hand {
+  display: grid;
+  inset-block-start: calc(133 * var(--u));
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--weight-mono);
+  color: var(--sd-quiet);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.sd-hand {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* Set visible by street below, they would show through the hidden race at the finale (reduced motion has no fade to cover them). */
+.sd[data-street='river']:not([data-busy]) .sd-hand[data-s] {
+  visibility: hidden;
+}
+
+/* The numbers roll on a strip, like a scoreboard. --i is the street. Under the strip each number is the same height, so nothing shifts. */
+.sd-seat__win {
+  block-size: 1em;
+  inset-block-start: calc(66 * var(--u));
+  overflow: clip;
+  overflow-clip-margin: 0.06em;
+  font-family: var(--font-display);
+  font-size: var(--fs-num);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.sd-roll {
+  display: block;
+  transform: translateY(calc(var(--i) * -1em));
+}
+
+.sd-roll > span {
+  display: block;
+  block-size: 1em;
+}
+
+.sd-roll small {
+  font-size: 0.5em;
+  margin-inline-start: 0.04em;
+}
+
+.sd-seat--them .sd-seat__who,
+.sd-seat--them .sd-seat__hand {
+  inset-inline-start: calc(16 * var(--u));
+}
+
+.sd-seat--us .sd-seat__who,
+.sd-seat--us .sd-seat__hand {
+  inset-inline-end: calc(16 * var(--u));
+  text-align: end;
+}
+
+.sd-seat--them .sd-seat__win {
+  inset-inline-start: calc(112 * var(--u));
+  transform-origin: 0 50%;
+}
+
+.sd-seat--us .sd-seat__win {
+  inset-inline-end: calc(112 * var(--u));
+  text-align: end;
+  transform-origin: 100% 50%;
+}
+
+/* The trailing number is physically smaller, so the lead reads before the digits do. */
+.sd-seat__win {
+  color: var(--text-muted);
+  transform: scale(0.72);
+}
+
+.sd {
+  --i: 0;
+  --t: 0.82;
+}
+
+.sd[data-street='flop'] {
+  --i: 1;
+  --t: 0.84;
+}
+
+.sd[data-street='turn'] {
+  --i: 2;
+  --t: 0.18;
+}
+
+.sd[data-street='river'] {
+  --i: 3;
+  --t: 0;
+  --sd-sh: 0.3; /* Over Pip Red and over the white cards in the fan. */
+}
+
+.sd-seat--them .sd-seat__win,
+.sd[data-street='turn'] .sd-seat--us .sd-seat__win,
+.sd[data-street='river'] .sd-seat--us .sd-seat__win {
+  color: var(--text-main);
+  transform: none;
+}
+
+.sd[data-street='turn'] .sd-seat--them .sd-seat__win,
+.sd[data-street='river'] .sd-seat--them .sd-seat__win {
+  color: var(--text-muted);
+  transform: scale(0.72);
+}
+
+.sd[data-street='preflop'] .sd-hand[data-s='preflop'],
+.sd[data-street='flop'] .sd-hand[data-s='flop'],
+.sd[data-street='turn'] .sd-hand[data-s='turn'],
+.sd[data-street='river'] .sd-hand[data-s='river'] {
+  visibility: visible;
+  opacity: 1;
+}
+
+.sd-race__label {
+  inset-inline-start: 50%;
+  inset-block-start: calc(133 * var(--u)); /* On the hand names' row, over the rope: the names above are too wide in mono to share their row with it. */
+  inline-size: max-content;
+  transform: translateX(-50%);
+}
+
+/* The rope. Black from the aces' side, red from HandSolved's, one white knot where they meet, a mark at 50. The widths are true. */
+.sd-rope {
+  inset-inline-start: calc(var(--rx) * var(--u));
+  inset-block-start: calc(var(--ry) * var(--u));
+  inline-size: calc(var(--rl) * var(--u));
+  block-size: calc(var(--rh) * var(--u));
+}
+
+.sd-rope__track {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  border: var(--border-hair) solid var(--line-control);
+}
+
+.sd-rope__them,
+.sd-rope__us {
+  position: absolute;
+  inset: 0;
+}
+
+.sd-rope__them {
+  background: var(--surface-ink);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--t));
+}
+
+.sd-rope__us {
+  background: var(--surface-red);
+  transform-origin: 100% 50%;
+  transform: scaleX(calc(1 - var(--t)));
+}
+
+.sd-rope__mid {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block: calc(-5 * var(--u));
+  inline-size: var(--border-hair);
+  background: var(--line-control);
+}
+
+.sd-rope__knot {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: calc(-5 * var(--u));
+  inline-size: calc(5 * var(--u));
+  margin-inline-start: calc(-2.5 * var(--u));
+  background: var(--text-inverse);
+  transform: translateX(calc(var(--t) * var(--rl) * var(--u)));
+}
+
+/* ---------- Deck and burn pile ---------- */
+.sd-deck {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.sd-deck__stack,
+.sd-burn {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--card-w);
+  aspect-ratio: 5 / 7;
+  margin-inline-start: calc(var(--card-w) * -0.5);
+  margin-block-start: calc(var(--card-w) * -0.7);
+}
+
+/* Three flat edges under the top card give the deck its thickness. */
+.sd-deck__stack {
+  transform: translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u))) scale(var(--ds));
+}
+
+.sd-deck__stack i {
+  position: absolute;
+  inset: 0;
+  border-radius: 6.154% / 4.396%;
+  background: var(--text-muted);
+}
+
+.sd-deck__stack i:nth-child(1) { transform: translate(calc(var(--card-w) * 0.03), calc(var(--card-w) * 0.042)); background: var(--line); }
+.sd-deck__stack i:nth-child(2) { transform: translate(calc(var(--card-w) * 0.021), calc(var(--card-w) * 0.03)); background: var(--line-control); }
+.sd-deck__stack i:nth-child(3) { transform: translate(calc(var(--card-w) * 0.012), calc(var(--card-w) * 0.015)); }
+
+.sd-deck__stack .pc__art {
+  position: relative;
+}
+
+.sd-burn {
+  visibility: hidden;
+  transform: translate(calc(var(--bx) * var(--u)), calc(var(--by) * var(--u))) rotate(var(--bur)) scale(var(--ds));
+}
+
+.sd-burn--1 { --bur: -7deg; }
+.sd-burn--2 { --bur: 4deg; }
+.sd-burn--3 { --bur: -2deg; }
+
+.sd[data-street='flop'] .sd-burn--1,
+.sd[data-street='turn'] :is(.sd-burn--1, .sd-burn--2),
+.sd[data-street='river'] .sd-burn {
+  visibility: visible;
+}
+
+/* ---------- Cards ---------- */
+.sd-board {
+  display: contents;
+  list-style: none;
+}
+
+.sd-c {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 4;
+  inline-size: var(--card-w);
+  aspect-ratio: 5 / 7;
+  margin-inline-start: calc(var(--card-w) * -0.5);
+  margin-block-start: calc(var(--card-w) * -0.7);
+  /* Rest pose: a seat or a slot. The state rules below swap the pose. */
+  --x: var(--sx);
+  --y: var(--sy);
+  --r: var(--sr);
+  --s: var(--ss);
+  transform: translateX(calc(var(--x) * var(--u)));
+  pointer-events: none;
+}
+
+.c__y,
+.c__pose,
+.c__lift {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.c__y {
+  transform: translateY(calc(var(--y) * var(--u)));
+}
+
+.c__pose {
+  transform: rotate(var(--r)) scale(var(--s));
+}
+
+/* The shadow is its own flat shape in Key Black: tight at rest, loose while a card is in the air. Two steps of it, because a soft edge here is a step, never a blur. */
+.c__shadow {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 6.154% / 4.396%;
+  background: var(--sd-cast);
+  opacity: var(--sd-sh);
+  transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(var(--r)) scale(var(--s));
+}
+
+.c__shadow::after {
+  content: '';
+  position: absolute;
+  inset: -1.5%;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.5;
+}
+
+.c__btn {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 6.154% / 4.396%;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-3) var(--ease-spring);
+}
+
+.c__btn::after {
+  content: '';
+  position: absolute;
+  inset: calc(-3px / var(--s));
+}
+
+.sd[data-street='river'] :is(.c--Ah, .c--9c) .c__btn::after {
+  inset: calc(-6px / var(--s));
+}
+
+.c__btn:focus-visible {
+  box-shadow: 0 0 0 calc(2px / var(--s)) var(--text-inverse), 0 0 0 calc(4px / var(--s)) var(--surface-ink);
+}
+
+/* Selected: raised and ringed in the coach's red, with the rise along the card's own axis so it works in the fan too. Nothing in the layout moves. */
+.c__btn[aria-pressed='true'] {
+  transform: translateY(calc(var(--raise) * -1 * var(--u) / var(--s))) scale(1.03);
+}
+
+.c__btn[aria-pressed='true'] .pc__front {
+  box-shadow: 0 0 0 calc(var(--sd-ring-w) / var(--s)) var(--surface-red);
+}
+
+.sd[data-street='river'] .c__btn[aria-pressed='true'] .pc__front {
+  box-shadow: 0 0 0 calc(var(--sd-ring-w) / var(--s)) var(--surface-ink);
+}
+
+.sd-c:has(.c__btn[aria-pressed='true']) .c__shadow {
+  transform: translate(calc(5 * var(--u)), calc(8 * var(--u))) rotate(var(--r)) scale(var(--s));
+  opacity: calc(var(--sd-sh) * 0.85);
+}
+
+@media (hover: hover) {
+  .sd:not([data-busy]) .c__btn[aria-pressed='false']:hover .pc__front {
+    box-shadow: 0 0 0 calc(var(--border-mark) / var(--s)) var(--text-inverse);
+  }
+}
+
+.sd[data-busy] .c__btn {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Each card's numbers. s = seat or slot; e = end, at the finale; fi = place in the fan. The small turns are on purpose: no dealer lands a card dead square. */
+.c--As { --sx: calc(var(--hl) - var(--ho)); --sy: var(--hy); --sr: calc(var(--hrot) * -1); --ss: var(--hs); --ex: var(--lx3); --ey: var(--ly1); --er: -5deg; --es: var(--ws); z-index: 1; }
+.c--Ac { --sx: calc(var(--hl) + var(--ho)); --sy: calc(var(--hy) + 1); --sr: var(--hrot); --ss: var(--hs); --ex: var(--lx4); --ey: var(--ly1); --er: 4deg; --es: var(--ws); z-index: 2; }
+.c--Kd { --sx: calc(var(--hr) - var(--ho)); --sy: var(--hy); --sr: calc(var(--hrot) * -1); --ss: var(--hs); --fi: 1; z-index: 3; }
+.c--Jd { --sx: calc(var(--hr) + var(--ho)); --sy: calc(var(--hy) + 1); --sr: var(--hrot); --ss: var(--hs); --fi: -1; z-index: 2; }
+.c--Ah { --sx: var(--s1); --sy: var(--sly); --sr: -0.6deg; --ss: var(--bs); --ex: var(--lx1); --ey: var(--ly1); --er: -6deg; --es: var(--ws); --n: 0; z-index: 9; --raise: var(--ra); }
+.c--9c { --sx: var(--s2); --sy: calc(var(--sly) + 1); --sr: 0.5deg; --ss: var(--bs); --ex: var(--lx2); --ey: var(--ly1); --er: 5deg; --es: var(--ws); --n: 1; z-index: 8; --raise: var(--ra); }
+.c--Qd { --sx: var(--s3); --sy: var(--sly); --sr: -0.3deg; --ss: var(--bs); --fi: 0; --n: 2; z-index: 7; --raise: var(--ra); }
+.c--Td { --sx: var(--s4); --sy: calc(var(--sly) - 1); --sr: 0.7deg; --ss: var(--bs); --fi: -2; z-index: 6; --raise: var(--ra); }
+.c--Ad { --sx: var(--s5); --sy: var(--sly); --sr: -0.4deg; --ss: var(--bs); --fi: 2; z-index: 5; --raise: var(--ra); }
+
+.sd__canvas { --ra: 7; }
+
+/* The fan's places come from one pivot. */
+.c--Kd,
+.c--Jd,
+.c--Qd,
+.c--Td,
+.c--Ad {
+  --ex: calc(var(--fx) + var(--fr) * sin(calc(var(--fi) * var(--fa))));
+  --ey: calc(var(--fy) + var(--fr) * (1 - cos(calc(var(--fi) * var(--fa)))));
+  --er: calc(var(--fi) * var(--fa));
+  --es: var(--fs);
+}
+
+/* Undealt cards sit on the deck. */
+.sd[data-street='preflop'] :is(.on-flop, .on-turn, .on-river),
+.sd[data-street='flop'] :is(.on-turn, .on-river),
+.sd[data-street='turn'] .on-river {
+  --x: var(--dx);
+  --y: var(--dy);
+  --r: 0deg;
+  --s: var(--ds);
+}
+
+/* The finale: everything at its end pose, and the diamonds stacked in hand order. */
+.sd[data-street='river'] .sd-c {
+  --x: var(--ex);
+  --y: var(--ey);
+  --r: var(--er);
+  --s: var(--es);
+}
+
+.sd[data-street='river'] :is(.c--As, .c--Ac, .c--Ah, .c--9c) { z-index: 3; }
+.sd[data-street='river'] .c--Td { z-index: 4; }
+.sd[data-street='river'] .c--Jd { z-index: 5; }
+.sd[data-street='river'] .c--Qd { z-index: 6; }
+.sd[data-street='river'] .c--Kd { z-index: 7; }
+.sd[data-street='river'] .c--Ad { z-index: 9; }
+
+/* The king and the jack are not reasons, so a tap on them does nothing. Without this it would fall through to the card underneath. */
+.sd[data-street='river'] .sd-c--us .c__pose {
+  pointer-events: auto;
+}
+
+/* At the finale the losers leave the poster: the menu lists every reason, so no card has to stay on the table to be found. Hidden once settled, so the two that are buttons leave the tab order too. */
+.sd[data-street='river'] :is(.c--As, .c--Ac, .c--Ah, .c--9c) .c__pose {
+  opacity: 0;
+}
+
+.sd[data-street='river']:not([data-busy]) :is(.c--As, .c--Ac, .c--Ah, .c--9c) {
+  visibility: hidden;
+}
+
+/* SampleHandDialog.css also has a class called .pc, and it loads on every page: its box would print a grey square behind every card and inset the faces by a pixel. */
+.sd .pc {
+  display: block;
+  inline-size: var(--card-w);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+/* ---------- The peel: only the river card has one, and it only shows during the squeeze ---------- */
+.sd-peel,
+.sd-peel__body,
+.sd-peel__hinge,
+.sd-peel__flip {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.sd-peel {
+  visibility: hidden;
+  transform: perspective(var(--sd-persp)) rotateY(0deg);
+  transform-style: preserve-3d;
+  pointer-events: none;
+  --l: calc(var(--card-w) * 2);
+  --h: calc(var(--card-w) * 1.4);
+}
+
+.sd-peel__body {
+  overflow: clip;
+  overflow-clip-margin: calc(var(--card-w) * 0.02);
+  border-radius: 6.154% / 4.396%;
+}
+
+.sd-peel__hole,
+.sd-peel__shade,
+.sd-peel__m {
+  position: absolute;
+  display: block;
+  inset-inline-start: calc(var(--l) * -0.5);
+  inset-block-start: 100%;
+  inline-size: var(--l);
+  block-size: var(--l);
+  transform-origin: 50% 0;
+  transform: rotate(45deg);
+}
+
+.sd-peel__hole {
+  background: var(--surface-ink);
+}
+
+.sd-peel__shade {
+  block-size: calc(var(--card-w) * 0.2);
+  background: var(--surface-ink);
+  opacity: 0;
+  transform-origin: 50% 100%;
+  transform: rotate(45deg) translateY(-100%);
+}
+
+.sd-peel__hinge,
+.sd-peel__flip {
+  transform-style: preserve-3d;
+}
+
+.sd-peel__hinge {
+  transform-origin: 0 100%;
+}
+
+.sd-peel__flip {
+  transform: rotateY(180deg);
+}
+
+.sd-peel__m {
+  overflow: clip;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.sd-peel__m--front {
+  inset-inline-start: calc(var(--card-w) - var(--l) * 0.5);
+  transform: rotate(-45deg);
+}
+
+/* The bend: one flat tint along the fold, on the white side of the flap. The mask is far wider than the card, so the tint is cut to the flap's own shape and grows with the fold (sd-peel-bend). */
+.sd-peel__m--front::after {
+  --t: calc(var(--card-w) * 0.075);
+  content: '';
+  position: absolute;
+  inset-inline: calc(50% - var(--card-w) * 0.467);
+  inset-block-start: 0;
+  block-size: var(--t);
+  background: var(--surface-ink);
+  opacity: 0.1;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--t)) 100%, var(--t) 100%);
+  transform: scaleX(0);
+}
+
+.sd-peel__art {
+  position: absolute;
+  display: block;
+  inset-inline-start: 50%;
+  inset-block-start: 0;
+  inline-size: var(--card-w);
+  block-size: var(--h);
+  transform-origin: 0 0;
+  transform: rotate(-45deg) translateY(-100%);
+}
+
+.sd-peel__m--front .sd-peel__art {
+  inset-inline-start: calc(50% - var(--card-w));
+  transform-origin: 100% 0;
+  transform: rotate(45deg) translateY(-100%);
+}
+
+/* ---------- The dealer button ---------- */
+.sd-puck {
+  position: absolute;
+  z-index: 5;
+  inset-inline-start: calc((var(--px) - var(--pd) / 2) * var(--u));
+  inset-block-start: calc((var(--py) - var(--pd) / 2) * var(--u));
+  inline-size: calc(var(--pd) * var(--u));
+  block-size: calc(var(--pd) * var(--u));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sd-puck__edge,
+.sd-puck__ring,
+.sd-puck__top {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: var(--radius-full);
+}
+
+.sd-puck:focus-visible {
+  box-shadow: 0 0 0 calc(var(--border-mark) * 2) var(--surface-ink), 0 0 0 calc(var(--border-mark) * 2 + var(--border-error)) var(--text-inverse);
+}
+
+/* The puck has a side, so it has somewhere to be pressed down to, and it casts the same flat shadow as a card. */
+.sd-puck__edge {
+  background: var(--sd-puck-edge);
+  transform: translateY(calc(var(--pe) * var(--u)));
+}
+
+.sd-puck__edge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--sd-cast);
+  transform: translate(calc(var(--pe) * 0.5 * var(--u)), calc(var(--pe) * 0.7 * var(--u)));
+}
+
+.sd-puck__ring {
+  border: var(--border-mark) solid var(--text-inverse);
+  opacity: 0;
+}
+
+.sd-puck__top {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: calc(1 * var(--u));
+  background: var(--text-inverse);
+  color: var(--surface-ink);
+  transition:
+    transform var(--dur-3) var(--ease-spring),
+    background-color var(--dur-2),
+    color var(--dur-2);
+}
+
+.sd-puck__top::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--pd) * 0.045 * var(--u));
+  border: var(--border-hair) solid currentcolor;
+  border-radius: var(--radius-full);
+}
+
+.sd-puck__d {
+  font-family: var(--font-display);
+  font-size: calc(var(--pd) * 0.34 * var(--u));
+  font-weight: var(--weight-display);
+  line-height: 0.82;
+}
+
+.sd-puck__labels {
+  display: grid;
+  max-inline-size: 80%;
+  font-size: max(var(--text-xs), calc(var(--pd) * 0.115 * var(--u)));
+  font-weight: var(--weight-semibold);
+  line-height: 1.12;
+  text-align: center;
+}
+
+.sd-puck__label {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.sd[data-street='preflop'] .sd-puck__label[data-s='preflop'],
+.sd[data-street='flop'] .sd-puck__label[data-s='flop'],
+.sd[data-street='turn'] .sd-puck__label[data-s='turn'],
+/* Only while the river is dealing: a child set visible would show through the puck once it is hidden, where reduced motion has no fade to cover it. */
+.sd[data-street='river'][data-busy] .sd-puck__label[data-s='turn'] {
+  visibility: visible;
+}
+
+@media (hover: hover) {
+  .sd:not([data-busy]) .sd-puck:hover .sd-puck__top {
+    background: var(--surface-red);
+    color: var(--text-inverse);
+  }
+}
+
+.sd-puck:active .sd-puck__top,
+.sd[data-busy] .sd-puck__top,
+.sd[data-queued] .sd-puck__top {
+  transform: translateY(calc((var(--pe) - 1) * var(--u)));
+  transition-duration: var(--dur-1);
+  transition-timing-function: var(--ease-out);
+}
+
+.sd[data-busy] .sd-puck {
+  cursor: default;
+}
+
+.sd[data-busy] .sd-puck__labels {
+  opacity: 0;
+}
+
+/* Off the table at the finale. Hidden only once the deal has settled, so a keyboard user's focus can move on first. */
+.sd[data-street='river'] .sd-puck {
+  pointer-events: none;
+}
+
+.sd[data-street='river']:not([data-busy]) .sd-puck {
+  visibility: hidden;
+}
+
+.sd-hint {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: calc(16 * var(--u));
+  inset-block-start: calc(702 * var(--u));
+  inline-size: calc(190 * var(--u));
+  visibility: hidden;
+  opacity: 0;
+}
+
+.sd:not([data-street='preflop']):not([data-street='river']):not([data-busy]) .sd-hint {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ---------- The reason: all five in one cell, so swapping shifts nothing ---------- */
+/* The reasons' box: the plain menu on top, the reason under it. The reasons share one cell, so a swap never moves anything. */
+.sd-whys {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  inset-inline-start: calc(16 * var(--u));
+  inset-block-start: calc(326 * var(--u));
+  inline-size: calc(358 * var(--u));
+  max-block-size: calc(372 * var(--u));
+}
+
+.sd-whys__panels {
+  display: grid;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Where a reason is taller than its panel (Showdown.ts marks it reachable), its foot fades out, so it reads as more to scroll, not as cut off. */
+.sd-whys__panels[tabindex='0'] {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent);
+}
+
+/* ---------- The plain menu: one numbered button per dealt reason, the carousel's timer, and its pause ---------- */
+.sd-menu {
+  /* Tight on a phone, so five numbers and Pause share one row; roomier where the panel is wide. */
+  --pill-pad: calc(7 * var(--u));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(6 * var(--u));
+}
+
+.sd-menu__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--pill-pad) * 0.6);
+  min-block-size: max(1.5rem, calc(34 * var(--u)));
+  padding-inline: var(--pill-pad);
+  overflow: clip;
+  border: var(--border-hair) solid var(--line-control);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: max(var(--text-sm), calc(17 * var(--u)));
+  font-weight: var(--weight-display);
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* The title of each reason is for screen readers on the felt, where the button shows only its number and card; at the finale it is the menu. */
+.sd-menu__title {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sd-menu__head {
+  display: none;
+}
+
+/* ---------- The finale's menu: all five reasons by name, the poster's main list. The chosen one is filled, and its reason is right under the list. ---------- */
+.sd[data-street='river']:not([data-busy]) .sd-menu {
+  gap: calc(5 * var(--u));
+}
+
+/* Its own row, with Pause beside it, so the list below reads 1 to 5 in order in one column or two. */
+.sd[data-street='river']:not([data-busy]) .sd-menu__head {
+  display: block;
+  flex: 1 1 60%;
+  order: -1;
+  color: var(--text-inverse);
+  font-family: var(--font-display);
+  font-size: max(var(--text-lg), calc(22 * var(--u)));
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+.sd[data-street='river']:not([data-busy]) .sd-menu__card {
+  color: inherit;
+}
+
+.sd[data-street='river']:not([data-busy]) .sd-menu__auto {
+  order: -1;
+  min-block-size: max(1.5rem, calc(26 * var(--u)));
+}
+
+.sd[data-street='river']:not([data-busy]) .sd-menu__item {
+  flex: 0 0 var(--menu-col, 100%);
+  justify-content: flex-start;
+  min-block-size: max(1.75rem, calc(var(--menu-row, 34) * var(--u)));
+  border-color: var(--text-inverse);
+  font-size: max(var(--text-sm), calc(17 * var(--u)));
+}
+
+.sd[data-street='river']:not([data-busy]) .sd-menu__title {
+  position: static;
+  inline-size: auto;
+  block-size: auto;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+  font-family: var(--font-sans);
+  font-size: max(var(--text-sm), calc(15 * var(--u)));
+  font-weight: var(--weight-semibold);
+  letter-spacing: normal;
+  line-height: 1.15;
+  text-align: start;
+}
+
+.sd[data-street='river']:not([data-busy]) .sd-menu__sr {
+  display: none;
+}
+
+/* Under the list, only what the title does not say: the reason's line and how it compares. */
+html[data-js] .sd[data-street='river']:not([data-busy], [data-static]) .sd-why__head {
+  display: none;
+}
+
+/* With script each reason is its title, one line and the comparison; the points are for the no-script list. Less to read, and the line stands out. */
+html[data-js] .sd:not([data-static]) .sd-why__points {
+  display: none;
+}
+
+.sd-menu__item[hidden],
+.sd-menu__auto[hidden] {
+  display: none;
+}
+
+/* The reason's number leads; the poker card it was dealt on follows, small. The reasons are the point, not the hand. */
+.sd-menu__n {
+  font-family: var(--font-display);
+  font-size: max(var(--text-lg), calc(22 * var(--u)));
+  font-weight: var(--weight-display);
+  line-height: 0.9;
+}
+
+.sd-menu__card {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: var(--sd-quiet);
+  font-family: var(--font-mono);
+  font-size: max(var(--text-xs), calc(11 * var(--u)));
+  font-weight: var(--weight-mono);
+}
+
+.sd-menu__card .icon {
+  inline-size: max(0.625rem, calc(10 * var(--u)));
+  block-size: max(0.625rem, calc(10 * var(--u)));
+}
+
+.sd-menu__item[aria-pressed='true'] .sd-menu__card {
+  color: inherit;
+}
+
+.sd-menu__item[aria-pressed='true'] {
+  border-color: var(--text-main);
+  background: var(--text-main);
+  color: var(--surface-ink);
+}
+
+.sd-menu__item[aria-pressed='true'] .sd-menu__n {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .sd-menu__item:hover {
+    border-color: var(--text-main);
+  }
+}
+
+/* The carousel's timer: a Pip Red line along the chosen button's foot, filled over --sd-auto by Showdown.deal.css. Empty when nothing is rotating. */
+.sd-menu__bar {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: max(2px, calc(3 * var(--u)));
+  background: var(--surface-red);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.sd-menu__auto {
+  min-block-size: max(1.5rem, calc(34 * var(--u)));
+  margin-inline-start: auto;
+  padding-inline: calc(6 * var(--u));
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--weight-mono);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* Pause while it rotates, Play once it has stopped. Never shown where the carousel cannot run. */
+.sd:not([data-auto]) .sd-menu__pause,
+.sd[data-auto] .sd-menu__play {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-menu__auto {
+    display: none;
+  }
+}
+
+.sd-why {
+  grid-area: 1 / 1;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: calc(7 * var(--u));
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* On the felt the reason is a card back from the deck: Pip Red, the lattice on a thin band, the white frame line just inside it, and the medallion on the
+   top band. Plain red under the words, so small type never sits on the lattice (white on Pip Red is 5.37:1). About half the screen tall; every reason
+   fills the same box, so swapping never moves it. At the finale the panel has its own frame on the red; without script it is a plain list.
+   --why-y, --why-h and --why-pad are per canvas. */
+html[data-js] .sd:not([data-street='river'], [data-static]) .sd-whys {
+  inset-block-start: calc(var(--why-y) * var(--u));
+  block-size: calc(var(--why-h) * var(--u));
+  max-block-size: none;
+}
+
+html[data-js] .sd:not([data-street='river'], [data-static]) .sd-whys__panels {
+  grid-template-rows: 100%;
+}
+
+html[data-js] .sd:not([data-street='river'], [data-static]) .sd-why {
+  --text-main: var(--text-inverse);
+  --text-muted: var(--text-inverse);
+  align-self: stretch;
+  padding: var(--why-pad);
+  padding-block-start: calc(var(--why-pad) + 2 * var(--u));
+  border: var(--sd-band) solid transparent;
+  border-radius: calc(var(--radius-md) + 2px);
+  background:
+    linear-gradient(var(--surface-red), var(--surface-red)) padding-box,
+    url('../../assets/svg/bg-lattice-red.svg') 0 0 / var(--lattice-size) var(--lattice-size) border-box,
+    linear-gradient(var(--surface-red), var(--surface-red)) border-box;
+  box-shadow: inset 0 0 0 var(--border-hair) var(--text-inverse);
+  color: var(--text-inverse);
+}
+
+/* The medallion: one for all five reasons, on the card's top band, in the same cell as the reasons. Only while a reason shows. */
+.sd-why__logo {
+  display: none;
+}
+
+html[data-js] .sd:not([data-street='river'], [data-static]) .sd-why__logo {
+  --surface-raised: var(--text-inverse);
+  position: relative;
+  z-index: 1;
+  display: block;
+  grid-area: 1 / 1;
+  align-self: start;
+  justify-self: center;
+  inline-size: calc(26 * var(--u));
+  block-size: calc(26 * var(--u));
+  pointer-events: none;
+}
+
+.sd-whys__panels:not(:has(.sd-why.is-on)) .sd-why__logo {
+  visibility: hidden;
+}
+
+.sd-why.is-on {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* The river's reason only ever shows at the finale, so it must not size the panel on the table. */
+.sd:not([data-street='river']) .sd-why[data-why='Ad'] {
+  display: none;
+}
+
+/* The head: the reason's number large, as a card prints its rank in the corner, then "Reason 3 of 5" and the poker card in small mono, then the title. */
+.sd-why__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    'n kick tag'
+    'n title title';
+  align-items: center;
+  column-gap: calc(10 * var(--u));
+  row-gap: calc(3 * var(--u));
+}
+
+.sd-why__index {
+  grid-area: n;
+  align-self: start;
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: calc(var(--fs-why) * 1.7);
+  font-weight: var(--weight-display);
+  line-height: 0.8;
+}
+
+.sd-why__kicker {
+  grid-area: kick;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: calc(6 * var(--u));
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--weight-mono);
+  line-height: 1.2;
+}
+
+/* Phones leave the poker card out of the head: the chosen number above already shows it, and the line is better spent on the reason. */
+.sd-why__card {
+  display: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.sd-why__street {
+  margin-inline-start: calc(4 * var(--u));
+}
+
+.sd-why__card::before {
+  content: '·';
+  margin-inline-end: calc(4 * var(--u));
+}
+
+.sd-why__card .icon {
+  inline-size: max(0.625rem, calc(10 * var(--u)));
+  block-size: max(0.625rem, calc(10 * var(--u)));
+}
+
+/* The concept-pricing note: a small chip, as tall as the kicker, so it never makes the head taller. White on the red card. */
+.sd-why__tag {
+  grid-area: tag;
+  justify-self: end;
+  padding: 1px calc(6 * var(--u));
+  border-color: var(--text-inverse);
+  background: var(--text-inverse);
+  color: var(--surface-ink);
+  font-size: max(var(--text-xs), calc(11 * var(--u)));
+  line-height: 1.3;
+}
+
+.sd-why__title {
+  grid-area: title;
+  font-family: var(--font-display);
+  font-size: var(--fs-why);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+/* The reason itself on a Face White sheet (.on-paper): its line, then how it compares, under a hairline. On the red card and on the red finale it is
+   the first thing the eye reads. On the felt it fills the card, with the comparison at its foot, so every reason has the same shape. */
+.sd-why__body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+  padding: calc(12 * var(--u)) calc(14 * var(--u));
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-main);
+}
+
+html[data-js] .sd:not([data-street='river'], [data-static]) .sd-why__body {
+  flex: 1 1 auto;
+}
+
+/* At the finale the sheet sits under the list, so it is tighter. */
+.sd[data-street='river']:not([data-busy]) .sd-why__body {
+  gap: calc(6 * var(--u));
+  padding: calc(8 * var(--u)) calc(10 * var(--u));
+}
+
+.sd-why__line {
+  font-size: var(--fs-why-line);
+  font-weight: var(--weight-semibold);
+  line-height: 1.32;
+}
+
+.sd-why__points {
+  display: grid;
+  align-content: start;
+  gap: calc(4 * var(--u));
+  padding: 0;
+  font-size: var(--fs-why-pt);
+  line-height: 1.36;
+  color: var(--text-muted);
+}
+
+.sd-why__points li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: calc(7 * var(--u));
+}
+
+.sd-why__points .icon {
+  inline-size: calc(10 * var(--u));
+  block-size: calc(10 * var(--u));
+  margin-block-start: 0.32em;
+}
+
+/* How it compares, on the same sheet under a hairline. On paper the red pen is allowed. */
+.sd-why__vs {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: calc(4 * var(--u)) calc(10 * var(--u));
+  margin-block-start: auto;
+  padding-block-start: calc(10 * var(--u));
+  border-block-start: var(--border-hair) solid var(--line);
+  color: var(--text-main);
+  font-size: var(--fs-why-pt);
+  line-height: 1.3;
+}
+
+.sd-why__vs div {
+  display: contents;
+}
+
+.sd-why__vs dt {
+  padding-block-start: 0.12em;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: var(--weight-mono);
+}
+
+.sd-why__vs dd {
+  margin: 0;
+}
+
+.sd-why__vs div:last-child dd {
+  color: var(--text-red);
+  font-weight: var(--weight-semibold);
+}
+
+.sd-why__vs div:last-child dt {
+  color: var(--text-red);
+}
+
+/* ---------- The finale's parts, hidden until it comes ---------- */
+.sd-end {
+  display: contents;
+}
+
+.sd-end > * {
+  position: absolute;
+  z-index: 2;
+  visibility: hidden;
+}
+
+.sd-end__title {
+  inset-inline-start: 0;
+  inset-block-start: calc(4 * var(--u));
+  inline-size: 100%;
+  padding-block-end: var(--display-mask-pad); /* Descenders pass the line box: DESIGN.md 4.4. */
+  overflow: clip;
+  font-family: var(--font-display);
+  font-size: var(--fs-finale);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+  text-align: center;
+  color: var(--text-inverse);
+}
+
+.sd-end__title span {
+  display: block;
+}
+
+.sd-end__line {
+  inset-inline: calc(16 * var(--u));
+  inset-block-start: calc(80 * var(--u));
+  inline-size: fit-content;
+  margin-inline: auto;
+  padding-inline: calc(4 * var(--u));
+  background: var(--surface-red);
+  color: var(--text-inverse);
+  font-size: var(--fs-call);
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.sd-score {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(4 * var(--u)) calc(12 * var(--u));
+  padding: calc(2 * var(--u)) calc(4 * var(--u));
+  background: var(--surface-red);
+  inset-inline-start: calc(16 * var(--u));
+  inset-block-start: calc(238 * var(--u));
+  inline-size: calc(358 * var(--u));
+  color: var(--text-inverse);
+  font-size: var(--fs-mono);
+  line-height: 1.2;
+}
+
+.sd-score p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: calc(5 * var(--u));
+}
+
+.sd-score__us {
+  justify-content: flex-end;
+  text-align: end;
+}
+
+.sd-score__who {
+  inline-size: 100%;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-mono);
+}
+
+.sd-score__hand {
+  font-weight: var(--weight-semibold);
+  font-size: var(--fs-hand);
+  text-decoration: none;
+}
+
+.sd-score__win {
+  font-family: var(--font-display);
+  font-size: calc(24 * var(--u));
+  font-weight: var(--weight-display);
+  line-height: 1;
+}
+
+.sd-score__bar {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  block-size: calc(5 * var(--u));
+  background: var(--text-inverse);
+}
+
+/* The coach strikes the loser out: on red the pen turns Face White (DESIGN.md 7.6). */
+.sd-score del {
+  position: relative;
+}
+
+.sd-score del::after {
+  content: '';
+  position: absolute;
+  inset-inline: -0.06em;
+  inset-block-start: 52%;
+  block-size: var(--pen-stroke);
+  background: var(--text-inverse);
+  transform: rotate(var(--pen-tilt));
+  transform-origin: 0 50%;
+}
+
+.sd-end__actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: calc(4 * var(--u)) calc(8 * var(--u));
+  inset-inline-start: calc(16 * var(--u));
+  inset-block-start: calc(692 * var(--u));
+  inline-size: calc(358 * var(--u));
+}
+
+.sd-end__actions .btn {
+  min-block-size: max(var(--control-h-md), calc(48 * var(--u)));
+  padding-inline: max(var(--space-sm), calc(16 * var(--u)));
+  font-size: max(var(--text-sm), calc(15 * var(--u)));
+}
+
+/* Deal it again: a dealer button, like the one that dealt the hand, in Face White on the red. --ad is its width in canvas units. */
+.sd-again {
+  --ad: 78;
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: calc(2 * var(--u));
+  grid-column: 1;
+  justify-self: start;
+  inline-size: max(4rem, calc(var(--ad) * var(--u)));
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--text-inverse);
+  color: var(--surface-ink);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-2),
+    color var(--dur-2);
+}
+
+.sd-again::before {
+  content: '';
+  position: absolute;
+  inset: 4.5%;
+  border: var(--border-hair) solid currentcolor;
+  border-radius: inherit;
+}
+
+.sd-again__d {
+  font-family: var(--font-display);
+  font-size: max(1.25rem, calc(var(--ad) * 0.3 * var(--u)));
+  font-weight: var(--weight-display);
+  line-height: 0.82;
+}
+
+.sd-again__label {
+  max-inline-size: 76%;
+  font-size: max(var(--text-xs), calc(var(--ad) * 0.13 * var(--u)));
+  font-weight: var(--weight-semibold);
+  line-height: 1.1;
+  text-align: center;
+}
+
+@media (hover: hover) {
+  .sd-again:hover {
+    background: var(--surface-ink);
+    color: var(--text-inverse);
+  }
+}
+
+.sd-again:focus-visible {
+  outline: var(--border-error) solid var(--text-inverse);
+  outline-offset: 3px;
+}
+
+/* The hand's story line is for the no-script list; with script the fan and the score tell it. */
+html[data-js] .sd:not([data-static]) .sd-end__line {
+  display: none;
+}
+
+
+.sd[data-street='river'] .sd-end > * {
+  visibility: visible;
+}
+
+/* At the finale the reason moves to its place in the poster, on plain Pip Red so its small type never sits on the lattice. It only moves while it is hidden. */
+.sd[data-street='river']:not([data-busy]) .sd-whys {
+  --text-main: var(--text-inverse);
+  --text-muted: var(--text-inverse);
+  --fs-why: calc(22 * var(--u));
+  --fs-why-line: max(var(--text-xs), calc(14 * var(--u)));
+  --fs-why-pt: max(var(--text-xs), calc(13.5 * var(--u)));
+  inset-inline-start: calc(8 * var(--u));
+  --menu-row: 30;
+  inset-block-start: calc(292 * var(--u));
+  inline-size: calc(374 * var(--u));
+  max-block-size: calc(398 * var(--u));
+  padding: calc(6 * var(--u)) calc(8 * var(--u));
+  background: var(--surface-red);
+}
+
+/* ---------- Tablet portrait ---------- */
+@media (min-width: 40rem) and (max-aspect-ratio: 5 / 4) {
+  .sd__table i:nth-child(1) { inset-inline-start: 14.6%; inset-block-start: 6.4%; }
+  .sd__table i:nth-child(2) { inset-inline-start: 50%; inset-block-start: 0; }
+  .sd__table i:nth-child(3) { inset-inline-start: 85.4%; inset-block-start: 6.4%; }
+  .sd__table i:nth-child(4) { inset-inline-start: 14.6%; inset-block-start: 93.6%; }
+  .sd__table i:nth-child(5) { inset-inline-start: 50%; inset-block-start: 100%; }
+  .sd__table i:nth-child(6) { inset-inline-start: 85.4%; inset-block-start: 93.6%; }
+
+  .sd__canvas {
+    --tb-x: 8;
+    --tb-y: 4;
+    --tb-w: 752;
+    --tb-h: 984;
+    --tb-r: 50% / 22%;
+    --tb-in: 12;
+    --seat: 22;
+
+    --cd: 286;
+    --fw: 190;
+    --bw: 116;
+    --hw: 84;
+    --dw: 96;
+    --ww: 64;
+
+    --s1: 120;
+    --s2: 244;
+    --s3: 368;
+    --s4: 508;
+    --s5: 648;
+    --sly: 398;
+    --ly: 280;
+
+    --hl: 150;
+    --hr: 618;
+    --hy: 150;
+    --ho: 28;
+
+    --dx: 420;
+    --dy: 884;
+    --bx: 320;
+    --by: 878;
+    --px: 588;
+    --py: 874;
+    --pd: 148;
+    --pe: 7;
+
+    --fx: 384;
+    --fy: 280;
+    --fr: 380;
+
+    --ly1: 510;
+    --lx1: 66;
+    --lx2: 128;
+    --lx3: 640;
+    --lx4: 702;
+
+    --rx: 90;
+    --ry: 262;
+    --rl: 588;
+    --rh: 6;
+    --flood: 3.4;
+    --ra: 10;
+
+    --fs-who: max(var(--text-xs), calc(15 * var(--u)));
+    --fs-hand: max(var(--text-xs), calc(16 * var(--u)));
+    --fs-num: calc(52 * var(--u));
+    --fs-mono: max(var(--text-xs), calc(13 * var(--u)));
+    --fs-call: max(var(--text-xs), calc(18 * var(--u)));
+    --fs-title: calc(92 * var(--u));
+    --fs-line: calc(19 * var(--u));
+    --fs-why: calc(42 * var(--u));
+    --why-y: 506;
+    --why-h: 350;
+    --why-pad: calc(16 * var(--u));
+    --fs-why-line: calc(21 * var(--u));
+    --fs-why-pt: calc(15.5 * var(--u));
+    --fs-finale: calc(124 * var(--u));
+  }
+
+  .sd-intro {
+    inset-inline-start: calc(62 * var(--u));
+    inset-block-start: calc(516 * var(--u));
+    inline-size: calc(644 * var(--u));
+  }
+
+  .sd-seat__who { inset-block-start: calc(44 * var(--u)); }
+  .sd-seat__hand { inset-block-start: calc(232 * var(--u)); }
+  .sd-seat__win { inset-block-start: calc(112 * var(--u)); }
+  .sd-race__label { inset-block-start: calc(74 * var(--u)); }
+
+  .sd-seat--them .sd-seat__who,
+  .sd-seat--them .sd-seat__hand {
+    inset-inline-start: calc(70 * var(--u));
+  }
+
+  .sd-seat--us .sd-seat__who,
+  .sd-seat--us .sd-seat__hand {
+    inset-inline-end: calc(70 * var(--u));
+  }
+
+  .sd-seat--them .sd-seat__win { inset-inline-start: calc(260 * var(--u)); }
+  .sd-seat--us .sd-seat__win { inset-inline-end: calc(260 * var(--u)); }
+
+
+  .sd-hint {
+    inset-inline-start: calc(70 * var(--u));
+    inset-block-start: calc(864 * var(--u));
+    inline-size: calc(300 * var(--u));
+  }
+
+  .sd-menu {
+    --pill-pad: calc(11 * var(--u));
+  }
+
+  .sd-why__card { display: inline-flex; }
+
+  .sd-again { --ad: 84; }
+
+  .sd-whys {
+    inset-inline-start: calc(62 * var(--u));
+    inset-block-start: calc(528 * var(--u));
+    inline-size: calc(644 * var(--u));
+    max-block-size: calc(300 * var(--u));
+  }
+
+
+
+  .sd-end__title { inset-block-start: calc(10 * var(--u)); }
+
+  .sd-end__line { inset-block-start: calc(128 * var(--u)); }
+
+
+  .sd-score {
+    inset-inline-start: calc(180 * var(--u));
+    inset-block-start: calc(474 * var(--u));
+    inline-size: calc(408 * var(--u));
+  }
+
+  .sd-end__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    inset-inline-start: calc(62 * var(--u));
+    inset-block-start: calc(866 * var(--u));
+    inline-size: calc(644 * var(--u));
+  }
+
+
+  .sd[data-street='river']:not([data-busy]) .sd-whys {
+    --fs-why: calc(32 * var(--u));
+    --fs-why-line: calc(16.5 * var(--u));
+    --fs-why-pt: calc(15 * var(--u));
+    --menu-col: calc(50% - 3 * var(--u));
+    inset-inline-start: calc(56 * var(--u));
+    inset-block-start: calc(526 * var(--u));
+    inline-size: calc(656 * var(--u));
+    max-block-size: calc(332 * var(--u));
+    padding: calc(12 * var(--u)) calc(16 * var(--u));
+    outline: var(--border-hair) solid var(--text-inverse);
+    outline-offset: calc(-5 * var(--u));
+  }
+}
+
+/* ---------- Landscape: the full table, seats left and right, the board on top, the reason printed on the felt ---------- */
+@media (min-width: 40rem) and (min-aspect-ratio: 5 / 4) {
+  .sd__table i:nth-child(1) { inset-inline-start: 7.9%; inset-block-start: 14.6%; }
+  .sd__table i:nth-child(2) { inset-inline-start: 50%; inset-block-start: 0; }
+  .sd__table i:nth-child(3) { inset-inline-start: 92.1%; inset-block-start: 14.6%; }
+  .sd__table i:nth-child(4) { inset-inline-start: 7.9%; inset-block-start: 85.4%; }
+  .sd__table i:nth-child(5) { inset-inline-start: 50%; inset-block-start: 100%; }
+  .sd__table i:nth-child(6) { inset-inline-start: 92.1%; inset-block-start: 85.4%; }
+
+  .sd__canvas {
+    --tb-x: 20;
+    --tb-y: 6;
+    --tb-w: 1240;
+    --tb-h: 748;
+    --tb-r: 27% / 50%;
+    --tb-in: 14;
+    --seat: 24;
+
+    --cd: 254;
+    --fw: 240;
+    --bw: 122;
+    --hw: 88;
+    --dw: 104;
+    --ww: 64;
+
+    --s1: 348;
+    --s2: 480;
+    --s3: 612;
+    --s4: 772;
+    --s5: 932;
+    --sly: 160;
+    --ly: 38;
+
+    --hl: 150;
+    --hr: 1130;
+    --hy: 302;
+    --ho: 30;
+
+    --dx: 1040;
+    --dy: 484;
+    --bx: 1150;
+    --by: 476;
+    --px: 990;
+    --py: 640;
+    --pd: 152;
+    --pe: 7;
+
+    --fx: 905;
+    --fy: 330;
+    --fr: 480;
+    --fa: 11deg;
+
+    --ly1: 690;
+    --lx1: 600;
+    --lx2: 664;
+    --lx3: 744;
+    --lx4: 808;
+
+    --rx: 364;
+    --ry: 310;
+    --rl: 552;
+    --rh: 6;
+    --flood: 2.5;
+    --ra: 12;
+
+    --fs-who: max(var(--text-xs), calc(14 * var(--u)));
+    --fs-hand: max(var(--text-xs), calc(15 * var(--u)));
+    --fs-num: calc(42 * var(--u));
+    --fs-mono: max(var(--text-xs), calc(12.5 * var(--u)));
+    --fs-call: max(var(--text-xs), calc(17 * var(--u)));
+    --fs-title: calc(88 * var(--u));
+    --fs-line: max(var(--text-sm), calc(18 * var(--u)));
+    --fs-why: calc(50 * var(--u));
+    --why-y: 358;
+    --why-h: 390;
+    --why-pad: calc(18 * var(--u));
+    --fs-why-line: max(var(--text-xs), calc(24 * var(--u)));
+    --fs-why-pt: max(var(--text-xs), calc(17 * var(--u)));
+    --fs-finale: calc(120 * var(--u));
+  }
+
+  .sd-intro {
+    inset-inline-start: calc(170 * var(--u));
+    inset-block-start: calc(398 * var(--u));
+    inline-size: calc(730 * var(--u));
+  }
+
+  .sd-seat__who {
+    inset-block-start: calc(204 * var(--u));
+    inline-size: calc(240 * var(--u));
+    text-align: center;
+  }
+
+  .sd-seat--them .sd-seat__who { inset-inline-start: calc(30 * var(--u)); }
+  .sd-seat--us .sd-seat__who { inset-inline-end: calc(30 * var(--u)); text-align: center; }
+
+  .sd-seat__hand { inset-block-start: calc(258 * var(--u)); }
+  .sd-seat--them .sd-seat__hand { inset-inline-start: calc(262 * var(--u)); }
+  .sd-seat--us .sd-seat__hand { inset-inline-start: auto; inset-inline-end: calc(262 * var(--u)); }
+
+  .sd-seat__win { inset-block-start: calc(281 * var(--u)); }
+  .sd-seat--them .sd-seat__win { inset-inline-start: calc(262 * var(--u)); }
+  .sd-seat--us .sd-seat__win { inset-inline-end: calc(262 * var(--u)); }
+
+  .sd-race__label { inset-block-start: calc(261 * var(--u)); }
+
+
+  /* In the menu's row, between the numbers and Pause: it explains both, and stays clear of the hands. */
+  .sd-hint {
+    inset-inline-start: calc(540 * var(--u));
+    inset-block-start: calc(366 * var(--u));
+    inline-size: auto;
+  }
+
+  /* On the felt the numbers start past the aces' corner, which reaches down into the menu's row. */
+  .sd:not([data-street='river']) .sd-menu {
+    padding-inline-start: calc(92 * var(--u));
+  }
+
+  .sd-menu {
+    --pill-pad: calc(11 * var(--u));
+  }
+
+  .sd-why__card { display: inline-flex; }
+
+  .sd-why__head { column-gap: calc(14 * var(--u)); }
+
+  .sd-whys {
+    inset-inline-start: calc(150 * var(--u));
+    inset-block-start: calc(400 * var(--u));
+    inline-size: calc(752 * var(--u));
+    max-block-size: calc(330 * var(--u));
+  }
+
+
+
+  .sd-end__title {
+    inset-inline-start: calc(60 * var(--u));
+    inset-block-start: calc(26 * var(--u));
+    inline-size: calc(780 * var(--u));
+    text-align: start;
+  }
+
+  .sd-end__line {
+    inset-inline: calc(560 * var(--u)) calc(40 * var(--u));
+    inset-block-start: calc(576 * var(--u));
+  }
+
+
+  .sd-score {
+    inset-inline-start: calc(880 * var(--u));
+    inset-block-start: calc(636 * var(--u));
+    inline-size: calc(340 * var(--u));
+  }
+
+  .sd-end__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    inset-inline-start: calc(60 * var(--u));
+    inset-block-start: calc(616 * var(--u));
+    inline-size: calc(560 * var(--u));
+  }
+
+  .sd-again { --ad: 96; }
+
+
+  .sd[data-street='river']:not([data-busy]) .sd-whys {
+    --fs-why: calc(34 * var(--u));
+    --fs-why-line: max(var(--text-xs), calc(15.5 * var(--u)));
+    --fs-why-pt: max(var(--text-xs), calc(14.5 * var(--u)));
+    inset-inline-start: calc(56 * var(--u));
+    inset-block-start: calc(162 * var(--u));
+    inline-size: calc(478 * var(--u));
+    max-block-size: calc(448 * var(--u));
+    padding: calc(14 * var(--u)) calc(18 * var(--u));
+    outline: var(--border-hair) solid var(--text-inverse);
+    outline-offset: calc(-6 * var(--u));
+  }
+
+  .sd[data-street='river']:not([data-busy]) .sd-why {
+    display: flex;
+  }
+}
+
+/* ---------- A short phone: the panel scrolls inside its own area, the button stays on screen ---------- */
+@media (max-width: 39.99rem) and (max-height: 46rem) {
+  .sd__canvas {
+    --bw: 56;
+    --hw: 38;
+    --dw: 48;
+    --ww: 40;
+    --cd: 162;
+    --fw: 86;
+
+    --s1: 54;
+    --s2: 115;
+    --s3: 176;
+    --s4: 244;
+    --s5: 312;
+    --sly: 188;
+    --ly: 128;
+
+    --hy: 62;
+    --ho: 13;
+
+    --dx: 205;
+    --dy: 640;
+    --bx: 146;
+    --by: 636;
+    --px: 322;
+    --py: 636;
+    --pd: 92;
+    --pe: 4;
+
+    --fy: 124;
+    --fr: 184;
+
+    --ly1: 214;
+    --lx1: 22;
+    --lx2: 76;
+    --lx3: 332;
+    --lx4: 368;
+
+    --ry: 118;
+    --rh: 5;
+
+    --fs-num: calc(26 * var(--u));
+    --fs-title: calc(70 * var(--u));
+    --fs-finale: calc(58 * var(--u));
+    --fs-why: calc(22 * var(--u));
+    --why-y: 232;
+    --why-h: 352;
+    --why-pad: calc(8 * var(--u));
+    --fs-why-line: max(var(--text-xs), calc(16 * var(--u)));
+    --fs-why-pt: max(var(--text-xs), calc(13 * var(--u)));
+  }
+
+  .sd-seat__who { inset-block-start: calc(12 * var(--u)); }
+  .sd-seat__hand { inset-block-start: calc(98 * var(--u)); }
+  .sd-seat__win { inset-block-start: calc(42 * var(--u)); }
+  .sd-race__label { inset-block-start: calc(98 * var(--u)); }
+
+  .sd-intro { inset-block-start: calc(238 * var(--u)); }
+
+
+  .sd-whys { gap: calc(6 * var(--u)); }
+
+  .sd-menu__item,
+  .sd-menu__auto { min-block-size: max(1.5rem, calc(28 * var(--u))); }
+
+  .sd-whys {
+    inset-block-start: calc(254 * var(--u));
+    max-block-size: calc(322 * var(--u));
+  }
+
+  .sd-hint {
+    inset-block-start: calc(590 * var(--u));
+    inline-size: calc(110 * var(--u));
+  }
+
+  .sd-end__line { inset-block-start: calc(58 * var(--u)); }
+
+
+  .sd-score { inset-block-start: calc(214 * var(--u)); }
+
+  .sd-end__actions { inset-block-start: calc(550 * var(--u)); }
+
+  /* Here the finale shows each reason's title and how it compares; the line stays on the table. */
+  html[data-js] .sd[data-street='river']:not([data-busy], [data-static]) .sd-why__line {
+    display: none;
+  }
+
+
+  .sd[data-street='river']:not([data-busy]) .sd-whys {
+    inset-block-start: calc(272 * var(--u));
+    max-block-size: calc(274 * var(--u));
+  }
+
+  .sd-again { --ad: 64; }
+
+  /* Too short for five named rows: the five numbers stay a row of buttons under the heading, and the chosen reason shows its own title. */
+  .sd[data-street='river']:not([data-busy]) .sd-menu__item {
+    flex: 0 0 auto;
+    min-block-size: max(1.5rem, calc(28 * var(--u)));
+  }
+
+  .sd[data-street='river']:not([data-busy]) .sd-menu__title {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sd[data-street='river']:not([data-busy]) .sd-menu__sr {
+    display: inline;
+  }
+
+  html[data-js] .sd[data-street='river']:not([data-busy], [data-static]) .sd-why__head {
+    display: grid;
+  }
+}
+
+/* The narrowest phones: the two names need the whole line, so the label goes where only a screen reader needs it. */
+@media (max-width: 21.24rem) {
+  /* The canvas grows a little past the screen here (Showdown.shell.css). */
+  .sd__canvas {
+    --ly: 124;
+    --fs-why-line: max(var(--text-xs), calc(14 * var(--u)));
+    --fs-why: calc(21 * var(--u));
+    --why-y: 232;
+    --why-h: 358;
+    --why-pad: calc(6 * var(--u));
+  }
+
+  /* The tallest reason, with its tag, still fits: the panel ends above the hint. */
+  .sd-whys {
+    max-block-size: calc(330 * var(--u));
+  }
+
+  .sd-race__label {
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sd-end__actions .btn {
+    padding-inline: var(--space-sm);
+    white-space: nowrap;
+  }
+
+  .sd-again { align-self: start; }
+
+}
+
+/* Forced colors: the rope and the puck keep their inks, because the rope's split is the information. */
+@media (forced-colors: active) {
+  .sd-rope,
+  .sd-puck__top,
+  .sd-puck__edge {
+    forced-color-adjust: none;
+  }
+}
+
+/* ---------- No script, or the script could not load: all seven cards face up, every reason, the result. A plain list, nothing to press. ---------- */
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd__canvas {
+  --card-w: clamp(3rem, 11cqi, 6rem);
+  --s: 1;
+  inline-size: min(100%, var(--container-max));
+  block-size: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) :is(.sd__stage, .sd__jolt) {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  inline-size: 100%;
+  animation-name: none;
+  transform: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) :is(.sd__table, .sd__flood, .sd__lattice, .sd__dim, .sd__dusk, .sd-slots, .sd-deck, .sd-puck, .sd-hint, .sd-race, .c__shadow, .sd-peel, .pc__back, .sd-again) {
+  display: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) :is(.sd-intro, .sd-whys, .sd-end > *) {
+  position: static;
+  flex: 0 0 100%;
+  inline-size: 100%;
+  max-block-size: none;
+  margin: 0;
+  overflow: visible;
+  transform: none;
+  visibility: visible;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-intro {
+  margin-block-end: var(--space-lg);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-intro__title {
+  font-size: var(--display-lg);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-intro__line {
+  font-size: var(--text-lg);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-c {
+  position: static;
+  margin: 0;
+  transform: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-c:nth-of-type(n) {
+  animation-name: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) :is(.c__y, .c__pose, .c__lift, .c__btn) {
+  position: static;
+  display: block;
+  transform: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .pc {
+  transform: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .c__btn {
+  cursor: default;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .pc__front {
+  visibility: inherit;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-whys__panels {
+  display: block;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-menu {
+  display: none;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-whys {
+  display: block;
+  margin-block-start: var(--space-lg);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-why,
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-why[data-why='Ad'] {
+  display: flex;
+  margin-block-start: var(--space-xl);
+  transform: none;
+  visibility: visible;
+  opacity: 1;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-why__title {
+  font-size: var(--display-sm);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-why__line {
+  font-size: var(--text-base);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-why__points {
+  font-size: var(--text-sm);
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-end__title {
+  margin-block-start: var(--space-2xl);
+  overflow: visible;
+  font-size: var(--display-lg);
+  text-align: start;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-end__line {
+  margin-block-start: var(--space-sm);
+  padding: 0;
+  background: none;
+  text-align: start;
+}
+
+:is(html:not([data-js]) .sd, .sd[data-static]) .sd-score {
+  margin-block-start: var(--space-md);
+  padding: 0;
+  background: none;
+}

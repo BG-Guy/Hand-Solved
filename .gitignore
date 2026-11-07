@@ -1,0 +1,15 @@
+# Files git should not track: installs, build output, caches, local env files and OS junk.
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+.DS_Store
+npm-debug.log*
+*.log
+playwright-report/
+test-results/
+blob-report/
+# Working captures, rejected drafts and reference screenshots; the site's own images live in src/assets.
+showcase/

@@ -1,0 +1,219 @@
+{
+ "note": "Real output of the app engine (v0.5.0) on its seed hands, one solver run each. Frequencies shift a little between runs because solves stop at a time budget. Amounts are in dollars at the hand stakes; divide by bigBlindDollars for big blinds. Grades come from the app grading function, which reproduces the app-reported grade for the original play.",
+ "capturedAt": "2026-11-01",
+ "spots": [
+  {
+   "id": "set-on-four-straight",
+   "sourceHand": "h2",
+   "stakes": "$1/$2",
+   "bigBlindDollars": 2,
+   "position": "BB",
+   "villain": "BTN",
+   "hero": [
+    "8h",
+    "8c"
+   ],
+   "board": [
+    "8d",
+    "Js",
+    "9s",
+    "2c",
+    "Ts"
+   ],
+   "street": "River",
+   "facing": "BTN shoves all in",
+   "story": "BTN raised, you called from the big blind. You check-raised the flop and bet the turn, and BTN called both. On the river you bet again, and BTN shoved all in over the top.",
+   "handClass": "Three of a kind, medium (beats 64% of possible hands)",
+   "potDollars": 509,
+   "toCallDollars": 130,
+   "equityNeeded": "20%",
+   "equity": "1%",
+   "appGradeForOriginalPlay": "Blunder 6",
+   "options": [
+    {
+     "label": "Fold",
+     "type": "fold",
+     "frequency": 0.96,
+     "ev": 0,
+     "best": true,
+     "actual": false,
+     "score": 100,
+     "grade": "Best move",
+     "givenUpDollars": 0
+    },
+    {
+     "label": "Call $130",
+     "type": "call",
+     "frequency": 0.04,
+     "ev": -125.24,
+     "best": false,
+     "actual": true,
+     "score": 6,
+     "grade": "Blunder",
+     "givenUpDollars": 125.24
+    }
+   ],
+   "engineNotes": "This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call $130 to win $639, so you need 20% equity to break even. GTO with 88 here: fold 96%, call $130 4%. GTO doesn't play call $130 with this hand here; fold is the play. That gives up about $125.24 (20% of the pot) against fold. Against their ranges at this point you have about 1% equity."
+  },
+  {
+   "id": "straight-check-raised",
+   "sourceHand": "h4",
+   "stakes": "$0.50/$1",
+   "bigBlindDollars": 1,
+   "position": "SB",
+   "villain": "BB",
+   "hero": [
+    "7s",
+    "6s"
+   ],
+   "board": [
+    "5s",
+    "8c",
+    "Kd",
+    "4h"
+   ],
+   "street": "Turn",
+   "facing": "BB raises to 21 bb",
+   "story": "You raised from the small blind and the big blind called. You bet the flop and got called. The turn gives you a straight. You bet again, and now the big blind raises.",
+   "handClass": "Straight, near the nuts (beats 100% of possible hands)",
+   "potDollars": 38,
+   "toCallDollars": 14,
+   "equityNeeded": "27%",
+   "equity": "91%",
+   "appGradeForOriginalPlay": "Inaccuracy 75",
+   "options": [
+    {
+     "label": "Fold",
+     "type": "fold",
+     "frequency": 0,
+     "ev": 0,
+     "best": false,
+     "actual": false,
+     "score": 0,
+     "grade": "Blunder",
+     "givenUpDollars": 52.68
+    },
+    {
+     "label": "Call $14",
+     "type": "call",
+     "frequency": 0.38,
+     "ev": 51.13,
+     "best": false,
+     "actual": false,
+     "score": 85,
+     "grade": "Good",
+     "givenUpDollars": 1.55
+    },
+    {
+     "label": "Raise to $49",
+     "type": "raise",
+     "frequency": 0.62,
+     "ev": 52.68,
+     "best": true,
+     "actual": false,
+     "score": 100,
+     "grade": "Best move",
+     "givenUpDollars": 0
+    },
+    {
+     "label": "All in $94",
+     "type": "allin",
+     "frequency": 0,
+     "ev": 50.23,
+     "best": false,
+     "actual": true,
+     "score": 75,
+     "grade": "Inaccuracy",
+     "givenUpDollars": 2.45
+    }
+   ],
+   "engineNotes": "This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call $14 to win $52, so you need 27% equity to break even. GTO with 76s here: raise to $49 62%, call $14 38%. Raising is right: GTO does it 62% of the time with this hand, mostly as raise to $49. Your size is one it rarely uses. That gives up about $2.45 (5% of the pot) against raise to $49. Against their ranges at this point you have about 91% equity."
+  },
+  {
+   "id": "top-pair-river-value",
+   "sourceHand": "h1",
+   "stakes": "$1/$2",
+   "bigBlindDollars": 2,
+   "position": "BTN",
+   "villain": "CO",
+   "hero": [
+    "As",
+    "Kd"
+   ],
+   "board": [
+    "Kh",
+    "7c",
+    "2d",
+    "Qs",
+    "3h"
+   ],
+   "street": "River",
+   "facing": "CO checks to you",
+   "story": "CO raised, you 3-bet from the button, and CO called. You bet the flop and the turn with top pair, and CO called both. The river is a blank, and CO checks to you.",
+   "handClass": "Pair, very strong (beats 90% of possible hands)",
+   "potDollars": 197,
+   "toCallDollars": 0,
+   "equityNeeded": null,
+   "equity": "89%",
+   "appGradeForOriginalPlay": "Good 96",
+   "options": [
+    {
+     "label": "Check",
+     "type": "check",
+     "frequency": 0,
+     "ev": 175.07,
+     "best": false,
+     "actual": false,
+     "score": 28,
+     "grade": "Blunder",
+     "givenUpDollars": 31.85
+    },
+    {
+     "label": "Bet $65.02 (33% pot)",
+     "type": "bet",
+     "frequency": 0,
+     "ev": 199.84,
+     "best": false,
+     "actual": false,
+     "score": 78,
+     "grade": "Inaccuracy",
+     "givenUpDollars": 7.08
+    },
+    {
+     "label": "Bet $147.76 (75% pot)",
+     "type": "bet",
+     "frequency": 0.75,
+     "ev": 206.92,
+     "best": true,
+     "actual": false,
+     "score": 100,
+     "grade": "Best move",
+     "givenUpDollars": 0
+    },
+    {
+     "label": "All in $303",
+     "type": "allin",
+     "frequency": 0.16,
+     "ev": 206.39,
+     "best": false,
+     "actual": false,
+     "score": 96,
+     "grade": "Good",
+     "givenUpDollars": 0.53
+    },
+    {
+     "label": "Bet $120 (61% pot)",
+     "type": "bet",
+     "frequency": 0.09,
+     "ev": 206.39,
+     "best": false,
+     "actual": true,
+     "score": 96,
+     "grade": "Good",
+     "givenUpDollars": 0.53
+    }
+   ],
+   "engineNotes": "This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with AKo here: bet $147.76 (75% pot) 75%, all in $303 16%, bet $120 (61% pot) 9%. Bet $120 (61% pot) is a small part of the GTO mix (9%); bet $147.76 (75% pot) is the main play. Close spot: all in $303 is worth almost the same. Against their ranges at this point you have about 89% equity."
+  }
+ ]
+}

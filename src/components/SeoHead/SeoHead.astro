@@ -1,0 +1,47 @@
+---
+// SeoHead.astro: prints one page's SEO head, from <title> on: description, canonical, icons, social tags, JSON-LD. Rules: docs/site/SEO.md.
+import { absoluteUrl, type PageEntry } from '../../data/pages';
+import { siteName } from '../../data/site';
+import { jsonLdFor } from './json-ld';
+import { themeColor } from './theme-color';
+
+interface Props {
+  page: PageEntry;
+}
+
+const { page } = Astro.props;
+const site = Astro.site;
+if (!site) throw new Error('SeoHead: set `site` in astro.config.mjs.');
+
+// new URL(path, Astro.site), never Astro.url: with build.format "file" Astro.url returns /x.html.
+const url = absoluteUrl(page.path, site);
+const image = page.ogImage ? absoluteUrl(page.ogImage, site) : undefined;
+const jsonLd = jsonLdFor(page, site);
+// The 404 prints the reduced head only: no description, canonical, social tags or JSON-LD.
+const full = !page.noindex;
+---
+<title>{page.title}</title>
+{page.noindex && <meta name="robots" content="noindex">}
+{full && page.description && <meta name="description" content={page.description}>}
+{full && <link rel="canonical" href={url}>}
+<meta name="theme-color" content={themeColor}>
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+{full && (
+  <>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content={siteName}>
+    <meta property="og:title" content={page.title}>
+    <meta property="og:description" content={page.description}>
+    <meta property="og:url" content={url}>
+    <meta property="og:image" content={image}>
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content={page.ogAlt}>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image:alt" content={page.ogAlt}>
+  </>
+)}
+{jsonLd && <script type="application/ld+json" set:html={jsonLd} />}

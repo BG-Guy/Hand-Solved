@@ -1,0 +1,34 @@
+/* TextLink.css: the underlined, semibold text link, with an arrow where it navigates (TextLink.astro, DESIGN.md 9.1). SiteLayout loads it on every page, so a plain <a class="text-link"> works too:
+   the noscript link beside a demo button and the table disclosure's summary use the class by hand. The ground scopes change --link-fg, so nothing here is written per section. */
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-block-size: var(--control-h-sm);
+  color: var(--link-fg);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-decoration-thickness: var(--border-hair);
+  text-underline-offset: 0.2em;
+  transition: color var(--dur-2);
+}
+
+.text-link .icon {
+  transition: transform var(--dur-2);
+}
+
+@media (hover: hover) {
+  .text-link:hover {
+    color: var(--link-fg-hover);
+    text-decoration-thickness: calc(var(--border-hair) * 2);
+  }
+
+  .text-link:hover .icon {
+    transform: translateX(calc(var(--border-hair) * 2));
+  }
+}
+
+.text-link:focus-visible {
+  border-radius: var(--radius-sm);
+}

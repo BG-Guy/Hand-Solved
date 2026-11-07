@@ -1,0 +1,142 @@
+/* HowItWorks.css: #how on stock, with the story, then the full-bleed red band: lattice as a child layer, phone bleeding off the bottom edge (DESIGN.md 6, 7.2, 8). */
+
+.how {
+  position: relative;
+}
+
+.how__frame {
+  --corner-inline: var(--gutter); /* The corner index lines up with the text column. */
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding-block: var(--section-y);
+  padding-inline: var(--gutter);
+}
+
+/* Section head */
+.how__head {
+  display: grid;
+  gap: var(--space-lg);
+  margin-block-end: var(--space-3xl);
+}
+
+.how__title {
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.how__title span {
+  display: block;
+}
+
+.how__lead {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+}
+
+/* Pinned on a phone the stage's top padding already sets the gap under the lead. */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) and (max-width: 47.99rem) {
+  html[data-js] .how__head {
+    margin-block-end: 0;
+  }
+}
+
+/* The three sentences share a line once the display size fits them. */
+@media (min-width: 64rem) {
+  .how__title span {
+    display: inline;
+  }
+}
+
+.how__note {
+  margin-block-start: var(--space-xl);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* Callout heights: each one sits beside the part of the capture it names. */
+.how__story .story__scene:nth-of-type(1) .story__chip:nth-child(1) { --at: 22%; }
+.how__story .story__scene:nth-of-type(1) .story__chip:nth-child(2) { --at: 58%; }
+.how__story .story__scene:nth-of-type(2) .story__chip:nth-child(1) { --at: 26%; }
+.how__story .story__scene:nth-of-type(2) .story__chip:nth-child(2) { --at: 50%; }
+.how__story .story__scene:nth-of-type(3) .story__chip:nth-child(1) { --at: 18%; }
+.how__story .story__scene:nth-of-type(3) .story__chip:nth-child(2) { --at: 64%; }
+
+/* The red band */
+.band {
+  --band-crop: 0.18; /* Share of the phone's height that runs off the band */
+  position: relative;
+  overflow: clip;
+  background: var(--surface-red);
+  color: var(--text-main);
+}
+
+/* A child layer, never the band's own background, so motion.css can drift it 1 rem either way behind static text. */
+.band__lattice {
+  position: absolute;
+  inset: -1rem 0;
+  background: url('../../assets/svg/bg-lattice-red.svg');
+  background-size: var(--lattice-size) var(--lattice-size);
+}
+
+.band__frame {
+  --corner-inline: var(--gutter);
+  position: relative;
+  display: grid;
+  gap: var(--space-2xl);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding-block-start: var(--section-y);
+  padding-inline: var(--gutter);
+}
+
+.band__copy {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-lg);
+}
+
+.band__line {
+  font-family: var(--font-display);
+  font-size: var(--display-lg);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+.band__line span {
+  display: block;
+}
+
+.band__sub,
+.band__close {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+}
+
+.band__close {
+  margin-block-start: var(--space-md);
+  font-weight: var(--weight-semibold);
+}
+
+.band__art {
+  --device-w: var(--phone-w-band);
+  justify-self: end;
+  /* Under 768 the phone runs off the bottom edge too, so the band ends on the phone and not on a gap. */
+  margin-block-end: calc(var(--phone-w-band) * var(--phone-height) * var(--band-crop) * -1);
+}
+
+@media (min-width: 48rem) {
+  .band__frame {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-2xl);
+    align-items: center;
+  }
+
+  .band__cta {
+    inline-size: auto;
+  }
+}

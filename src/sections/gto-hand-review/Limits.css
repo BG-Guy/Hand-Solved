@@ -1,0 +1,54 @@
+/* Limits.css: the limits on stock. Four chips and a paragraph. Under 1024 the head sits above; from 1024 the head takes the left 5 columns and the words the right 7, as the FAQ below does. */
+
+.lim__frame {
+  position: relative;
+  display: grid;
+  gap: var(--space-xl);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.lim__title {
+  max-inline-size: 12em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.lim__body {
+  display: grid;
+  gap: var(--space-lg);
+  align-content: start;
+}
+
+.lim__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lim__text {
+  max-inline-size: var(--measure);
+  font-size: var(--text-lg);
+}
+
+@media (min-width: 64rem) {
+  .lim__frame {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+  }
+
+  .lim__head {
+    grid-column: 1 / span 5;
+  }
+
+  .lim__body {
+    grid-column: 6 / -1;
+    /* Level with the first line of the title, not the top of its line box. */
+    padding-block-start: var(--space-sm);
+  }
+}

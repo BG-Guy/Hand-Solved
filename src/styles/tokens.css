@@ -1,0 +1,509 @@
+/* HandSolved design tokens, Direction A "Two Inks": the only token source. Keeps the component library's names so its modules still work. Rules and specs: docs/site/DESIGN.md. */
+
+:root {
+  /* ===========================================================================
+   * Raw scales. Use these only inside this file. Components use semantic names.
+   * Neutrals are Key Black screened over Card Stock, as flat values.
+   * ======================================================================== */
+  --neutral-50: #fcfcfa;  /* Face White */
+  --neutral-100: #f3f4f1; /* Card Stock */
+  --neutral-200: #eaebe8; /* Ink 4%. Tracks, hover fills. Pip Red text still 4.61:1 on it */
+  --neutral-250: #e1e2e0; /* Ink 8%. Quiet call cells, ghost grid */
+  --neutral-300: #d8dad7; /* Ink 12%. Hairlines */
+  --neutral-400: #bdbfbe; /* Ink 24%. Card outlines */
+  --neutral-420: #b6b8b7; /* Face White 70% over ink. Secondary text on ink, 8.98:1 */
+  --neutral-450: #878a8a; /* Face White 50% over ink. Control edge on ink, 5.15:1 */
+  --neutral-500: #7e8282; /* Ink 52%. Control edge, 3.52:1 on stock, 3.78:1 on white */
+  --neutral-600: #6c7071; /* Ink 60%. Fold labels only, 4.54:1 on stock, 4.87:1 on white */
+  --neutral-700: #565d61; /* Soft Black */
+  --neutral-750: #373c3f; /* Face White 16% over ink. Hairlines on ink */
+  --neutral-800: #2e3336; /* Face White 12% over ink. Tracks and raised fills on ink */
+  --neutral-900: #12181b; /* Key Black. Same value as the app's ink */
+  --neutral-950: #0b0f11; /* Completes the scale. Not used: nothing is darker than the app's ink */
+
+  --red-100: #efdad9; /* Pip Red 12% over stock. Quiet raise cells */
+  --red-300: #e1878f; /* Red Tint */
+  --red-600: #ce1a2c; /* Pip Red */
+  --red-800: #a81222; /* Overprint Red */
+
+  /* ---------------------------------------------------------------------------
+   * Color: library names
+   * ------------------------------------------------------------------------ */
+
+  /* Brand */
+  --primary: var(--red-600);        /* Main button, raise cells, red bands. Face White on it 5.37:1 */
+  --primary-hover: var(--red-800);  /* Button hover, lattice lines. Never on ink (2.37:1) */
+  --accent: var(--red-300);         /* Rare highlight. Pair with --text-main (6.88:1), not white */
+
+  /* Surfaces */
+  --surface-light: var(--neutral-100); /* Page and section ground: Card Stock */
+  --surface-dark: var(--neutral-900);  /* Inverted panels: Key Black */
+  --surface-muted: var(--neutral-200); /* Tracks and hover fills. Not a section band */
+
+  /* Text */
+  --text-main: var(--neutral-900);          /* 16.23:1 on stock, 17.44:1 on white */
+  --text-muted: var(--neutral-700);         /* 6.07:1 on stock, 6.52:1 on white, 5.60:1 on muted */
+  --text-inverse: var(--neutral-50);        /* On Key Black 17.44:1, on Pip Red 5.37:1 */
+  --text-inverse-muted: var(--neutral-420); /* Secondary text on ink only */
+
+  /* Lines */
+  --border-subtle: var(--neutral-300);
+
+  /* Status. No green in this system: success is ink plus a check icon */
+  --danger: var(--red-600);      /* 4.99:1 on stock, 5.37:1 on white */
+  --success: var(--neutral-900);
+  --warning: var(--neutral-700);
+
+  /* ---------------------------------------------------------------------------
+   * Typography: library names. --face-* come from Astro's <Font> (ARCHITECTURE 5),
+   * so this file must never define them.
+   * ------------------------------------------------------------------------ */
+  --font-sans: var(--face-body, "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+
+  /* ---------------------------------------------------------------------------
+   * Spacing: 4px base scale
+   * ------------------------------------------------------------------------ */
+  --space-xs: 0.25rem;  /*  4px */
+  --space-sm: 0.5rem;   /*  8px */
+  --space-md: 1rem;     /* 16px */
+  --space-lg: 1.5rem;   /* 24px */
+  --space-xl: 2rem;     /* 32px */
+  --space-2xl: 3rem;    /* 48px */
+  --space-3xl: 4rem;    /* 64px */
+  --space-4xl: 6rem;    /* 96px */
+  --space-5xl: 8rem;    /* 128px */
+
+  /* ---------------------------------------------------------------------------
+   * Layout
+   * ------------------------------------------------------------------------ */
+  --container-max: 1200px;
+  --gutter-mobile: 1rem;     /* 320 to 767 */
+  --gutter-tablet: 1.5rem;   /* 768 to 1023 */
+  --gutter-desktop: 2rem;    /* 1024 and up */
+  --gutter: var(--gutter-mobile);
+  --grid-cols: 4;
+  --grid-gap: 1rem;
+  --section-y: clamp(4rem, 2.857rem + 5.714vw, 8rem);        /* 64 to 128 */
+  --section-y-compact: clamp(3rem, 2.571rem + 2.143vw, 4.5rem); /* 48 to 72 */
+  --measure: 68ch;       /* Prose */
+  --measure-lead: 34rem; /* Subheads and leads */
+
+  /* ---------------------------------------------------------------------------
+   * Motion
+   * ------------------------------------------------------------------------ */
+  --transition-fast: 150ms ease;
+  --transition-smooth: 250ms ease-in-out;
+
+  /* ---------------------------------------------------------------------------
+   * Radius
+   * ------------------------------------------------------------------------ */
+  --radius-sm: 0.25rem;   /*  4px: tags, chips, stamps, switch thumbs */
+  --radius-md: 0.5rem;    /*  8px: buttons, fields, tracks */
+  --radius-lg: 0.75rem;   /* 12px: inner cards, chart sheet */
+  --radius-full: 9999px;  /* Circles only: seats, dots, check ring */
+
+  /* ---------------------------------------------------------------------------
+   * Elevation. Blur is not part of this system. Library shadows resolve to
+   * hairline rings, so a module that asks for a shadow gets a line.
+   * ------------------------------------------------------------------------ */
+  --shadow-sm: 0 0 0 1px var(--border-subtle);
+  --shadow-md: 0 0 0 1px var(--border-subtle);
+  --shadow-lg: 0 0 0 1px var(--line-strong);
+  --focus-ring: 0 0 0 2px var(--neutral-50), 0 0 0 4px var(--neutral-900); /* Passes on stock, white, ink and red */
+  --focus-ring-inset: inset 0 0 0 2px var(--neutral-900), inset 0 0 0 4px var(--neutral-50); /* Where a parent clips */
+
+  /* ===========================================================================
+   * Premium layer: library names
+   * ======================================================================== */
+
+  /* Flat on purpose. The library spends these on gradients; here they print one ink. */
+  --primary-2: var(--primary);
+  --gradient-brand: linear-gradient(var(--primary), var(--primary));
+  --surface-deep: var(--surface-dark);
+  --border-inverse: var(--neutral-750);
+  --glass: var(--neutral-50);        /* Opaque. No glass in this system */
+  --glass-inverse: var(--neutral-800);
+  --highlight: inset 0 0 0 0 transparent;
+  --highlight-inverse: inset 0 0 0 0 transparent;
+
+  --font-display: var(--face-display, "Sofia Sans Extra Condensed", "Arial Narrow", Arial, sans-serif);
+  --font-mono: var(--face-mono, "Spline Sans Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  --tracking-tight: -0.01em;     /* Schibsted at --text-xl and up */
+  --tracking-display: -0.005em;  /* A condensed face closes up fast: never tighter than this */
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-1: 120ms;  /* Presses, colour */
+  --dur-2: 200ms;  /* Hovers, stamp landing */
+  --dur-3: 320ms;  /* Switches, pen strike, nav compaction */
+  --dur-4: 560ms;  /* Entrances, morphs, menu reveal */
+  --dur-5: 900ms;  /* Large reveals */
+  --stagger: 60ms;
+
+  --radius-xl: 1rem;    /* 16px: tiles, plan cards, scrolled nav */
+  --radius-2xl: 1.5rem; /* 24px: dialogs, sheet top, card back */
+  --shadow-xl: 0 0 0 1px var(--line-strong);
+  --shadow-glow: 0 0 0 0 transparent;
+  --blur-md: 0px;
+  --blur-lg: 0px;
+
+  --z-sticky: 30;
+  --z-overlay: 40;
+  --z-banner: 50;
+  --z-toast: 60;
+  --z-popover: 70;
+  --z-veil: 80;
+
+  --reveal-footer-radius: var(--radius-2xl);
+
+  /* ===========================================================================
+   * HandSolved additions
+   * ======================================================================== */
+
+  /* Surfaces */
+  --surface-page: var(--surface-light);
+  --surface-raised: var(--neutral-50); /* Tiles, dialogs, scrolled nav, chart sheet */
+  --surface-ink: var(--surface-dark);  /* Never holds a device */
+  --surface-red: var(--primary);       /* Red band and card back, with the lattice file on top */
+  --scrim: rgb(18 24 27 / 0.72);       /* Flat. No blur */
+
+  /* Text */
+  --text-faint: var(--neutral-600); /* Fold-cell labels only. Fails on --surface-muted, so never there */
+  --text-red: var(--primary);       /* The coach's mark, losses, errors. Stock and white only */
+  --info: var(--neutral-700);
+
+  /* Lines and border scale */
+  --line: var(--border-subtle);
+  --line-strong: var(--neutral-400);
+  --line-control: var(--neutral-500); /* Field and switch edges: 3:1 or better */
+  --line-ink: var(--neutral-900);
+  --border-hair: 1px;
+  --border-mark: 1.5px; /* Stamps, pen, table rail */
+  --border-error: 2px;  /* Thickest border in the system */
+
+  /* Type scale. Fluid from 320 to 1440, then fixed. */
+  --text-xs: 0.75rem;   /* 12px: tags, axis labels. Nothing is smaller */
+  --text-mono: 0.8125rem; /* 13px: small facts in mono */
+  --text-sm: clamp(0.875rem, 0.857rem + 0.089vw, 0.9375rem); /* 14 to 15 */
+  --text-base: clamp(1rem, 0.964rem + 0.179vw, 1.125rem);    /* 16 to 18 */
+  --text-lg: clamp(1.125rem, 1.054rem + 0.357vw, 1.375rem);  /* 18 to 22 */
+  --text-xl: clamp(1.375rem, 1.268rem + 0.536vw, 1.75rem);   /* 22 to 28 */
+  --display-sm: clamp(1.75rem, 1.536rem + 1.071vw, 2.5rem);  /* 28 to 40 */
+  --display-md: clamp(2.5rem, 1.929rem + 2.857vw, 4.5rem);   /* 40 to 72 */
+  --display-lg: clamp(3.25rem, 2.321rem + 4.643vw, 6.5rem);  /* 52 to 104 */
+  /* 78 to 176. Also capped by height so the button stays above the fold on short laptops. */
+  --display-xl: min(clamp(4.875rem, 3.125rem + 8.75vw, 11rem), max(4.875rem, 19vh));
+  /* The home H1 on a short phone (under 700 px tall): 64 px at 667, so the first row of the chart shows above the fold. Hero.css applies it. */
+  --display-xl-short: max(3.5rem, 9.6vh);
+
+  --leading-display: 0.9;    /* Tallest ascender plus deepest descender is 0.893em: no collisions */
+  --leading-tight: 1.2;
+  --leading-body: 1.55;
+  --leading-mono: 1.4;
+  --display-mask-pad: 0.05em; /* Descenders pass the line box by 0.041em: pad any overflow mask by this */
+
+  --weight-regular: 400;  /* Schibsted */
+  --weight-semibold: 600; /* Schibsted */
+  --weight-mono: 500;     /* Spline Sans Mono */
+  --weight-display: 800;  /* Sofia Sans Extra Condensed */
+
+  /* Controls */
+  --control-h-sm: 2.75rem; /* 44px */
+  --control-h-md: 3rem;    /* 48px */
+  --control-h-lg: 3.5rem;  /* 56px */
+  --control-h-field: 3.25rem; /* 52px */
+  --touch-min: 2.75rem;
+
+  /* Buttons. These change with the ground: see .on-ink, .on-red, .on-paper. */
+  --btn-primary-bg: var(--primary);
+  --btn-primary-fg: var(--text-inverse);
+  --btn-primary-bg-hover: var(--primary-hover);
+  --btn-primary-fg-hover: var(--text-inverse);
+  --btn-secondary-fg: var(--neutral-900);
+  --btn-secondary-edge: var(--neutral-900);
+  --btn-secondary-bg-hover: var(--neutral-900);
+  --btn-secondary-fg-hover: var(--neutral-50);
+  --link-fg: var(--neutral-900);
+  --link-fg-hover: var(--primary);
+  --switch-on-fg: var(--neutral-50);
+  --switch-thumb: var(--neutral-900);
+
+  /* Navbar */
+  --nav-inset: 1rem;
+  --nav-h-top: 4rem;
+  --nav-h-scrolled: 3.5rem;
+  --nav-w-scrolled: 60rem;
+  --nav-mark: 26px;      /* 2px per mark cell, stays crisp */
+  --nav-wordmark: 1.75rem;
+  --scroll-pad: calc(var(--nav-h-scrolled) + var(--nav-inset) + 1rem);
+
+  /* Chart. --chart-u is one cell. Geometry is in DESIGN.md 7.1. */
+  --chart-raise: var(--primary);
+  --chart-call: var(--neutral-900);
+  --chart-line: var(--neutral-300);    /* Fade step 3 */
+  --chart-line-2: var(--neutral-250);  /* Fade step 2 */
+  --chart-line-1: var(--neutral-200);  /* Fade step 1 */
+  --chart-label-ink: var(--neutral-50);
+  --chart-label-fold: var(--text-faint);
+  --chart-quiet-raise: var(--red-100);
+  --chart-quiet-call: var(--neutral-250);
+  --chart-ghost-line: var(--neutral-250);
+  --chart-u-hero: calc(min(100vw, 34rem) / 13); /* Under 768: full bleed, capped at 544px */
+  --chart-u-ghost: 4rem;
+  --chart-w-figure: 29.25rem; /* 468px: the most a solid chart may measure */
+
+  /* Lattice. Colours live in the SVG files, because the CSP bans data: URIs. */
+  --lattice-size: 1.5rem;
+  --lattice-edge-h: 1rem;
+
+  /* Card back */
+  --cardback-border: clamp(0.75rem, 0.393rem + 1.786vw, 2rem); /* 12 to 32 */
+  --cardback-radius: var(--radius-2xl);
+  --cardback-keyline-inset: 0.75rem;
+  --medallion: clamp(6rem, 4.857rem + 5.714vw, 10rem); /* 96 to 160, before the 45 degree turn */
+  --medallion-mark: 52px;
+
+  /* Corner index */
+  --index-rank: clamp(1.75rem, 1.464rem + 1.429vw, 2.75rem); /* 28 to 44 */
+  --index-suit: 0.6em;
+  --index-inset: clamp(0.5rem, 0.2rem + 1.5vw, 2rem);
+
+  /* Red pen and stamps */
+  --pen-ink: var(--primary);
+  --pen-stroke: 0.11em;
+  --pen-tilt: -3deg;
+  --pen-note-tilt: -1deg;
+  --stamp-tilt: -2deg;
+  --stamp-tilt-session: -6deg;
+
+  /* Grades. Fill, edge and icon carry the rank; colour is never alone. */
+  --grade-best-bg: var(--neutral-900);
+  --grade-best-fg: var(--neutral-50);
+  --grade-best-edge: var(--neutral-900);
+  --grade-good-bg: var(--neutral-50);
+  --grade-good-fg: var(--neutral-900);
+  --grade-good-edge: var(--neutral-900);
+  --grade-inaccuracy-bg: var(--neutral-50);
+  --grade-inaccuracy-fg: var(--neutral-700);
+  --grade-inaccuracy-edge: var(--neutral-700); /* Dashed */
+  --grade-mistake-bg: var(--neutral-50);
+  --grade-mistake-fg: var(--red-600);
+  --grade-mistake-edge: var(--red-600);
+  --grade-blunder-bg: var(--red-600);
+  --grade-blunder-fg: var(--neutral-50);
+  --grade-blunder-edge: var(--red-600);
+  --grade-none-bg: transparent;
+  --grade-none-fg: var(--neutral-700);
+  --grade-none-edge: var(--neutral-400);
+
+  /* Devices. Multiply the ratios by the frame width. */
+  --device-ink: var(--neutral-900);
+  --device-keyline: 0.25rem;    /* Ground-coloured outline, only where a phone overlaps a laptop */
+  --phone-aspect: 1170 / 2532;  /* Screen */
+  --phone-bezel: 0.03;
+  --phone-radius-outer: 0.15;
+  --phone-radius-screen: 0.12;
+  --phone-height: 2.09425;      /* Outer height as a multiple of outer width */
+  --laptop-aspect: 8 / 5;       /* Screen: 2880 / 1800 */
+  --laptop-bezel: 0.018;
+  --laptop-radius-outer: 0.022;
+  --laptop-radius-screen: 0.004;
+  --laptop-base-w: 1.12;
+  --laptop-base-h: 0.028;
+  --laptop-base-radius: 0.014;
+  --phone-w-hero: calc(var(--chart-u-hero) * 8);
+  --phone-w-story: calc(38vh / 2.09425);
+  --phone-w-panel: clamp(16.25rem, 12rem + 12vw, 20rem);    /* 260 to 320 */
+  --phone-w-band: clamp(15rem, 8rem + 20vw, 22rem);         /* 240 to 352 */
+  --laptop-w-panel: min(100%, 44rem);
+  --laptop-w-hero: min(100%, 46rem);
+
+  /* Playing cards: 5 to 7, corner 10% of width */
+  --card-aspect: 5 / 7;
+  --card-radius: 0.1;
+  --card-w-sm: 1.75rem; /* Tiles */
+  --card-w-md: 2.5rem;  /* Table scene */
+  --card-w-lg: 3.5rem;  /* Verdict */
+  --card-w-xl: clamp(6rem, 4.857rem + 5.714vw, 10rem); /* 404 */
+
+  /* Dialogs */
+  --dialog-w-sample: 55rem;  /* 880px */
+  --dialog-w-early: 27.5rem; /* 440px */
+  --dialog-radius: var(--radius-2xl);
+  --sheet-top-gap: 1rem;
+  --sheet-handle-w: 2.5rem;
+  --sheet-handle-h: 0.25rem;
+}
+
+/* A real spring curve where linear() easing is supported */
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-spring: linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%,
+      0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%, 1.001 85.9%, 1);
+  }
+}
+
+/* Small viewport units where supported, so mobile browser bars do not resize type */
+@supports (height: 1svh) {
+  :root {
+    --display-xl: min(clamp(4.875rem, 3.125rem + 8.75vw, 11rem), max(4.875rem, 19svh));
+    --display-xl-short: max(3.5rem, 9.6svh);
+    --phone-w-story: calc(38svh / 2.09425);
+  }
+}
+
+/* 768 to 1023: 8 columns, plate at 40% of the viewport beside the headline */
+@media (min-width: 768px) {
+  :root {
+    --gutter: var(--gutter-tablet);
+    --grid-cols: 8;
+    --grid-gap: 1.5rem;
+    --chart-u-hero: calc(40vw / 13);
+    --lattice-size: 2rem;
+    --medallion-mark: 78px;
+    --phone-w-story: min(20rem, calc((100vh - 7rem) / 2.09425));
+  }
+}
+
+@supports (height: 1svh) {
+  @media (min-width: 768px) {
+    :root {
+      --phone-w-story: min(20rem, calc((100svh - 7rem) / 2.09425));
+    }
+  }
+}
+
+/* 1024 and up: 12 columns, phone drops to 6 cells so the chart stays the main picture */
+@media (min-width: 1024px) {
+  :root {
+    --gutter: var(--gutter-desktop);
+    --grid-cols: 12;
+    --chart-u-hero: clamp(2.175rem, 3.4vw, 3.5rem);
+    --phone-w-hero: calc(var(--chart-u-hero) * 6);
+  }
+}
+
+/* Honor the OS-level reduced-motion setting. 0.01ms keeps transitionend firing. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0.01ms linear;
+    --transition-smooth: 0.01ms linear;
+    --dur-1: 0.01ms;
+    --dur-2: 0.01ms;
+    --dur-3: 0.01ms;
+    --dur-4: 0.01ms;
+    --dur-5: 0.01ms;
+    --stagger: 0ms;
+  }
+}
+
+/* ===========================================================================
+ * Ground scopes. Put one on a section or card; the tokens inside it follow.
+ * ======================================================================== */
+
+/* Tokens declared with var() on :root resolve there, so each scope restates them. */
+
+/* Key Black ground. No device, no red text, no lattice inside. */
+.on-ink {
+  --line: var(--neutral-750);
+  --shadow-sm: 0 0 0 1px var(--neutral-750);
+  --shadow-md: 0 0 0 1px var(--neutral-750);
+  --shadow-lg: 0 0 0 1px var(--neutral-750);
+  --shadow-xl: 0 0 0 1px var(--neutral-750);
+  --danger: var(--neutral-50);
+  --success: var(--neutral-50);
+  --warning: var(--neutral-420);
+  --info: var(--neutral-420);
+  --chart-label-fold: var(--neutral-420);
+  --text-main: var(--neutral-50);
+  --text-muted: var(--neutral-420);
+  --text-faint: var(--neutral-420);
+  --text-red: var(--neutral-50);
+  --pen-ink: var(--neutral-50);
+  --surface-muted: var(--neutral-800);
+  --surface-raised: var(--neutral-800);
+  --border-subtle: var(--neutral-750);
+  --line-strong: var(--neutral-750);
+  --line-control: var(--neutral-450);
+  --btn-primary-bg-hover: var(--neutral-50);
+  --btn-primary-fg-hover: var(--neutral-900);
+  --btn-secondary-fg: var(--neutral-50);
+  --btn-secondary-edge: var(--neutral-50);
+  --btn-secondary-bg-hover: var(--neutral-50);
+  --btn-secondary-fg-hover: var(--neutral-900);
+  --link-fg: var(--neutral-50);
+  --link-fg-hover: var(--neutral-50);
+  --switch-on-fg: var(--neutral-900);
+  --switch-thumb: var(--neutral-50);
+}
+
+/* Pip Red ground, with or without the lattice. All text is Face White. */
+.on-red {
+  --line: var(--red-800);
+  --shadow-sm: 0 0 0 1px var(--red-800);
+  --shadow-md: 0 0 0 1px var(--red-800);
+  --shadow-lg: 0 0 0 1px var(--red-800);
+  --shadow-xl: 0 0 0 1px var(--red-800);
+  --danger: var(--neutral-50);
+  --success: var(--neutral-50);
+  --warning: var(--neutral-50);
+  --info: var(--neutral-50);
+  --text-main: var(--neutral-50);
+  --text-muted: var(--neutral-50);
+  --text-faint: var(--neutral-50);
+  --text-red: var(--neutral-50);
+  --pen-ink: var(--neutral-50);
+  --surface-muted: var(--red-800);
+  --border-subtle: var(--red-800);
+  --line-strong: var(--red-800);
+  --line-control: var(--neutral-50);
+  --btn-primary-bg: var(--neutral-50);
+  --btn-primary-fg: var(--neutral-900);
+  --btn-primary-bg-hover: var(--neutral-900);
+  --btn-primary-fg-hover: var(--neutral-50);
+  --btn-secondary-fg: var(--neutral-50);
+  --btn-secondary-edge: var(--neutral-50);
+  --btn-secondary-bg-hover: var(--neutral-50);
+  --btn-secondary-fg-hover: var(--neutral-900);
+  --link-fg: var(--neutral-50);
+  --link-fg-hover: var(--neutral-50);
+  --switch-on-fg: var(--neutral-900);
+  --switch-thumb: var(--neutral-50);
+}
+
+/* A Face White sheet inside an ink or red ground: back to the defaults. */
+.on-paper {
+  --line: var(--neutral-300);
+  --shadow-sm: 0 0 0 1px var(--neutral-300);
+  --shadow-md: 0 0 0 1px var(--neutral-300);
+  --shadow-lg: 0 0 0 1px var(--neutral-400);
+  --shadow-xl: 0 0 0 1px var(--neutral-400);
+  --danger: var(--red-600);
+  --success: var(--neutral-900);
+  --warning: var(--neutral-700);
+  --info: var(--neutral-700);
+  --chart-label-fold: var(--neutral-600);
+  --text-main: var(--neutral-900);
+  --text-muted: var(--neutral-700);
+  --text-faint: var(--neutral-600);
+  --text-red: var(--red-600);
+  --pen-ink: var(--red-600);
+  --surface-muted: var(--neutral-200);
+  --surface-raised: var(--neutral-50);
+  --border-subtle: var(--neutral-300);
+  --line-strong: var(--neutral-400);
+  --line-control: var(--neutral-500);
+  --btn-primary-bg: var(--red-600);
+  --btn-primary-fg: var(--neutral-50);
+  --btn-primary-bg-hover: var(--red-800);
+  --btn-primary-fg-hover: var(--neutral-50);
+  --btn-secondary-fg: var(--neutral-900);
+  --btn-secondary-edge: var(--neutral-900);
+  --btn-secondary-bg-hover: var(--neutral-900);
+  --btn-secondary-fg-hover: var(--neutral-50);
+  --link-fg: var(--neutral-900);
+  --link-fg-hover: var(--red-600);
+  --switch-on-fg: var(--neutral-50);
+  --switch-thumb: var(--neutral-900);
+}

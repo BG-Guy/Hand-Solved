@@ -1,0 +1,12 @@
+---
+// terms.astro: route "/terms". The plain-words terms from COPY.md, rendered by LegalDocument.
+import LegalDocument from '../components/LegalDocument/LegalDocument.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { pages } from '../data/pages';
+import { terms } from '../data/legal';
+
+const page = pages.terms;
+---
+<SiteLayout page={page}>
+  <LegalDocument page={page} doc={terms} other={{ label: 'Privacy', href: '/privacy' }} />
+</SiteLayout>

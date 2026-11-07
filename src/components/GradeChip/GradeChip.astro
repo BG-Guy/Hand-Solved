@@ -1,0 +1,16 @@
+---
+// GradeChip.astro: one grade chip (DESIGN.md 9.4): fill, edge and icon carry the rank together, then the word and the score. Colour is never the only cue.
+// Used by the home Engine legend, the review page's grade legend and the worked example (the grade of each option).
+//
+//   <GradeChip grade="blunder">Blunder 6</GradeChip>
+import Icon from '../Icon/Icon.astro';
+import './GradeChip.css';
+
+interface Props {
+  grade: 'best' | 'good' | 'inaccuracy' | 'mistake' | 'blunder';
+  class?: string;
+}
+
+const { grade, class: className } = Astro.props;
+---
+<span class:list={['grade-chip', `grade-chip--${grade}`, className]}><Icon name={`grade-${grade}`} size={14} /><slot /></span>

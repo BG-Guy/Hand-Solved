@@ -1,0 +1,99 @@
+---
+// Engine.astro: #engine, what solved means: counters, the real preflop chart, grade legend, limits (UX.md 4.3, DESIGN.md 7.1, 9.3, 9.4). No device on this section.
+// Hooks for motion.css (MOTION.md 5.5, 7.1): [data-reveal] on the head and the figure sheet. The counters roll through Counter.astro.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import Counter from '../../components/Counter/Counter.astro';
+import GradeChip from '../../components/GradeChip/GradeChip.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import RangeChartList from '../../components/RangeChartList/RangeChartList.astro';
+import TextLink from '../../components/TextLink/TextLink.astro';
+import Figure from '../../assets/svg/chart-bb-vs-btn-100.svg';
+import '../../assets/svg/chart.css';
+import './Engine.css';
+
+// COPY.md 4.3, word for word.
+const counters = [
+  { value: 14, label: 'stack depths', note: '8-handed preflop charts, cash and tournament. Depth is your stack in big blinds.' },
+  { value: 3, label: 'streets solved', note: 'Flop, turn and river, solved in the browser with the hand’s real bet sizes.' },
+  { value: 100, label: 'point score', note: 'Every decision gets a score and a grade, Best move to Blunder.' },
+];
+const words = [
+  { term: 'Preflop.', text: 'The betting before the first three shared cards, the flop, are dealt.' },
+  { term: 'Stack depth.', text: 'How many big blinds a player has in front of them.' },
+  { term: 'Range.', text: 'Every hand a player could hold in a spot.' },
+  { term: 'Heads-up and 3-way.', text: 'Two or three players still in the hand.' },
+];
+const legend = [
+  { share: 'Raise 12.7%', ink: 'raise' },
+  { share: 'Call 38.8%', ink: 'call' },
+  { share: 'Fold 48.5%', ink: 'fold' },
+];
+const grades = [
+  { grade: 'best', name: 'Best move 97+', meaning: 'Gives up next to nothing' },
+  { grade: 'good', name: 'Good 80+', meaning: 'Gives up a little' },
+  { grade: 'inaccuracy', name: 'Inaccuracy 55+', meaning: 'Gives up a noticeable amount' },
+  { grade: 'mistake', name: 'Mistake 30+', meaning: 'Gives up a large amount' },
+  { grade: 'blunder', name: 'Blunder under 30', meaning: 'Gives up a very large amount' },
+] as const;
+const limits = [
+  { icon: 'limit-holdem', text: 'Texas Hold’em only. Omaha and custom spots are not covered.' },
+  { icon: 'limit-entered', text: 'You enter hands yourself. There is no online HUD or hand-history import.' },
+  { icon: 'limit-postflop', text: 'Postflop is heads-up or 3-way. Bigger pots are marked not graded.' },
+];
+---
+<section class="engine" id="engine" aria-labelledby="engine-title">
+  <div class="engine__frame">
+    <CornerIndex rank="Q" suit="club" />
+
+    <div class="engine__top">
+      <div class="engine__main">
+        <header class="engine__head" data-reveal="up">
+          <h2 class="engine__title" id="engine-title">What solved means here</h2>
+          <p class="engine__lead">Two things get solved here and one gets scored. Preflop charts are solved for 8 seats. Flop, turn and river are solved for each hand, with its real bet sizes.</p>
+        </header>
+        <ul class="engine__counters" role="list">
+          {counters.map((counter) => <Counter as="li" value={counter.value} label={counter.label} note={counter.note} />)}
+        </ul>
+        <details class="engine__words">
+          <summary><span>Plain words</span><Icon name="chevron-down" size={16} /></summary>
+          <dl>
+            {words.map((word) => <div><dt>{word.term}</dt> <dd>{word.text}</dd></div>)}
+          </dl>
+        </details>
+      </div>
+
+      <figure class="engine__figure on-paper" data-reveal="up">
+        <div class="engine__figure-head">
+          <p class="engine__figure-label">A real preflop chart</p>
+          <span class="slip">Real chart from the engine</span>
+        </div>
+        <div class="chart engine__chart"><Figure role="img" /></div>
+        <ul class="engine__legend" role="list">
+          {legend.map((item) => <li><span class:list={['engine__swatch', `engine__swatch--${item.ink}`]} aria-hidden="true"></span>{item.share}</li>)}
+        </ul>
+        <figcaption class="engine__caption">
+          <p>Big blind facing a button open, 100 big blinds, 8-handed. Fold 48.5%, call 38.8%, raise 12.7%.</p>
+          <p class="engine__read">Each square is a starting hand, with the strongest at the top left. Red is raise, black is call, blank is fold. A square split between colours is a mix. The whole grid is a range, every hand a player could hold in this spot.</p>
+          <RangeChartList />
+        </figcaption>
+      </figure>
+    </div>
+
+    <ul class="engine__grades" role="list" aria-label="Grades">
+      {grades.map((item) => (
+        <li>
+          <GradeChip grade={item.grade}>{item.name}</GradeChip>
+          <span class="engine__meaning">{item.meaning}</span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="engine__limits">
+      <h3 class="engine__limits-title">Good to know</h3>
+      <ul role="list">
+        {limits.map((item) => <li><Icon name={item.icon} size={20} /><span>{item.text}</span></li>)}
+      </ul>
+      <TextLink href="/gto-hand-review" class="engine__link">How a decision is graded</TextLink>
+    </div>
+  </div>
+</section>

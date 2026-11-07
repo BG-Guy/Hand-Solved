@@ -1,0 +1,463 @@
+/* Pricing.css: #pricing (DESIGN.md 9.5 and 9.7, UX.md 4.8). Complete with no script and no motion.css: the switch is two radio inputs and :has(),
+   so it works in the plain page. The switch's own transitions (MOTION.md E29) are here; the Pro rim's draw (E30) is in motion.css.
+   Free is a Face White card, Pro is the ink card. Prices are dollars and never follow the BB/$ switch. */
+
+.pricing {
+  position: relative;
+}
+
+/* The rail line along the top of the section: bg-lattice-edge.svg, #BDBFBE, a 16 px tile. It is a file, because the CSP bans data: URIs. */
+.pricing__edge {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: var(--lattice-edge-h);
+  background: url('../../assets/svg/bg-lattice-edge.svg') 0 0 / var(--lattice-edge-h) var(--lattice-edge-h) repeat-x;
+}
+
+/* The container is the box the corner index is placed in, so the section padding is on it and the index sits in that padding. */
+.pricing__wrap {
+  position: relative;
+  inline-size: min(100%, var(--container-max));
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+/* The 7 of diamonds prints its rank in Pip Red too (DESIGN.md 7.5), where the shared corner index prints the rank in ink. */
+.pricing__wrap .corner__rank {
+  color: var(--primary);
+}
+
+/* Head: label, then the title on two lines, then the lead. From 1024 the title takes 5 columns and the lead starts at column 6, on the title's last line,
+   so its left edge is the left edge of the Pro card below (and of the FAQ list further down). */
+.pricing__head {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-lg);
+}
+
+.pricing__title {
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.pricing__line {
+  display: block;
+}
+
+.pricing__lead {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+@media (min-width: 1024px) {
+  .pricing__head {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: end;
+  }
+
+  .pricing__label {
+    grid-column: 1 / -1;
+  }
+
+  .pricing__title {
+    grid-column: 1 / span 5;
+  }
+
+  .pricing__lead {
+    grid-column: 6 / -1;
+    padding-block-end: var(--space-xs);
+  }
+}
+
+/* Switch row, centred above the cards (DESIGN.md 5.2 keeps this one centred). */
+.pricing__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm) var(--space-md);
+  margin-block: var(--space-2xl) var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .pricing__controls {
+    margin-block: var(--space-3xl) var(--space-xl);
+  }
+}
+
+.slip.pricing__save {
+  color: var(--text-red);
+  font-size: var(--text-xs);
+}
+
+/* Billing switch: a segmented control with a sliding thumb (DESIGN.md 9.5). The checked radio decides everything through :has(). */
+.billing {
+  --billing-pad: calc(var(--space-xs) - var(--border-hair)); /* 3 px */
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-inline-size: 0;
+  block-size: var(--control-h-sm);
+  margin: 0;
+  padding: var(--billing-pad);
+  border: var(--border-hair) solid var(--line-control);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.billing__thumb {
+  position: absolute;
+  inset-block: var(--billing-pad);
+  inset-inline-start: var(--billing-pad);
+  inline-size: calc(50% - var(--billing-pad));
+  border-radius: var(--radius-sm);
+  background: var(--switch-thumb);
+  transition: transform var(--dur-3) var(--ease-spring);
+}
+
+.pricing:has(input[value='yearly']:checked) .billing__thumb {
+  transform: translateX(100%);
+}
+
+.billing__opt {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding-inline: var(--space-md);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-2),
+    color var(--dur-2),
+    transform var(--dur-1);
+}
+
+/* The label is 36 px tall inside the 44 px track; this brings the hit area to 44. */
+.billing__opt::after {
+  content: '';
+  position: absolute;
+  inset-block: calc(var(--space-xs) * -1);
+  inset-inline: 0;
+}
+
+.billing__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.billing__opt:has(input:checked) {
+  color: var(--switch-on-fg);
+}
+
+.billing__opt:has(input:focus-visible) {
+  outline: var(--space-xs) solid transparent;
+  box-shadow: var(--focus-ring);
+}
+
+.billing__opt:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  .billing__opt:hover {
+    background: var(--border-subtle);
+  }
+
+  .billing__opt:has(input:checked):hover {
+    background: transparent;
+  }
+}
+
+/* The two cards. Under 1024 they stack with Pro first (UX.md 8). From 1024 Free takes 5 columns and Pro 7, tops aligned. */
+.pricing__plans {
+  display: grid;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .pricing__plans {
+    gap: var(--space-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .pricing__plans {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+
+  .plan--free {
+    grid-column: span 5;
+  }
+
+  .plan--pro {
+    grid-column: span 7;
+  }
+}
+
+.plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-xl);
+}
+
+@media (min-width: 768px) {
+  .plan {
+    padding: var(--space-xl);
+  }
+}
+
+/* DOM order is Free then Pro, the reading order. Under 1024 Pro is drawn first. */
+@media (max-width: 1023.98px) {
+  .plan--pro {
+    order: -1;
+  }
+}
+
+.plan--free {
+  border-color: var(--line-strong);
+  background: var(--surface-raised);
+  transition: border-color var(--dur-2);
+}
+
+/* The Pro card is `.on-ink` in the markup: the scope turns the text tokens Face White. It never holds a device. */
+.plan--pro {
+  background: var(--surface-ink);
+  color: var(--text-main);
+}
+
+@media (hover: hover) {
+  .plan--free:hover {
+    border-color: var(--line-control);
+  }
+}
+
+.plan__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.plan__name {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+.plan__tag {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* The price: the display face at the size of an H2, then /mo in mono. Tabular figures, so the digits do not change width. */
+.plan__price {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin-block-start: var(--space-lg);
+  font-family: var(--font-display);
+  font-size: var(--display-lg);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+.price__unit {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  letter-spacing: normal;
+  line-height: var(--leading-mono);
+}
+
+.plan__bill {
+  margin-block-start: var(--space-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.plan__who {
+  margin-block-start: var(--space-md);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+
+.plan__list {
+  display: grid;
+  gap: var(--space-sm) var(--space-lg);
+  margin: var(--space-lg) 0 0;
+  padding: var(--space-lg) 0 0;
+  border-block-start: var(--border-hair) solid var(--line);
+  list-style: none;
+}
+
+.plan__list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-sm);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  text-wrap: pretty;
+}
+
+/* The 16 px tick sits on the middle of the first line of text. */
+.plan__tick {
+  margin-block-start: calc((var(--text-base) * var(--leading-body) - var(--space-md)) / 2);
+  color: var(--text-main);
+}
+
+/* Two columns of bullets where the card is wide: both cards from 768 (full width), then only Pro from 1024. */
+@media (min-width: 768px) {
+  .plan__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .plan--free .plan__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The button is full width and stays at the foot of the card, so the two cards end together. */
+.plan__cta {
+  margin-block-start: auto;
+  padding-block-start: var(--space-xl);
+}
+
+/* Both Pro prices and both billing lines are in the HTML, in one cell. Only the one for the checked radio is visible.
+   `visibility` takes the other out of the reading order once it has faded. */
+.price__fig,
+.plan__bill--swap {
+  display: grid;
+}
+
+.price__fig > *,
+.plan__bill--swap > * {
+  grid-area: 1 / 1;
+}
+
+.price__m,
+.price__y,
+.bill__m,
+.bill__y {
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out),
+    visibility 0s linear var(--dur-3);
+}
+
+.price__y,
+.bill__y {
+  opacity: 0;
+  transform: translateY(0.5em);
+  visibility: hidden;
+}
+
+.pricing:has(input[value='yearly']:checked) :is(.price__m, .bill__m) {
+  opacity: 0;
+  transform: translateY(-0.5em);
+  visibility: hidden;
+}
+
+.pricing:has(input[value='yearly']:checked) :is(.price__y, .bill__y) {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.pricing:has(input[value='monthly']:checked) :is(.price__m, .bill__m) {
+  transition-delay: 0s;
+}
+
+/* The Pro rim (MOTION.md E30): a 1.5 px Pip Red line. Its geometry and rest state are here, invisible; motion.css draws it on hover (pathLength on a rect tested in Chrome and WebKit). */
+.rim {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.rim rect {
+  x: calc(var(--border-mark) / 2);
+  y: calc(var(--border-mark) / 2);
+  width: calc(100% - var(--border-mark));
+  height: calc(100% - var(--border-mark));
+  rx: calc(var(--radius-xl) - var(--border-mark) / 2);
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: var(--border-mark);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+
+/* Forced colors replace the fills, so the selected side of the switch and the edge of each card are drawn with system colours instead. */
+@media (forced-colors: active) {
+  .billing__thumb {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .billing__opt:has(input:checked) {
+    forced-color-adjust: none;
+    color: HighlightText;
+  }
+
+  .plan {
+    border-color: CanvasText;
+  }
+}
+
+/* No script: the buttons step aside (CtaButton.css), so the prices and the reason are printed as text instead. */
+.pricing__nojs {
+  display: none;
+}
+
+html:not([data-js]) .pricing__nojs {
+  display: grid;
+  gap: var(--space-xs);
+  margin-block-start: var(--space-lg);
+  font-size: var(--text-base);
+}
+
+.pricing__note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-md);
+  margin-block-start: var(--space-lg);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}

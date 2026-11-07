@@ -1,0 +1,25 @@
+---
+// HandRow.astro: one row of a highlights tile: the hole cards, the hand's full title (it wraps, never an ellipsis) and a meta line from the slot (DESIGN.md 9.3, "Hand row").
+// The row carries the motion hook data-reveal="row" (MOTION.md E22). It is not a button: the "Grade it" variant is P2 and is not built.
+//
+//   <HandRow cards={['As', 'Kd']} title="Three streets of value with top pair">4.5 stars</HandRow>
+import PlayingCard from './PlayingCard.astro';
+import './Bento.css';
+
+interface Props {
+  /** Card codes, rank then suit: Ah Ad Kh Qs. */
+  cards: string[];
+  title: string;
+}
+
+const { cards, title } = Astro.props;
+---
+<li class="tile__row" data-reveal="row">
+  <span class="tile__hand">
+    {cards.map((code) => <PlayingCard code={code} />)}
+  </span>
+  <span class="tile__text">
+    <span class="tile__title">{title}</span>
+    <span class="tile__meta"><slot /></span>
+  </span>
+</li>

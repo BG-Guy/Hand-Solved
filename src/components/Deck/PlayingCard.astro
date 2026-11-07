@@ -1,0 +1,28 @@
+---
+// PlayingCard.astro: one card of the Showdown deck. Both faces are cached image files (card-art.ts), not inline art; aspect-ratio holds the size, so nothing shifts. Use and hooks: docs/site/DECK.md.
+//   <PlayingCard code="Qd" />                                     face up, decorative
+//   <PlayingCard code="Ad" faceDown label="Ace of diamonds" />    face down until a script adds .is-up, named for screen readers
+import type { HTMLAttributes } from 'astro/types';
+import type { CardCode } from '../../data/showdown';
+import { cardArt } from './card-art';
+import './PlayingCard.css';
+
+interface Props extends Omit<HTMLAttributes<'span'>, 'class'> {
+  /** Rank then suit, as in src/data/showdown.ts: As, Ac, Kd, Jd, Ah, 9c, Qd, Td, Ad. */
+  code: CardCode;
+  /** Start with the back up. A script turns it over by adding .is-up to .pc. */
+  faceDown?: boolean;
+  /** Prints a visually hidden name. Without it the card is decorative and aria-hidden. */
+  label?: string;
+  class?: string;
+}
+
+const { code, faceDown = false, label, class: className, ...rest } = Astro.props;
+---
+{/* pc--deck is what PlayingCard.css styles: the sample-hand pop-up prints its own .pc cards, and neither must style the other's. */}
+{/* Lazy: the deck lives low on the page. The width and height give the art its shape before any CSS. */}
+<span {...rest} class:list={['pc', 'pc--deck', !faceDown && 'is-up', className]} aria-hidden={label ? undefined : 'true'}>
+  {label && <span class="visually-hidden">{label}</span>}
+  <span class="pc__front"><img class="pc__art" src={cardArt(code.toLowerCase())} alt="" width="65" height="91" loading="lazy" fetchpriority="low" /></span>
+  <span class="pc__back"><img class="pc__art" src={cardArt('back')} alt="" width="65" height="91" loading="lazy" fetchpriority="low" /></span>
+</span>

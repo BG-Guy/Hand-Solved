@@ -1,0 +1,53 @@
+/* Counter.css: the number in the display face, tabular so digits keep their width, then label and note (DESIGN.md 9.3).
+   Rolling: Counter.ts replaces the printed figure with one wheel per digit. A wheel is a column of 0 to 9 as tall as one line, moved by --d.
+   The roll time is --dur-5 and collapses to near zero under reduced motion with the other motion tokens. */
+
+.counter {
+  display: grid;
+  gap: var(--space-xs);
+  align-content: start;
+}
+
+.counter__value {
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: var(--display-lg);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+.counter__label {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+}
+
+.counter__note {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Wheels (hooks from MOTION.md E21). --d is the digit shown, --i the digit's position for the stagger; Counter.ts sets both. */
+.count {
+  display: inline-flex;
+}
+
+.count__w {
+  display: inline-block;
+  /* One line high. The mask pad keeps the foot of each digit inside the window (DESIGN.md 4.4). */
+  block-size: 1lh;
+  padding-block-end: var(--display-mask-pad);
+  margin-block-end: calc(var(--display-mask-pad) * -1);
+  overflow: clip;
+  vertical-align: top;
+}
+
+.count__strip {
+  display: block;
+  white-space: pre;
+  /* Eleven lines in a column, 0 to 9 and 0 again: moving by an eleventh of its own height is one digit. */
+  transform: translateY(calc(var(--d, 0) * -100% / 11));
+  transition: transform var(--dur-5) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+}

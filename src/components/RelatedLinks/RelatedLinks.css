@@ -1,0 +1,21 @@
+/* RelatedLinks.css: two links on one hairline, container width, between the FAQ and the card-back footer. */
+
+.related {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: 0 var(--gutter) var(--section-y-compact);
+}
+
+.related__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-xl);
+  margin: 0;
+  padding: var(--space-md) 0 0;
+  border-block-start: var(--border-hair) solid var(--line-strong);
+  list-style: none;
+}
+
+.related .text-link {
+  font-size: var(--text-lg);
+}

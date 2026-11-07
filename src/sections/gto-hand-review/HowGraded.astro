@@ -1,0 +1,75 @@
+---
+// HowGraded.astro: "How a decision gets graded" (UX.md 5.1 block 3, COPY.md "3. How a decision gets graded"): three steps, solve, compare, grade, the five grade chips with what each means, and what the grade means.
+// Every word is COPY.md's. The steps are a numbered list; the numerals are a drawn rhythm, aria-hidden, because the list already numbers them.
+// Hooks for motion.css (MOTION.md 8): [data-reveal="up"] on the head and each step. The legend chips are static.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import GradeChip from '../../components/GradeChip/GradeChip.astro';
+import './HowGraded.css';
+
+const steps = [
+  {
+    label: 'Solve',
+    title: 'Solve the spot',
+    body: 'Before the flop, the coach reads charts solved for 8 players at your stack depth. After the flop, each street is solved from the hands each player could still hold, heads-up or 3-way, at the hand’s real bet sizes.',
+  },
+  {
+    label: 'Compare',
+    title: 'Compare every option',
+    body: 'Your choice is set beside every option. The coach shows how often GTO plays each one and what each is worth in big blinds, plus the price the pot offers and your equity, your chance of winning the hand.',
+  },
+  {
+    label: 'Grade',
+    title: 'Score the choice',
+    body: 'The value your choice gives up against the best option, measured against the size of the pot, becomes a score from 0 to 100. Giving up little scores high. Giving up a large share scores low.',
+  },
+];
+
+// The legend, meanings as in the home Engine section.
+const grades = [
+  { grade: 'best', name: 'Best move 97+', meaning: 'Gives up next to nothing' },
+  { grade: 'good', name: 'Good 80+', meaning: 'Gives up a little' },
+  { grade: 'inaccuracy', name: 'Inaccuracy 55+', meaning: 'Gives up a noticeable amount' },
+  { grade: 'mistake', name: 'Mistake 30+', meaning: 'Gives up a large amount' },
+  { grade: 'blunder', name: 'Blunder under 30', meaning: 'Gives up a very large amount' },
+] as const;
+---
+<section class="hg" id="how-graded" aria-labelledby="hg-title">
+  <div class="hg__frame">
+    <CornerIndex rank="K" suit="heart" />
+
+    <header class="hg__head" data-reveal="up">
+      <h2 class="hg__title" id="hg-title">How a decision gets graded</h2>
+    </header>
+
+    <ol class="hg__steps" role="list">
+      {
+        steps.map((step, index) => (
+          <li class="hg__step" data-reveal="up">
+            <span class="hg__num" aria-hidden="true">{index + 1}</span>
+            <h3 class="hg__h">
+              <span class="hg__label">{step.label}</span><span class="visually-hidden">. </span>
+              <span class="hg__step-title">{step.title}</span>
+            </h3>
+            <p class="hg__body">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <ul class="hg__legend" role="list" aria-label="Grades">
+      {
+        grades.map((item) => (
+          <li>
+            <GradeChip grade={item.grade}>{item.name}</GradeChip>
+            <span class="hg__meaning">{item.meaning}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="hg__means">
+      <h3 class="hg__means-title">What the grade means</h3>
+      <p>Every choice has an average result if the same spot came up many times. GTO, the strategy a poker solver computes, puts a number on each option, in big blinds. The grade compares your choice with the best one. The less yours gives up, compared with the size of the pot, the higher the score, from 0 to 100. The grade judges the choice, so how the hand turned out has no effect on it.</p>
+    </div>
+  </div>
+</section>

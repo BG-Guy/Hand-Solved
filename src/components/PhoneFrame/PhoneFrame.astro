@@ -1,0 +1,38 @@
+---
+// PhoneFrame.astro: a phone capture inside the flat Key Black phone silhouette (DESIGN.md section 8), with the Sample data chip on its top edge.
+// The silhouette is frame-phone.svg from src/assets/svg. The size is the frame's outer width: set --device-w in the section's CSS
+// (default --phone-w-panel; the tokens --phone-w-hero, --phone-w-story and --phone-w-band exist), and pass a matching `sizes`.
+//
+//   <PhoneFrame screen="phone-coach-score" eager sizes="(min-width: 1024px) 294px, 197px" class="hero__phone" />
+import Screenshot from '../Screenshot/Screenshot.astro';
+import { svgFile } from '../Icon/svg-files';
+import { labels } from '../../data/site';
+import type { PhoneScreen } from '../../data/screens';
+import './PhoneFrame.css';
+
+interface Props {
+  /** A phone capture from src/assets/screens/. */
+  screen: PhoneScreen;
+  /** Override the alt text, for the second use of one screen on a page (src/data/screens.ts holds the default). */
+  alt?: string;
+  /** True only for the LCP image. */
+  eager?: boolean;
+  /** The `sizes` attribute for the capture. Match the width you set with --device-w. */
+  sizes?: string;
+  /** Hide the Sample data chip. Only for a frame that is covered by another chip. */
+  chip?: boolean;
+  class?: string;
+}
+
+const { screen, alt, eager, sizes, chip = true, class: className } = Astro.props;
+const Frame = svgFile('frame-phone');
+---
+<div class:list={['device', 'device--phone', className]} data-device="phone">
+  {chip && <span class="slip device__chip" aria-hidden="true">{labels.sampleData}</span>}
+  <div class="device__body">
+    <Frame class="device__frame" width="100%" height="100%" aria-hidden="true" focusable="false" />
+    <div class="device__screen">
+      <Screenshot name={screen} alt={alt} eager={eager} sizes={sizes} />
+    </div>
+  </div>
+</div>

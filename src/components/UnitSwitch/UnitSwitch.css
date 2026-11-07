@@ -1,0 +1,104 @@
+/* UnitSwitch.css: a segmented control with a sliding thumb (DESIGN.md 9.5). The thumb and the labels follow <html data-unit>, which head-guard.js sets
+   before first paint, so a returning visitor's choice shows with no flash. The ground scopes flip the tokens used here, so it works on ink too. */
+
+.unit-switch {
+  --unit-pad: calc(var(--space-xs) - var(--border-hair)); /* 3 px */
+  --unit-btn-w: calc(var(--space-xl) + var(--space-sm)); /* 40 px */
+  --unit-h: var(--control-h-sm);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.unit-switch--compact {
+  --unit-h: calc(var(--control-h-sm) - var(--space-sm)); /* 36 px */
+}
+
+.unit-switch__label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.unit-switch__track {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: repeat(2, var(--unit-btn-w));
+  block-size: var(--unit-h);
+  padding: var(--unit-pad);
+  border: var(--border-hair) solid var(--line-control);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.unit-switch__thumb {
+  position: absolute;
+  inset-block: var(--unit-pad);
+  inset-inline-start: var(--unit-pad);
+  inline-size: var(--unit-btn-w);
+  border-radius: var(--radius-sm);
+  background: var(--switch-thumb);
+  transition: transform var(--dur-3) var(--ease-spring);
+}
+
+html[data-unit='usd'] .unit-switch__thumb {
+  transform: translateX(100%);
+}
+
+.unit-switch__btn {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-2),
+    color var(--dur-2),
+    transform var(--dur-1);
+}
+
+/* The side that is on carries the thumb, so its label flips to the on-colour. */
+html[data-unit='bb'] .unit-switch__btn[data-set-unit='bb'],
+html[data-unit='usd'] .unit-switch__btn[data-set-unit='usd'] {
+  color: var(--switch-on-fg);
+}
+
+@media (hover: hover) {
+  .unit-switch__btn:hover {
+    background: var(--border-subtle);
+  }
+
+  html[data-unit='bb'] .unit-switch__btn[data-set-unit='bb']:hover,
+  html[data-unit='usd'] .unit-switch__btn[data-set-unit='usd']:hover {
+    background: transparent;
+  }
+}
+
+.unit-switch__btn:active {
+  transform: scale(0.98);
+}
+
+/* Every switch keeps a 44 px hit area: the page's buttons are 36 px tall, the compact ones 28 px (the pop-up header widens its own to 44, SampleHandDialog.css). */
+.unit-switch__btn::after {
+  content: '';
+  position: absolute;
+  inset-block: calc(var(--space-xs) * -1);
+  inset-inline: 0;
+}
+
+/* No script: the switch cannot do anything, so it is hidden and the page reads in big blinds. */
+html:not([data-js]) .unit-switch {
+  display: none;
+}

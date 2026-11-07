@@ -1,0 +1,12 @@
+---
+// privacy.astro: route "/privacy". The plain-words notice from COPY.md, rendered by LegalDocument.
+import LegalDocument from '../components/LegalDocument/LegalDocument.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { pages } from '../data/pages';
+import { privacy } from '../data/legal';
+
+const page = pages.privacy;
+---
+<SiteLayout page={page}>
+  <LegalDocument page={page} doc={privacy} other={{ label: 'Terms', href: '/terms' }} />
+</SiteLayout>

@@ -1,0 +1,45 @@
+/* SiteLayout.css: styles for the page shell itself: scrolling and the skip link. */
+
+/* Keep the scrollbar's width reserved, so locking the page scroll under an open dialog or menu shifts nothing. */
+html {
+  scrollbar-gutter: stable;
+}
+
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* Navbar.ts watches this 1 px marker, 16 px below the top of the page, to know when the page has scrolled (the navbar compacts). */
+.nav-sentinel {
+  position: absolute;
+  inset-block-start: var(--nav-inset);
+  inset-inline-start: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  pointer-events: none;
+}
+
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--space-md);
+  inset-inline-start: var(--space-md);
+  z-index: var(--z-popover);
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--control-h-sm);
+  padding-inline: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--surface-dark);
+  color: var(--text-inverse);
+  font-weight: var(--weight-semibold);
+  /* Off-screen until it takes focus. */
+  transform: translateY(calc(-100% - var(--space-xl)));
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.skip-link:hover {
+  color: var(--text-inverse);
+}

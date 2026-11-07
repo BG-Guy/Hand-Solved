@@ -1,0 +1,32 @@
+---
+// Counter.astro: a big number that rolls into place when it scrolls into view (DESIGN.md 9.3). The real number is in the HTML, so with no script,
+// for a screen reader and under reduced motion the final figure is what you get. Counter.ts builds the digit wheels in the browser.
+//
+//   <Counter value={14} label="stack depths" note="From 20 to 100 big blinds." />
+//   <Counter value={100} suffix="%" label="of decisions graded" as="li" />       as="li" when the counters sit in a <ul>
+import './Counter.css';
+
+interface Props {
+  /** The final figure. Digits roll; every other character (prefix, suffix, comma, point) is printed as it is. */
+  value: number | string;
+  /** Printed before the figure, for example "+". */
+  prefix?: string;
+  /** Printed after the figure, for example "%". */
+  suffix?: string;
+  /** Schibsted 600, text-base. */
+  label: string;
+  /** Optional text-sm line under the label. */
+  note?: string;
+  /** Element to print. Use "li" inside a list. Default "div". */
+  as?: 'div' | 'li';
+  class?: string;
+}
+
+const { value, prefix = '', suffix = '', label, note, as: Tag = 'div', class: className } = Astro.props;
+---
+<Tag class:list={['counter', className]} data-counter>
+  <p class="counter__value"><span class="counter__text">{prefix}{value}{suffix}</span></p>
+  <p class="counter__label">{label}</p>
+  {note && <p class="counter__note">{note}</p>}
+</Tag>
+<script src="./Counter.ts"></script>

@@ -1,0 +1,19 @@
+/* PhoneFrame.css: phone geometry from the ratios in tokens.css (DESIGN.md section 8). W is the frame's outer width.
+   Bezel 0.03W, outer height 2.09425W, outer radius 0.15W, screen radius 0.12W. */
+
+.device--phone {
+  inline-size: var(--device-w, var(--phone-w-panel));
+}
+
+.device--phone .device__body {
+  aspect-ratio: 1 / var(--phone-height);
+}
+
+/* The screen is inset by the bezel on every side. Vertical percentages are of the height, so the bezel is divided by the height ratio. */
+.device--phone .device__screen {
+  inset-inline: calc(var(--phone-bezel) * 100%);
+  inset-block: calc(var(--phone-bezel) / var(--phone-height) * 100%);
+  /* 0.12W across a 0.94W wide, 2.03425W high screen. */
+  border-radius: calc(var(--phone-radius-screen) / (1 - 2 * var(--phone-bezel)) * 100%) /
+    calc(var(--phone-radius-screen) / (var(--phone-height) - 2 * var(--phone-bezel)) * 100%);
+}

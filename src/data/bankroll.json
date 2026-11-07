@@ -1,0 +1,29 @@
+{
+  "note": "Sample data from the app's own sample sessions (a throwaway copy, not real results). Each session is counted in big blinds at its own big blind. The site's dollar view is the big blind figure times 2, a $1/$2 table.",
+  "unit": "bb",
+  "sessions": 18,
+  "winningSessions": 11,
+  "hours": 66.75,
+  "hands": 4683,
+  "netBb": 733.0,
+  "points": [
+    {"session": 1, "date": "2026-07-04", "hours": 4.0, "bb": 92.5},
+    {"session": 2, "date": "2026-07-09", "hours": 5.5, "bb": 64.5},
+    {"session": 3, "date": "2026-07-13", "hours": 10.5, "bb": 169.5},
+    {"session": 4, "date": "2026-07-19", "hours": 16.5, "bb": 134.5},
+    {"session": 5, "date": "2026-07-26", "hours": 18.5, "bb": 222.5},
+    {"session": 6, "date": "2026-08-02", "hours": 23.0, "bb": 342.5},
+    {"session": 7, "date": "2026-08-08", "hours": 27.0, "bb": 287.5},
+    {"session": 8, "date": "2026-08-15", "hours": 29.5, "bb": 333.5},
+    {"session": 9, "date": "2026-08-21", "hours": 36.5, "bb": 263.5},
+    {"session": 10, "date": "2026-08-29", "hours": 40.0, "bb": 373.5},
+    {"session": 11, "date": "2026-09-03", "hours": 41.67, "bb": 404.5},
+    {"session": 12, "date": "2026-09-07", "hours": 46.17, "bb": 482.0},
+    {"session": 13, "date": "2026-09-12", "hours": 51.17, "bb": 474.5},
+    {"session": 14, "date": "2026-09-16", "hours": 52.5, "bb": 428.5},
+    {"session": 15, "date": "2026-09-19", "hours": 56.5, "bb": 584.5},
+    {"session": 16, "date": "2026-09-22", "hours": 58.67, "bb": 661.5},
+    {"session": 17, "date": "2026-09-25", "hours": 62.0, "bb": 634.0},
+    {"session": 18, "date": "2026-09-27", "hours": 66.75, "bb": 733.0}
+  ]
+}

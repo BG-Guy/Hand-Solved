@@ -1,0 +1,93 @@
+---
+// Hero.astro: home hero: kicker and H1, subhead, demo button, proof strip and the one phone on the screened chart (DESIGN.md 7.1, 9.3). Owns the home H1.
+// Hooks for motion.css (MOTION.md 3.2): .hero__h1 .line > .line__in, .hero__art, .plate__grid > i(.r), .tilt > .tilt__body + .tilt__zones, del.pen, ins.pen, .num > .num__v.
+// Everything here is complete and visible with no script and no motion.css.
+// The pen chip's two figures are sample hand 1's call (65 bb, worth −62.6 bb): live numbers that follow the BB/$ switch and read like the pop-up (scripts/format-check.ts).
+import Amount from '../../components/Amount/Amount.astro';
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import TextLink from '../../components/TextLink/TextLink.astro';
+import PlateNarrow from '../../assets/svg/bg-chart-hero-narrow.svg';
+import PlateWide from '../../assets/svg/bg-chart-hero-wide.svg';
+import rangeChart from '../../data/range-chart.json';
+import { pages } from '../../data/pages';
+import { sampleCall } from '../../scripts/format-check';
+import '../../assets/svg/chart.css';
+import './Hero.css';
+
+// COPY.md 4.1. The H1 line breaks are the copy's own: Every hand / you play, / solved.
+const lines = ['Every hand', 'you play,', 'solved.'];
+const proof = [
+  {
+    icon: 'proof-charts',
+    text: '8-handed preflop charts at 14 stack depths',
+    help: 'Preflop is the betting before the flop. Stack depth is big blinds in front of a player.',
+  },
+  {
+    icon: 'proof-streets',
+    text: 'Flop, turn and river solved with real bet sizes',
+    help: 'Flop, turn and river are the three rounds of shared cards. Each is solved for the hand’s real bet sizes.',
+  },
+  {
+    icon: 'proof-score',
+    text: 'Every decision graded from 0 to 100',
+    help: 'The score compares your choice with the best one. 100 is the best.',
+  },
+];
+
+// One empty cell per hand, in data order, so the scan and the wake can light a ring without touching the printed chart. The 25 pure-raise cells carry class r.
+const cells = rangeChart.rows.map((cell) => cell.f[2] === 1);
+const zones = ['z1', 'z2', 'z3', 'z4', 'z5', 'z6', 'z7', 'z8', 'z9'];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__copy">
+    <h1 class="hero__h1" id="hero-title">
+      <span class="hero__kicker">{pages.home.kicker}</span><span class="visually-hidden">. </span>
+      {lines.map((line, index) => (
+        <>
+          <span class="line"><span class:list={['line__in', index === lines.length - 1 && 'hero__red']}>{line}</span></span>{index < lines.length - 1 && ' '}
+        </>
+      ))}
+    </h1>
+    <p class="hero__sub">Log your live sessions. Record each hand on a table. Every decision gets graded against GTO, the strategy a poker solver computes.</p>
+    <div class="hero__actions">
+      <CtaButton dialog="dlg-sample" cta="hero" size="lg" class="hero__cta" />
+      <TextLink href="#how" arrow={false} class="hero__link">See how it works<Icon name="arrow-down" size={16} /></TextLink>
+    </div>
+    <p class="hero__micro">About 20 seconds a hand. Runs in your browser.</p>
+  </div>
+
+  <div class="hero__art">
+    <div class="chart plate plate--wide"><PlateWide /></div>
+    <div class="chart plate plate--narrow"><PlateNarrow /></div>
+    <div class="plate__grid" aria-hidden="true">{cells.map((raise) => <i class:list={[raise && 'r']}></i>)}</div>
+    <div class="tilt hero__device">
+      <div class="tilt__body">
+        <PhoneFrame
+          screen="phone-coach-score"
+          eager
+          sizes="(min-width: 1024px) clamp(209px, 20.4vw, 336px), (min-width: 768px) 24.6vw, min(61.6vw, 335px)"
+        />
+      </div>
+      <div class="tilt__zones" aria-hidden="true">{zones.map((zone) => <i class={zone}></i>)}</div>
+    </div>
+    <p class="hero__caption"><span>Real chart from the engine.</span> <span>Red is raise, black is call, blank is fold.</span></p>
+    <div class="slip hero__slip">
+      <p class="hero__pen"><del class="pen">Call <Amount bb={sampleCall.bb} usdPerBb={sampleCall.usdPerBb} usdDecimals="exact" /></del> <ins class="pen">Fold</ins></p>
+      <p class="hero__worth">Calling here is worth <Amount bb={sampleCall.worthBb} usdPerBb={sampleCall.usdPerBb} usdDecimals="exact" signed /></p>
+    </div>
+  </div>
+
+  <ul class="hero__proof proof" role="list">
+    {proof.map((item, index) => (
+      <li class="proof__item">
+        <button class="proof__row" type="button" aria-describedby={`proof-tip-${index}`}>
+          <Icon name={item.icon} size={16} />
+          <span>{item.text}</span>
+        </button>
+        <span class="proof__tip" id={`proof-tip-${index}`} role="tooltip">{item.help}</span>
+      </li>
+    ))}
+  </ul>
+</section>

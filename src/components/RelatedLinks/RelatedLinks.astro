@@ -1,0 +1,19 @@
+---
+// RelatedLinks.astro: the related-pages strip that ends a product page, just above the closing band the footer prints (COPY.md "7. Related links and closing band", SEO.md 6).
+// Real links with descriptive anchors, root-relative, no outbound links. Shared by /gto-hand-review and /live-poker-hand-recorder.
+//
+//   <RelatedLinks links={[{ label: 'Record a hand at the table', href: '/live-poker-hand-recorder' }, { label: 'See the concept pricing', href: '/#pricing' }]} />
+import TextLink from '../TextLink/TextLink.astro';
+import './RelatedLinks.css';
+
+interface Props {
+  links: readonly { label: string; href: string }[];
+}
+
+const { links } = Astro.props;
+---
+<nav class="related" aria-label="Related pages">
+  <ul class="related__list" role="list">
+    {links.map((link) => <li><TextLink href={link.href}>{link.label}</TextLink></li>)}
+  </ul>
+</nav>

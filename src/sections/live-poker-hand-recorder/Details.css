@@ -1,0 +1,57 @@
+/* Details.css: five Face White tiles on stock (the tile is components/Bento/Bento.css). One column under 768, two from 768 with the fifth across both, then a row of three over a row of two from 1024. */
+
+.det__frame {
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.det__head {
+  margin-block-end: var(--space-2xl);
+}
+
+.det__title {
+  max-inline-size: 12em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.det__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--grid-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The swipe arrow points left: the tile says swipe a hand left. */
+.det__tile--flip .tile__icon {
+  transform: scaleX(-1);
+}
+
+@media (min-width: 48rem) {
+  .det__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .det__tile:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 64rem) {
+  .det__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .det__tile {
+    grid-column: span 2;
+  }
+
+  /* Two tiles under three: each takes half the row. */
+  .det__tile:nth-child(n + 4) {
+    grid-column: span 3;
+  }
+}

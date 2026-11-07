@@ -1,0 +1,46 @@
+---
+// LaptopFrame.astro: a desktop capture inside the flat Key Black laptop silhouette (DESIGN.md section 8), with the Sample data chip on its top edge.
+// The silhouette is frame-laptop.svg from src/assets/svg: a lid with a base 1.12 times as wide. Set the size in the section's CSS with --device-w
+// (default --laptop-w-panel; --laptop-w-hero exists), and pass a matching `sizes`.
+//
+// The pair: pass a <PhoneFrame slot="pair" /> and the phone stands in front at the laptop's right end (DESIGN.md "Staging, Pair"). --device-w then
+// sets the width of the whole pair, laptop and phone together. The phone keeps a ground-coloured keyline so ink does not melt into ink:
+// set --device-ground on the pair if the section is not on Card Stock.
+//
+//   <LaptopFrame screen="desk-coach-top" class="hero__laptop"><PhoneFrame slot="pair" screen="phone-coach-score" /></LaptopFrame>
+import Screenshot from '../Screenshot/Screenshot.astro';
+import { svgFile } from '../Icon/svg-files';
+import { labels } from '../../data/site';
+import type { DesktopScreen } from '../../data/screens';
+import './LaptopFrame.css';
+
+interface Props {
+  /** A desktop capture from src/assets/screens/. */
+  screen: DesktopScreen;
+  /** Override the alt text, for the second use of one screen on a page (src/data/screens.ts holds the default). */
+  alt?: string;
+  /** True only for the LCP image. */
+  eager?: boolean;
+  /** The `sizes` attribute for the capture. Match the width you set with --device-w. */
+  sizes?: string;
+  /** Hide the Sample data chip. */
+  chip?: boolean;
+  class?: string;
+}
+
+const { screen, alt, eager, sizes, chip = true, class: className } = Astro.props;
+const paired = Astro.slots.has('pair');
+const Frame = svgFile('frame-laptop');
+---
+<div class:list={['device', 'device--laptop', paired && 'device--pair', className]} data-device="laptop">
+  <div class="device__laptop">
+    {chip && <span class="slip device__chip" aria-hidden="true">{labels.sampleData}</span>}
+    <div class="device__body">
+      <Frame class="device__frame" width="100%" height="100%" aria-hidden="true" focusable="false" />
+      <div class="device__screen">
+        <Screenshot name={screen} alt={alt} eager={eager} sizes={sizes} />
+      </div>
+    </div>
+  </div>
+  {paired && <div class="device__pair"><slot name="pair" /></div>}
+</div>

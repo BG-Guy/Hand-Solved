@@ -1,0 +1,6 @@
+/* Icon.css: icons never shrink in a flex row and sit on the text line. Colour comes from currentColor. */
+.icon {
+  flex: none;
+  display: inline-block;
+  vertical-align: middle;
+}

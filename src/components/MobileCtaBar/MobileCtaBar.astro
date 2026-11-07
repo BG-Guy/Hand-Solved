@@ -1,0 +1,13 @@
+---
+// MobileCtaBar.astro: the bottom bar with the demo button, phones only (under 768 px). SiteLayout prints it on every page except privacy, terms and the 404.
+// Hidden on load. MobileCtaBar.ts slides it up once the hero button has left the screen, and away again while the closing band or footer is 20% in view,
+// the pricing section is 40% in view, or a story's own button (data-cta="story") is on screen. Through a pinned story it stays and goes slim.
+// Mark a pinned story with data-hides-mobile-bar to slim the bar over it (home #how and recorder #steps are found without it).
+// A dialog or the menu being open hides it in CSS. The bar is inert while hidden, so Tab never lands on a button that is off screen.
+import CtaButton from '../CtaButton/CtaButton.astro';
+import './MobileCtaBar.css';
+---
+<div class="mobile-bar mobile-cta" data-mobile-bar inert>
+  <CtaButton dialog="dlg-sample" cta="mobile-bar" size="lg" full fallback={false} />
+</div>
+<script src="./MobileCtaBar.ts"></script>

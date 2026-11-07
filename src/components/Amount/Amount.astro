@@ -1,0 +1,33 @@
+---
+// Amount.astro: one live number. It prints the figure in big blinds (the default unit) and carries the data-* that UnitSwitch.ts needs to rewrite it in dollars.
+// Use it for every amount on the site: results, pots, stacks, rates. Prices are always dollars and never go through it.
+//
+//   <Amount bb={733} signed />                                  +733 bb   /   +$1,466
+//   <Amount bb={11} signed bbSuffix=" bb/h" usdSuffix="/h" />   +11 bb/h  /   +$22/h
+//   <Amount bb={15.7} bbSuffix=" bb/100" usdSuffix="/100 hands" usdDecimals={2} />   15.7 bb/100  /   $31.40/100 hands
+//   <Amount bb={1.55} usdPerBb={1} />                           1.6 bb    /   $1.55   (a $0.50/$1 hand: 1 bb = $1)
+//   <Amount bb={-62.62} signed usdDecimals="exact" />           −62.6 bb  /   −$125.24   (the sample hand's figures: cents whenever there are cents)
+import { formatAmount, type AmountOptions } from '../../scripts/format-amount';
+import './Amount.css';
+
+interface Props extends AmountOptions {
+  /** The amount in big blinds. The only number to pass: dollars are worked out from it. */
+  bb: number;
+  class?: string;
+}
+
+const { bb, class: className, ...options } = Astro.props;
+const { signed, usdPerBb, bbSuffix, usdSuffix, usdDecimals, bbDecimals } = options;
+// An element's data-* attributes: only the ones that were set, so the defaults stay in one place (format-amount.ts).
+const data = {
+  'data-bb': bb,
+  'data-signed': signed ? '' : undefined,
+  'data-usd-per-bb': usdPerBb,
+  'data-bb-suffix': bbSuffix,
+  'data-usd-suffix': usdSuffix,
+  'data-usd-decimals': usdDecimals === 'auto' ? undefined : usdDecimals,
+  'data-bb-decimals': bbDecimals,
+};
+---
+<span class:list={['num', className]} {...data}><span class="num__v">{formatAmount(bb, 'bb', options)}</span></span>
+<script src="../UnitSwitch/UnitSwitch.ts"></script>

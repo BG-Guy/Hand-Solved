@@ -1,0 +1,30 @@
+---
+// CornerIndex.astro: the card index that numbers a home section, top left, and the same index turned 180 degrees at the bottom right (DESIGN.md 7.5, SVG-USAGE.md 5).
+// Decorative, so aria-hidden. Put it inside the section's container: the container must be position: relative. The ranks fall from A, the suits cycle spade, heart, club, diamond:
+//   #highlights J diamond, #numbers 10 spade, #toolbox 9 heart (the page map in DESIGN.md 6).
+// Inside .on-ink and .on-red the whole index is Face White, set below, because the scope cannot reach a token the suit sets itself.
+import Icon from '../Icon/Icon.astro';
+import './CornerIndex.css';
+
+interface Props {
+  rank: string;
+  suit: 'spade' | 'heart' | 'club' | 'diamond';
+  /** Also print the turned copy at the bottom right. Default true. */
+  end?: boolean;
+}
+
+const { rank, suit, end = true } = Astro.props;
+const red = suit === 'heart' || suit === 'diamond';
+---
+<span class="corner" aria-hidden="true">
+  <span class="corner__rank">{rank}</span>
+  <Icon name={`suit-${suit}`} size={16} class:list={['corner__suit', red && 'corner__suit--red']} />
+</span>
+{
+  end && (
+    <span class="corner corner--end" aria-hidden="true">
+      <span class="corner__rank">{rank}</span>
+      <Icon name={`suit-${suit}`} size={16} class:list={['corner__suit', red && 'corner__suit--red']} />
+    </span>
+  )
+}

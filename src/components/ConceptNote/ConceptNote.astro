@@ -1,0 +1,6 @@
+---
+// ConceptNote.astro: the one-line concept note printed in the footer and the mobile menu. The sign-up success step no longer prints it (its body sentence says the same).
+import { conceptNote } from '../../data/site';
+import './ConceptNote.css';
+---
+<p class="concept-note">{conceptNote}</p>

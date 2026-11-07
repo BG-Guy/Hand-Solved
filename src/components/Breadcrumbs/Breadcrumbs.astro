@@ -1,0 +1,29 @@
+---
+// Breadcrumbs.astro: the visible breadcrumb trail. The last item is the current page: Soft Black, not a link, aria-current="page".
+// Links are underlined (1 px, 2 px on hover) with icon-chevron-right (12 px) between them. The names match the BreadcrumbList JSON-LD (SEO.md section 4).
+//   <Breadcrumbs trail={page.breadcrumb ?? []} />
+import Icon from '../Icon/Icon.astro';
+import type { Crumb } from '../../data/pages';
+import './Breadcrumbs.css';
+
+interface Props {
+  /** The trail from Home to the current page, from src/data/pages.ts. */
+  trail: readonly Crumb[];
+  class?: string;
+}
+
+const { trail, class: className } = Astro.props;
+const last = trail.length - 1;
+---
+<nav class:list={['breadcrumbs', className]} aria-label="Breadcrumb">
+  <ol>
+    {
+      trail.map((crumb, index) => (
+        <li>
+          {index > 0 && <Icon name="chevron-right" size={12} />}
+          {index < last ? <a href={crumb.path}>{crumb.name}</a> : <span aria-current="page">{crumb.name}</span>}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

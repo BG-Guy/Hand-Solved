@@ -1,0 +1,45 @@
+---
+// Steps.astro: #steps, "Record it. Review it. Coach it." (UX.md 5.2 block 2, COPY.md "2. Recording in three steps"). The pinned story from the home page (components/Story), three steps with one phone each.
+// The pinned layout is the Story component's own; the mobile bar steps away while this section crosses the middle of the screen (it finds #steps itself).
+// Hooks for motion.css (MOTION.md 3.2, 8): .story and its parts, [data-reveal="up"] on the head. No pen strike on this page: no step shows a graded hand in pen.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import Story from '../../components/Story/Story.astro';
+import type { StoryStep } from '../../components/Story/Story.astro';
+import './Steps.css';
+
+// COPY.md, word for word. Each callout sits beside the part of the capture it names: the dealer button and the list on the recorder, the Coach review button on the review screen.
+const steps: StoryStep[] = [
+  {
+    label: 'Record',
+    title: 'Rebuild the hand on a table',
+    body: 'Seat yourself and the other players. Set each stack as an exact amount or as Short, Average, Big or Huge. Pick the cards you know, then answer each action in turn.',
+    callouts: [{ text: 'Dealer button on the felt' }, { text: 'Hand so far, tap to go back' }],
+    screen: 'phone-recorder',
+    alt: 'The same Add hand screen: seats around the felt, and a setup panel asking what game it was. Sample screen.',
+  },
+  {
+    label: 'Review',
+    title: 'Replay it street by street',
+    body: 'Replay the hand street by street. Your cards show face up, the other players’ stay face down unless they showed, and all-ins are highlighted. Add a verdict, a star rating, your tilt and notes.',
+    callouts: [{ text: 'Coach button on every hand' }],
+    screen: 'phone-review',
+  },
+  {
+    label: 'Coach',
+    title: 'Grade it with one tap',
+    body: 'Tap the Coach button on any Hold’em hand to grade it. You see how often GTO plays each option and what each is worth. The score is saved onto the hand.',
+    callouts: [],
+    link: { label: 'How the coach grades it', href: '/gto-hand-review' },
+    screen: 'phone-coach-decision',
+  },
+];
+---
+<section class="steps" id="steps" aria-labelledby="steps-title">
+  <div class="steps__frame">
+    <CornerIndex rank="A" suit="spade" />
+    <header class="steps__head" data-reveal="up">
+      <h2 class="steps__title" id="steps-title">Record it. Review it. Coach it.</h2>
+    </header>
+    <Story steps={steps} class="steps__story" />
+  </div>
+</section>

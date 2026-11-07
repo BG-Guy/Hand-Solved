@@ -1,0 +1,1105 @@
+/* SampleHandDialog.css: the inside of pop-up 1 (#dlg-sample). Tokens only. Spec: docs/site/DESIGN.md 9.9, docs/site/UX.md 6.1.
+   The box, backdrop, sheet, close button and footnote strip come from the shared Dialog shell (Dialog.css); the BB/$ switch comes from UnitSwitch.
+   Motion hooks for MOTION.md: dialog[data-view="choose|verdict"], .is-new on .hs-view, .stamp, del.pen, .bar and .tb, --f (0 to 1) on .bar__f, and the --dur-* / --ease-* tokens. */
+
+.hs-sprite {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+}
+
+.hs-ic {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+/* ---------- Header (inside the shell's header row) ---------- */
+.hs-head {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-md);
+  min-inline-size: 0;
+}
+
+.hs-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.hs-count {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+}
+
+.hs-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.hs-dots {
+  display: flex;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-dots li {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--line-control);
+}
+
+.hs-dots .is-done {
+  background: var(--text-main);
+}
+
+.hs-unit {
+  margin-inline-start: auto;
+}
+
+/* The compact switch's own hit area is 40 x 36; the pop-up needs 44 x 44. */
+#dlg-sample .hs-unit .unit-switch__btn::after {
+  inset-block: -0.5rem;
+}
+
+#dlg-sample .hs-unit [data-set-unit='bb']::after {
+  inset-inline: -4px 0;
+}
+
+#dlg-sample .hs-unit [data-set-unit='usd']::after {
+  inset-inline: 0 -4px;
+}
+
+/* Headings take focus from the script after a view change. They are not controls, so no ring (forced-colors still shows the transparent outline). */
+.hs-title:focus-visible,
+.hs-h:focus-visible,
+.hs-vh:focus-visible,
+.hs-error__h:focus-visible {
+  box-shadow: none;
+}
+
+/* Footnote text inside the shell's footer strip. */
+.hs-foot {
+  margin: 0;
+}
+
+/* ---------- Body ---------- */
+.hs-body {
+  display: grid;
+}
+
+.hs-scene {
+  display: grid;
+  place-items: center;
+  padding: var(--space-md);
+  background: var(--surface-page);
+  border-block-end: var(--border-hair) solid var(--line);
+}
+
+.hs-scene > [data-scene] {
+  inline-size: 100%;
+  container-type: inline-size; /* the wide table scales its cards with this box */
+}
+
+.hs-main {
+  display: grid;
+  align-content: start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+/* ---------- Disclosures ---------- */
+.hs-disc summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-block-size: var(--touch-min);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  list-style: none;
+}
+
+.hs-disc summary::-webkit-details-marker {
+  display: none;
+}
+
+.hs-disc .icon {
+  transition: transform var(--dur-3) var(--ease-out);
+}
+
+.hs-disc[open] > summary .icon {
+  transform: rotate(180deg);
+}
+
+.hs-disc p,
+.hs-gloss {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--text-sm);
+}
+
+.hs-gloss {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.hs-gloss dt {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-mono);
+}
+
+.hs-gloss dd {
+  margin: 0;
+}
+
+.hs-stage {
+  scroll-margin-block-start: var(--space-md);
+}
+
+/* ---------- Loading state ---------- */
+.hs-skel {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.sk {
+  display: block;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+
+.sk--h {
+  inline-size: 60%;
+  block-size: 1.75rem;
+}
+
+.sk--t {
+  block-size: 1.25rem;
+}
+
+.sk--q {
+  inline-size: 70%;
+  block-size: 1.5rem;
+}
+
+.sk--b {
+  block-size: var(--control-h-lg);
+}
+
+/* ---------- Choose ---------- */
+.hs-view {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.hs-view > * {
+  margin: 0;
+}
+
+.hs-h,
+.hs-vh {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.hs-q {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.hs-hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.hs-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.hs-choices > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* When the cue (or a script) scrolls the answers into view, they land with a little air under them. */
+.hs-choices {
+  scroll-margin-block-end: var(--space-md);
+}
+
+/* Pick your move: a pointer convenience for a phone. It sticks to the bottom of the scrolling area while the first answer is out of sight and SampleHandDialog.ts
+   hides it once the answer is on screen. Solid ground, so text scrolling under it never shows through. No motion of its own. */
+.hs-cue {
+  position: sticky;
+  inset-block-end: var(--space-sm);
+  z-index: 1;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-block-size: var(--touch-min);
+  padding-inline: var(--space-md);
+  border: var(--border-hair) solid var(--surface-ink);
+  border-radius: var(--radius-md);
+  background: var(--surface-ink);
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+}
+
+.hs-choice {
+  display: grid;
+  align-content: center;
+  gap: 0.125rem;
+  min-block-size: var(--control-h-lg);
+  padding: var(--space-sm) var(--space-md);
+  border: var(--border-hair) solid var(--line-control);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--text-main);
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-1),
+    border-color var(--dur-1),
+    color var(--dur-1),
+    transform var(--dur-1);
+}
+
+.hs-choice__l {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+}
+
+.hs-choice__s {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.hs-choice:active {
+  transform: scale(0.98);
+  background: var(--text-main);
+  color: var(--text-inverse);
+}
+
+.hs-choice:active .hs-choice__s {
+  color: var(--text-inverse);
+}
+
+/* A card named inside a sentence. */
+.cc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0 0.35em;
+  border: var(--border-hair) solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.cc svg {
+  inline-size: 0.8em;
+  block-size: 0.8em;
+}
+
+.cc--red {
+  color: var(--text-red);
+}
+
+/* ---------- Verdict ---------- */
+.hs-vtop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  padding-block: var(--space-xs);
+}
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  block-size: var(--touch-min);
+  padding-inline: 0.75rem;
+  border: var(--border-mark) solid transparent;
+  border-radius: var(--radius-sm);
+  outline: var(--border-hair) solid;
+  outline-offset: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  transform: rotate(var(--stamp-tilt));
+}
+
+.stamp__s {
+  font-family: var(--font-display);
+  font-size: min(var(--display-sm), 2rem);
+  font-weight: var(--weight-display);
+  line-height: 1;
+}
+
+.stamp--best {
+  background: var(--grade-best-bg);
+  color: var(--grade-best-fg);
+  outline-color: var(--grade-best-edge);
+}
+
+.stamp--good {
+  background: var(--grade-good-bg);
+  color: var(--grade-good-fg);
+  border-color: var(--grade-good-edge);
+  outline-color: var(--grade-good-edge);
+}
+
+.stamp--inaccuracy {
+  background: var(--grade-inaccuracy-bg);
+  color: var(--grade-inaccuracy-fg);
+  border-style: dashed;
+  border-color: var(--grade-inaccuracy-edge);
+  outline-color: var(--grade-inaccuracy-edge);
+}
+
+.stamp--mistake {
+  background: var(--grade-mistake-bg);
+  color: var(--grade-mistake-fg);
+  border-color: var(--grade-mistake-edge);
+  outline-color: var(--grade-mistake-edge);
+}
+
+.stamp--blunder {
+  background: var(--grade-blunder-bg);
+  color: var(--grade-blunder-fg);
+  outline-color: var(--grade-blunder-edge);
+}
+
+.hs-note {
+  font-size: var(--text-sm);
+  color: var(--text-red);
+  transform: rotate(var(--pen-note-tilt));
+}
+
+.hs-vs {
+  font-size: var(--text-base);
+}
+
+.hs-ycards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.hs-yc {
+  padding: 0.75rem var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--surface-page);
+}
+
+.hs-yc p {
+  margin: 0;
+}
+
+.hs-lab,
+.hs-tiles dt {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  color: var(--text-muted);
+}
+
+.hs-val {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  overflow-wrap: anywhere;
+}
+
+.hs-yc.is-pen .hs-val {
+  color: var(--text-red);
+}
+
+.hs-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: var(--space-sm);
+}
+
+.hs-tiles > div {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface-page);
+}
+
+.hs-tiles dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: var(--weight-mono);
+}
+
+/* Options list: a button per row, so any row can be shown as "what if". */
+.hs-opts {
+  display: grid;
+  margin-block-start: var(--space-sm);
+}
+
+.hs-oh,
+.hs-opt {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(5.5ch, auto);
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
+.hs-oh {
+  padding: 0 0.75rem var(--space-xs);
+  border-block-end: var(--border-hair) solid var(--line-control);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  color: var(--text-muted);
+}
+
+.hs-oh span:last-child,
+.hs-opt__w {
+  text-align: end;
+}
+
+.hs-opt {
+  position: relative;
+  min-block-size: var(--control-h-lg);
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-block-end: var(--border-hair) solid var(--line);
+  background: transparent;
+  color: var(--text-main);
+  text-align: start;
+  cursor: pointer;
+}
+
+.hs-opt:focus-visible {
+  box-shadow: var(--focus-ring-inset);
+}
+
+.hs-opt.is-you::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background: var(--text-main);
+}
+
+.hs-opt__n {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  block-size: 1.25rem;
+  padding-inline: 0.375rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: 1;
+}
+
+.tag--gto {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.tag--you {
+  background: var(--text-main);
+  color: var(--text-inverse);
+}
+
+.hs-opt__f {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+}
+
+.hs-opt__p {
+  min-inline-size: 4ch;
+  text-align: end;
+}
+
+.hs-opt__w {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+}
+
+.hs-opt__w.is-neg {
+  color: var(--text-red);
+}
+
+.bar {
+  flex: 1;
+  block-size: 6px;
+  background: var(--surface-muted);
+}
+
+.bar__f {
+  display: block;
+  block-size: 100%;
+  background: var(--text-main);
+  transform: scaleX(var(--f, 0));
+  transform-origin: left center;
+}
+
+.is-gto .bar__f {
+  background: var(--primary);
+}
+
+.hs-bullets {
+  display: grid;
+  gap: var(--space-sm);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+}
+
+.hs-bullets li {
+  position: relative;
+  padding-inline-start: 1rem;
+}
+
+.hs-bullets li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.6em;
+  inline-size: 4px;
+  block-size: 4px;
+  background: var(--text-muted);
+}
+
+/* ---------- Buttons and the verdict navigation ---------- */
+.hs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 10rem;
+  min-block-size: var(--control-h-lg);
+  padding-inline: var(--space-lg);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-1),
+    color var(--dur-1),
+    transform var(--dur-1);
+}
+
+.hs-btn:active {
+  transform: scale(0.98);
+}
+
+.hs-btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.hs-btn--secondary,
+.hs-error .hs-btn {
+  background: transparent;
+  border-color: var(--btn-secondary-edge);
+  color: var(--btn-secondary-fg);
+}
+
+.hs-nav {
+  position: sticky;
+  inset-block-end: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: var(--space-sm) calc(-1 * var(--space-md)) calc(-1 * var(--space-md));
+  padding: var(--space-md) var(--space-md) max(var(--space-md), env(safe-area-inset-bottom));
+  border-block-start: var(--border-hair) solid var(--line);
+  background: var(--surface-raised);
+}
+
+.hs-done {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* ---------- Data error ---------- */
+.hs-error {
+  display: grid;
+  gap: var(--space-sm);
+  justify-items: start;
+  color: var(--text-main);
+}
+
+.hs-error .icon {
+  inline-size: 2rem;
+  block-size: 2rem;
+  color: var(--danger);
+}
+
+.hs-error__h {
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+/* ---------- Table scene ---------- */
+.tb {
+  --cw: var(--card-w-sm);
+  --sd: 2rem;
+  --rx: 36%;
+  --ry: 44%;
+  --tb-h: 13.75rem; /* 220 px. A short phone screen caps it lower (below). */
+  position: relative;
+  inline-size: min(100%, 18rem);
+  aspect-ratio: 288 / 220;
+  margin-inline: auto;
+  max-block-size: var(--tb-h);
+}
+
+.a0 { --a: 90deg; }
+.a1 { --a: 135deg; }
+.a2 { --a: 180deg; }
+.a3 { --a: 225deg; }
+.a4 { --a: 270deg; }
+.a5 { --a: 315deg; }
+.a6 { --a: 0deg; }
+.a7 { --a: 45deg; }
+
+.tb__rail {
+  position: absolute;
+  inset: 8% 21%;
+  border: var(--border-mark) solid var(--text-main);
+  border-radius: 50%;
+  background: var(--surface-raised);
+}
+
+.tb__rail::after {
+  content: '';
+  position: absolute;
+  inset: 3.5% 4%;
+  border: var(--border-hair) solid var(--line);
+  border-radius: 50%;
+}
+
+.tb__seat,
+.tb__dealer {
+  position: absolute;
+  left: calc(50% + var(--rx) * cos(var(--a)));
+  top: calc(50% + var(--ry) * sin(var(--a)));
+  display: grid;
+  place-items: center;
+  inline-size: var(--sd);
+  block-size: var(--sd);
+  border: var(--border-hair) solid var(--line-control);
+  border-radius: var(--radius-full);
+  background: var(--surface-raised);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: 1;
+  transform: translate(-50%, -50%);
+}
+
+.tb__seat--hero {
+  border-color: var(--text-main);
+  background: var(--surface-ink);
+  color: var(--text-inverse);
+}
+
+.tb__seat--opp {
+  border: var(--border-mark) solid var(--text-main);
+}
+
+.tb__dealer {
+  inline-size: 1.375rem;
+  block-size: 1.375rem;
+  border-color: var(--text-main);
+  left: calc(50% + var(--rx) * 0.8 * cos(var(--a) + 24deg));
+  top: calc(50% + var(--ry) * 0.8 * sin(var(--a) + 24deg));
+}
+
+.tb__board,
+.tb__pot,
+.tb__hole {
+  position: absolute;
+  left: 50%;
+  display: flex;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+}
+
+.tb__board {
+  top: 38%;
+}
+
+.tb__pot {
+  top: 55%;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  white-space: nowrap;
+}
+
+.tb__hole--hero {
+  top: 74%;
+}
+
+.tb__hole--opp {
+  left: calc(50% + var(--rx) * 0.64 * cos(var(--a)));
+  top: calc(50% + var(--ry) * 0.6 * sin(var(--a)));
+  gap: 2px;
+}
+
+/* The opponent's pair is drawn at 0.7 of yours (sm beside md in DESIGN.md 9.9). */
+.tb__hole--opp .pc {
+  inline-size: calc(var(--cw) * 0.7);
+}
+
+/* Not the deck's cards (src/components/Deck), which share the name. :where keeps this at one class, so the modifiers below still win. */
+.pc:not(:where(.pc--deck)) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  inline-size: var(--cw);
+  aspect-ratio: 5 / 7;
+  padding: calc(var(--cw) * 0.1);
+  border: var(--border-hair) solid var(--line-strong);
+  border-radius: calc(var(--cw) * 0.1);
+  background: var(--surface-raised);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: calc(var(--cw) * 0.45);
+  font-weight: var(--weight-display);
+  line-height: 0.9;
+}
+
+.pc--red {
+  color: var(--text-red);
+}
+
+.pc__s {
+  inline-size: calc(var(--cw) * 0.36);
+  block-size: calc(var(--cw) * 0.36);
+}
+
+.pc--empty {
+  border: var(--border-hair) dashed var(--line-control);
+  background: none;
+}
+
+.pc--down {
+  border: 2px solid var(--surface-raised);
+  background: var(--surface-red);
+  outline: var(--border-hair) solid var(--text-main);
+}
+
+.pc--empty + .pc--empty {
+  margin: 0;
+}
+
+/* Phone table: an opponent in the next seat (the blinds against each other, or the cutoff against the button) would sit on your cards, and the dealer chip on your corner.
+   Their pair moves out to the side, outside your cards' span, and the chip steps out with it. */
+@media (max-width: 47.99rem) {
+  .tb__hole--opp:is(.a1, .a7) {
+    left: calc(50% + var(--rx) * 0.98 * cos(var(--a)));
+    top: calc(50% + var(--ry) * 0.42 * sin(var(--a)));
+  }
+
+  .tb__dealer:is(.a0, .a1, .a7) {
+    left: calc(50% + var(--rx) * 0.95 * cos(var(--a) + 24deg));
+    top: calc(50% + var(--ry) * 0.95 * sin(var(--a) + 24deg));
+  }
+}
+
+/* Narrow scenes drop the labels of seats that are not yours, the opponent's or the button. */
+@media (max-width: 24.99rem) {
+  .tb__seat:not(.tb__seat--hero, .tb__seat--opp) {
+    border-color: var(--line);
+    font-size: 0;
+  }
+}
+
+/* ---------- Under 480: two options stack, and the option bar drops under the name ---------- */
+@media (max-width: 29.99rem) {
+  .hs-choices[data-n='2'] {
+    grid-template-columns: 1fr;
+  }
+
+  /* Two buttons share the pinned verdict row, so "Get early access" keeps to one line. */
+  .hs-btn {
+    padding-inline: var(--space-md);
+  }
+
+  /* The bar becomes a 4px line under the name, so the name and both numbers stay on one row. */
+  .hs-oh {
+    display: none;
+  }
+
+  .hs-opt {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    row-gap: 0.25rem;
+  }
+
+  .hs-opt__f {
+    display: contents;
+  }
+
+  .hs-opt .bar {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    block-size: 4px;
+  }
+
+  .hs-opt__p {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .hs-opt__w {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+/* Under 360: You and GTO stack, and the verdict's second button becomes a text link with a 44px tap area. */
+@media (max-width: 22.49rem) {
+  .hs-ycards {
+    grid-template-columns: 1fr;
+  }
+
+  .hs-nav .hs-btn--secondary {
+    flex-basis: 100%;
+    min-block-size: var(--touch-min);
+    border-color: transparent;
+    text-decoration: underline;
+  }
+}
+
+/* ---------- 768 and up: the shell centers the dialog; the table gets its wide shape ---------- */
+@media (min-width: 48rem) {
+  .hs-head {
+    flex-wrap: nowrap;
+  }
+
+  .hs-main {
+    padding: var(--space-lg);
+  }
+
+  .hs-nav {
+    margin: var(--space-sm) calc(-1 * var(--space-lg)) calc(-1 * var(--space-lg));
+    padding-inline: var(--space-lg);
+  }
+
+  .hs-scene {
+    padding: var(--space-lg);
+  }
+
+  .hs-btn {
+    min-block-size: var(--control-h-md);
+  }
+
+  .tb {
+    --cw: max(8.333cqw, var(--card-w-sm)); /* 40px at the design width of 480 */
+    --sd: 2.5rem;
+    --rx: 46.7%;
+    --ry: 42.5%;
+    inline-size: min(100%, 26.25rem);
+    aspect-ratio: 3 / 2;
+    max-block-size: none;
+  }
+
+  .tb__rail {
+    inset: 12.5% 8.3%;
+  }
+
+  .tb__rail::after {
+    inset: 3.8% 1.4%;
+  }
+
+  .tb__board {
+    top: 37%;
+  }
+
+  .tb__pot {
+    top: 54%;
+  }
+
+  .tb__hole--hero {
+    top: 72%;
+  }
+
+  .tb__hole--opp {
+    left: calc(50% + var(--rx) * 0.68 * cos(var(--a)));
+    top: calc(50% + var(--ry) * 0.55 * sin(var(--a)));
+  }
+
+  .tb__board,
+  .tb__hole {
+    gap: 6px;
+  }
+}
+
+/* ---------- 1024 and up, and landscape phones: scene left, choices right. The body scrolls and the scene stays in view. ---------- */
+@media (min-width: 64rem) {
+  /* A fixed height, so the box does not change size between the question and the verdict. */
+  #dlg-sample {
+    block-size: min(90svh, 48rem);
+  }
+
+  .hs-body {
+    grid-template-columns: 46fr 54fr;
+  }
+}
+
+@media (min-width: 64rem), (max-width: 56.25rem) and (max-height: 31.25rem) {
+  .hs-scene {
+    display: block;
+    border-block-end: 0;
+    border-inline-end: var(--border-hair) solid var(--line);
+  }
+
+  .hs-scene > [data-scene],
+  .hs-scene > .hs-error {
+    position: sticky;
+    inset-block-start: var(--space-lg);
+  }
+}
+
+@media (max-width: 56.25rem) and (max-height: 31.25rem) {
+  .hs-body {
+    grid-template-columns: 2fr 3fr;
+  }
+
+  .hs-scene {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .hs-scene > [data-scene] {
+    inset-block-start: var(--space-sm);
+  }
+
+  .hs-title {
+    font-size: var(--text-xl);
+  }
+}
+
+/* ---------- Short screens (a phone upright, under 700 px tall): the decision has to fit on the first screen ---------- */
+/* The footnote strip is 83 px on a phone. The choose view drops it and the verdict view, where the numbers are, keeps it. */
+@media (max-height: 43.75rem), (max-width: 47.99rem) and (max-height: 52rem) {
+  #dlg-sample:not([data-view='verdict']) .dialog__foot {
+    display: none;
+  }
+}
+
+/* The smallest phones: the hint line goes too, so the first answer stays on screen at 360 x 640. */
+@media (max-width: 47.99rem) and (max-height: 41.25rem) {
+  .hs-hint {
+    display: none;
+  }
+}
+
+/* The table scene is capped at 190 px instead of 220 and has less air around it, and the choose view's rows sit 4 px apart instead of 8. The pot text is set tighter and a little
+   lower, so the board, the pot and your cards still clear each other. The cards keep their size: a card's rank is already at the 12 px floor. */
+@media (max-width: 47.99rem) and (max-height: 52rem) {
+  .tb {
+    --tb-h: 11.875rem;
+  }
+
+  .tb__pot {
+    top: 57%;
+    line-height: var(--leading-tight);
+  }
+
+  .hs-scene {
+    padding-block: var(--space-sm);
+  }
+
+  .hs-main {
+    gap: var(--space-xs);
+    padding-block-start: var(--space-sm);
+  }
+
+  #dlg-sample[data-view='choose'] .hs-view {
+    gap: var(--space-xs);
+  }
+
+  #dlg-sample[data-view='choose'] :is(.hs-q, .hs-choices) {
+    margin-block-start: var(--space-xs);
+  }
+}
+
+/* ---------- The chunk did not load (Dialog.ts sets data-module="error"): only the box's message stays ---------- */
+#dlg-sample[data-module='error'] :is([data-scene], .hs-main > .hs-disc) {
+  display: none;
+}
+
+/* ---------- Hover (pointer only) ---------- */
+@media (hover: hover) {
+  .hs-choice:hover {
+    border-color: var(--text-main);
+    background: var(--surface-muted);
+  }
+
+  .hs-opt:hover {
+    background: var(--surface-muted);
+  }
+
+  .hs-btn--primary:hover {
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-fg-hover);
+  }
+
+  .hs-btn--secondary:hover,
+  .hs-error .hs-btn:hover {
+    background: var(--btn-secondary-bg-hover);
+    color: var(--btn-secondary-fg-hover);
+  }
+}
+
+/* Motion is in motion.css (MOTION.md E33 to E35): it keys on dialog[data-view], .is-new on .hs-view, .stamp, del.pen, .bar and .tb, .is-picked, .tb--out and [data-top].is-swap. */

@@ -1,0 +1,39 @@
+/* Breadcrumbs.css: mono trail with underlined links and a 12 px chevron icon between them (DESIGN.md 9.12). */
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.breadcrumbs li {
+  display: flex;
+  align-items: center;
+}
+
+/* The chevron icon between two items: 8 px of air on each side. */
+.breadcrumbs li .icon {
+  margin-inline: var(--space-sm);
+}
+
+.breadcrumbs a {
+  display: inline-flex;
+  align-items: center;
+  /* Hit area of at least 44 px tall. */
+  min-block-size: var(--touch-min);
+  text-decoration-thickness: var(--border-hair);
+}
+
+.breadcrumbs a:hover {
+  text-decoration-thickness: calc(var(--border-hair) * 2);
+}
+
+.breadcrumbs [aria-current='page'] {
+  color: var(--text-muted);
+}

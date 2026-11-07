@@ -1,0 +1,145 @@
+/* NotFound.css: the 404's own styles (NotFound.astro, DESIGN.md 9.12 "404 block"). The class names are all nf__*.
+   Tokens only. The cards size themselves from their own width (container query units), so they shrink as one at 320. */
+
+.nf {
+  display: grid;
+  align-content: center;
+  max-inline-size: var(--container-max);
+  /* The page sheet is at least one screen tall, so the card-back footer waits under it and is revealed by scrolling, as on every other page. */
+  min-block-size: 100svh;
+  margin-inline: auto;
+  /* The top padding clears the floating navbar. */
+  padding: calc(var(--nav-h-top) + var(--nav-inset) + var(--section-y-compact)) var(--gutter) var(--section-y);
+}
+
+.nf__inner {
+  display: grid;
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.nf__copy {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-md);
+}
+
+.nf__h1 {
+  font-size: var(--display-md);
+  line-height: var(--leading-display);
+}
+
+.nf__line {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+}
+
+.nf__actions {
+  inline-size: 100%;
+  margin-block-start: var(--space-sm);
+}
+
+.nf__cta {
+  inline-size: 100%;
+}
+
+.nf__links ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Three cards in a row, centred: the only centred block on the page (DESIGN.md 5.2). On top under 1024, on the right from 1024. */
+.nf__cards {
+  order: -1;
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--space-sm) * 1.5);
+}
+
+.nf__card {
+  container-type: inline-size;
+  flex: 0 1 var(--card-w-xl);
+  min-inline-size: 0;
+  aspect-ratio: var(--card-aspect);
+}
+
+.nf__face {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: var(--border-hair) solid var(--line-strong);
+  border-radius: 10cqi;
+  background: var(--surface-raised);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: 45cqi;
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+}
+
+.nf__card--red .nf__face {
+  color: var(--primary);
+}
+
+/* The index in the corner: rank, then the suit under it (DESIGN.md 9.9, 7.5). */
+.nf__index {
+  position: absolute;
+  inset-block-start: 8cqi;
+  inset-inline-start: 10cqi;
+  display: grid;
+  justify-items: start;
+  row-gap: 2px;
+}
+
+.nf__suit {
+  inline-size: auto;
+  block-size: 16cqi;
+}
+
+/* One big suit in the middle of the face. */
+.nf__pip {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: auto;
+  block-size: 38cqi;
+  transform: translate(-50%, -50%);
+}
+
+.nf__back {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* The hook for the deal-in (MOTION.md 8): each card carries its place in the row. */
+.nf__card:nth-child(1) { --n: 0; }
+.nf__card:nth-child(2) { --n: 1; }
+.nf__card:nth-child(3) { --n: 2; }
+
+@media (min-width: 48rem) {
+  .nf__cta {
+    inline-size: auto;
+  }
+}
+
+@media (min-width: 64rem) {
+  .nf__inner {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+
+  .nf__copy {
+    grid-column: 1 / span 6;
+  }
+
+  .nf__cards {
+    order: 0;
+    grid-column: 7 / -1;
+  }
+}

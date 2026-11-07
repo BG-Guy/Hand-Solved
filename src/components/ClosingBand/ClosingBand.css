@@ -1,0 +1,26 @@
+/* ClosingBand.css: H2 in the display face, the line, then the button and the text link side by side (DESIGN.md 7.3). It inherits Face White from the red card. */
+
+.closing-band {
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
+  align-content: start;
+}
+
+.closing-band__title {
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.closing-band__line {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+.closing-band__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-lg);
+}

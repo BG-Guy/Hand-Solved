@@ -1,0 +1,32 @@
+---
+// UnitSwitch.astro: the BB / $ segmented switch (DESIGN.md 9.5). UnitSwitch.ts keeps every switch on the page, <html data-unit> and local storage in step,
+// and rewrites every number marked with data-bb. Several switches can sit on one page (highlights, numbers, the pop-up header); they all move together.
+//
+//   <UnitSwitch />                       "Show amounts in" above a 44 px switch
+//   <UnitSwitch compact hideLabel />     36 px tall for the pop-up header, the label kept as the group's name only
+// Both sizes keep a 44 px hit area around the buttons (UnitSwitch.css).
+//
+// A live number is any element holding only the figure, for example <span data-bb="62.6">62.6 bb</span>. See COMPONENTS.md for the data-* options.
+import { unitSwitch } from '../../data/site';
+import './UnitSwitch.css';
+
+interface Props {
+  /** 36 px tall, with the 44 px hit area kept. For the pop-up header. */
+  compact?: boolean;
+  /** Hide the visible "Show amounts in" text. The group keeps it as its accessible name. */
+  hideLabel?: boolean;
+  class?: string;
+}
+
+const { compact = false, hideLabel = false, class: className } = Astro.props;
+---
+<div class:list={['unit-switch', compact && 'unit-switch--compact', className]} data-unit-switch>
+  {!hideLabel && <span class="unit-switch__label" aria-hidden="true">{unitSwitch.group}</span>}
+  <div class="unit-switch__track" role="group" aria-label={unitSwitch.group}>
+    <span class="unit-switch__thumb" aria-hidden="true"></span>
+    {/* The name starts with the visible text ("BB, big blinds"), so voice control can say what it sees (WCAG 2.5.3). */}
+    <button class="unit-switch__btn" type="button" data-set-unit="bb" aria-pressed="true">{unitSwitch.bb.text}<span class="visually-hidden">, {unitSwitch.bb.name.toLowerCase()}</span></button>
+    <button class="unit-switch__btn" type="button" data-set-unit="usd" aria-pressed="false">{unitSwitch.usd.text}<span class="visually-hidden">, {unitSwitch.usd.name.toLowerCase()}</span></button>
+  </div>
+</div>
+<script src="./UnitSwitch.ts"></script>

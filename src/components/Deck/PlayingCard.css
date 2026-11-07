@@ -1,0 +1,78 @@
+/* PlayingCard.css: size and the 3D flip for the deck in src/assets/svg/deck/. Docs: docs/site/DECK.md. No animation of its own beyond the flip's transition.
+   A card takes its width from --card-w, set by a parent, and its height from the 5:7 ratio. All its art is one vector drawing, so the index scales with the card. */
+
+/* Every rule keys on .pc--deck, not .pc: the sample-hand pop-up's cards are also .pc, and must not be flipped or sized by these. */
+.pc--deck {
+  position: relative;
+  display: block;
+  flex: none;
+  inline-size: var(--card-w, 100%);
+  aspect-ratio: 5 / 7;
+  /* A card keeps its own inks in every ground and in forced colors. */
+  forced-color-adjust: none;
+  /* The card carries its own perspective, so it flips correctly with nothing on its parent. */
+  transform: perspective(var(--pc-perspective, calc(var(--card-w, 30rem) * 3))) rotateY(var(--pc-turn, 180deg));
+  transform-style: preserve-3d;
+}
+
+.pc--deck.is-up {
+  transform: perspective(var(--pc-perspective, calc(var(--card-w, 30rem) * 3))) rotateY(0deg);
+}
+
+.pc__front,
+.pc__back {
+  position: absolute;
+  inset: 0;
+  display: block;
+  /* The same 4 of 65 cells as the corner in the art, so a section's ring on a face follows the card. */
+  border-radius: 6.154% / 4.396%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* At rest only the face that is up is painted, so the right face shows even where a browser flattens 3D: print, or no compositor. While turning both are there and backface-visibility does the work. */
+.pc__front,
+.pc--deck.is-up .pc__back {
+  visibility: hidden;
+}
+
+.pc--deck.is-up .pc__front {
+  visibility: inherit;
+}
+
+.pc__front {
+  transform: rotateY(0deg);
+}
+
+.pc__back {
+  transform: rotateY(180deg);
+}
+
+/* The art is an <img>: its inks, hairline and level of detail are in the file, out of this sheet's reach (DECK.md). */
+.pc__art {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pc--deck {
+    transition-property: transform;
+    transition-duration: var(--pc-flip-dur, var(--dur-4));
+    transition-timing-function: var(--pc-flip-ease, var(--ease-in-out));
+    transition-delay: var(--pc-flip-delay, 0ms);
+  }
+
+  /* The face going away stays until the flip ends. The face coming up is there from the start, turned away. */
+  .pc__front,
+  .pc__back {
+    transition-property: visibility;
+    transition-duration: 0s;
+    transition-delay: calc(var(--pc-flip-dur, var(--dur-4)) + var(--pc-flip-delay, 0ms));
+  }
+
+  .pc--deck.is-up .pc__front,
+  .pc--deck:not(.is-up) .pc__back {
+    transition-delay: 0s;
+  }
+}

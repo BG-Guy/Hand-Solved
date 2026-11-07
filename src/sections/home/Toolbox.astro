@@ -1,0 +1,91 @@
+---
+// Toolbox.astro: #toolbox, three more screens in tabs: Insights, Goals, History (UX.md 4.6). Every word is from COPY.md 4.6; the screens are real captures, tagged Sample data.
+// Without script all three panels stack one after another and the tab row is hidden. Toolbox.ts adds the tab row, the thumb under the selected tab and the panel swap.
+// Motion hooks (MOTION.md E27): .toolbox__thumb (--x, --w), .toolbox__panel (is-leaving while it fades out), .toolbox__device and .toolbox__chips li for the assembly, [data-reveal="up"] on the head.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import LaptopFrame from '../../components/LaptopFrame/LaptopFrame.astro';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import './Toolbox.css';
+
+const phoneSizes = '(min-width: 1024px) 320px, 280px';
+const laptopSizes = '(min-width: 1200px) 640px, 55vw';
+
+const panels = [
+  {
+    id: 'insights',
+    tab: 'Insights',
+    title: 'What your bankroll is telling you',
+    text: 'HandSolved reads your sessions and answers in plain words: whether you are in a downswing, whether your swings are normal for your win rate, and how each month went. Open any card for the full story, down to your hourly rate by stakes, venue, game and session length.',
+    chips: ['Downswings', 'Is it normal?', 'Hourly by venue'],
+  },
+  {
+    id: 'goals',
+    tab: 'Goals',
+    title: 'Goals measured from your real play',
+    text: 'Set goals for hands played, hours, sessions, profit and hands reviewed. Each one tracks your real data, projects your pace and picks what to focus on next.',
+    chips: ['Pace projection', 'Focus next', 'Edit anytime'],
+  },
+  {
+    id: 'history',
+    tab: 'History',
+    title: 'Every session, graded A to F',
+    text: 'Sessions sit in a list by month, with filters. Each gets a grade from A to F, built from your saved hands, the money won and the hours played.',
+    chips: ['Grade A to F', 'Filters', 'Open a session'],
+  },
+];
+---
+<section id="toolbox" class="toolbox" aria-labelledby="toolbox-title">
+  <div class="toolbox__inner">
+    <CornerIndex rank="9" suit="heart" />
+
+    <header class="toolbox__head" data-reveal="up">
+      <h2 id="toolbox-title" class="toolbox__title">Insights, goals and history</h2>
+      <p class="toolbox__lead">Three more screens that read your sessions back to you. All numbers here are sample data.</p>
+    </header>
+
+    <div class="toolbox__tabs">
+      <div class="toolbox__tablist" role="tablist" aria-label="Toolbox screens">
+        <span class="toolbox__thumb" aria-hidden="true"></span>
+        {
+          panels.map((panel, i) => (
+            <button type="button" class="toolbox__tab" role="tab" id={`tab-${panel.id}`} aria-controls={`panel-${panel.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+              {panel.tab}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="toolbox__panels">
+        {
+          panels.map((panel) => (
+            <div class="toolbox__panel" role="tabpanel" id={`panel-${panel.id}`} aria-labelledby={`tab-${panel.id}`} tabindex="0">
+              <div class="toolbox__text">
+                <div class="toolbox__headline">
+                  {panel.id === 'history' && <span class="session-stamp" aria-hidden="true">A</span>}
+                  <h3 class="toolbox__panel-title">{panel.title}</h3>
+                </div>
+                <p class="toolbox__body">{panel.text}</p>
+                <ul class="toolbox__chips" role="list">
+                  {panel.chips.map((chip) => <li class="slip">{chip}</li>)}
+                </ul>
+              </div>
+              <div class="toolbox__device">
+                {panel.id === 'insights' && (
+                  <>
+                    <PhoneFrame screen="phone-insights" sizes={phoneSizes} class="toolbox__phone-narrow" />
+                    <LaptopFrame screen="desk-insights" sizes={laptopSizes} class="toolbox__laptop" />
+                  </>
+                )}
+                {panel.id === 'goals' && <PhoneFrame screen="phone-goals" sizes={phoneSizes} />}
+                {panel.id === 'history' && <PhoneFrame screen="phone-history" sizes={phoneSizes} />}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <p class="toolbox__equity">The app also has an equity calculator, your chance of winning, for 2 to 6 hands. It gives exact results when possible.</p>
+  </div>
+</section>
+<script src="./Toolbox.ts"></script>

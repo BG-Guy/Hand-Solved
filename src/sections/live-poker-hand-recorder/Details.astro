@@ -1,0 +1,32 @@
+---
+// Details.astro: "The details, handled" (UX.md 5.2 block 3, COPY.md "3. Details"): five tiles. Each tile's words are COPY.md's; the tile is the shared BentoTile (components/Bento), so it looks like the home highlights.
+// Hooks for motion.css (MOTION.md 8): [data-reveal="up"] on the head. The tiles are static (E37 reveals heads and devices, not tiles).
+import BentoTile from '../../components/Bento/BentoTile.astro';
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import './Details.css';
+
+const tiles = [
+  { icon: 'tile-pots', name: 'Side pots, handled', text: 'All-ins and side pots are handled when you record the action.' },
+  { icon: 'tile-insights', name: 'Stacks your way', text: 'Type an exact stack, or pick Short, Average, Big or Huge.' },
+  { icon: 'proof-streets', name: 'Go back any time', text: 'Tap any step in the Hand so far list to return to it.' },
+  { icon: 'limit-entered', name: 'Edit anything afterwards', text: 'Change a hand’s cards, board, result or tags, or reopen its action in the recorder.' },
+  { icon: 'arrow-right', name: 'Swipe to edit or delete', text: 'Swipe a hand left in the list for Edit and Delete. An Undo bar catches slips.' },
+];
+---
+<section class="det" id="details" aria-labelledby="det-title">
+  <div class="det__frame">
+    <CornerIndex rank="K" suit="heart" />
+
+    <header class="det__head" data-reveal="up">
+      <h2 class="det__title" id="det-title">The details, handled</h2>
+    </header>
+
+    <ul class="det__grid" role="list">
+      {
+        tiles.map((tile, index) => (
+          <BentoTile class:list={['det__tile', index === tiles.length - 1 && 'det__tile--flip']} name={tile.name} icon={tile.icon} description={tile.text} />
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+---
+// Faq.astro: a FAQ section on native <details>. It works with no script: every answer is in the HTML, Enter and Space open it, and Ctrl+F finds the text.
+// Faq.ts only adds the height animation. More than one answer may be open. No FAQPage markup (SEO.md 4): the visible text is what search reads.
+// An answer may hold [words](/path) links, printed as real <a href> (SEO.md section 6).
+//
+//   <Faq />                                                    the home FAQ: heading, lead, 7 questions and the 6 of spades, from home-faq.ts
+//   <Faq heading="Questions about GTO hand review" items={[{ question, answer }]} index={{ rank: 'A', suit: 'spade' }} />   a product page
+//
+// Hooks (MOTION.md 3.2): .faq__item > summary + .faq__panel > .faq__inner > .faq__body. The padding is on .faq__body and never on .faq__inner,
+// or the row would not collapse to 0. The head carries data-reveal="up" (E37).
+import CornerIndex from '../Bento/CornerIndex.astro';
+import Icon from '../Icon/Icon.astro';
+import { homeFaq, type FaqIndex, type FaqItem } from './home-faq';
+import './Faq.css';
+
+interface Props {
+  /** Passing no items prints the home FAQ, with its own heading, lead and index. */
+  items?: readonly FaqItem[];
+  heading?: string;
+  lead?: string;
+  /** The card index in the section's corner. Product pages restart at the ace of spades. */
+  index?: FaqIndex;
+  /** The section id, and the prefix of the heading id. */
+  id?: string;
+}
+
+const home = Astro.props.items === undefined;
+const { id = 'faq' } = Astro.props;
+const items = Astro.props.items ?? homeFaq.items;
+const heading = Astro.props.heading ?? (home ? homeFaq.heading : '');
+const lead = Astro.props.lead ?? (home ? homeFaq.lead : undefined);
+const index = Astro.props.index ?? (home ? homeFaq.index : undefined);
+
+// An answer is plain text with optional [words](/path) links. Split into text and link parts, so no HTML string is ever injected.
+const parts = (answer: string): { text: string; href?: string }[] =>
+  answer.split(/(\[[^\]]+\]\([^)\s]+\))/).map((part) => {
+    const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(part);
+    return link ? { text: link[1], href: link[2] } : { text: part };
+  });
+---
+<section class="faq" id={id} aria-labelledby={`${id}-title`}>
+  <div class="faq__wrap">
+    {index && <CornerIndex rank={index.rank} suit={index.suit} />}
+
+    <header class="faq__head" data-reveal="up">
+      <h2 class="faq__title" id={`${id}-title`}>{heading}</h2>
+      {lead && <p class="faq__lead">{lead}</p>}
+    </header>
+
+    <div class="faq__list">
+      {
+        items.map((item) => (
+          <details class="faq__item">
+            <summary class="faq__summary">
+              <h3 class="faq__q">{item.question}</h3>
+              <span class="faq__icon" aria-hidden="true">
+                <Icon name="plus" size={20} class="faq__plus" />
+                <Icon name="minus" size={20} class="faq__minus" />
+              </span>
+            </summary>
+            <div class="faq__panel">
+              <div class="faq__inner">
+                <div class="faq__body">
+                  <p>{parts(item.answer).map((part) => (part.href ? <a href={part.href}>{part.text}</a> : part.text))}</p>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+<script src="./Faq.ts"></script>

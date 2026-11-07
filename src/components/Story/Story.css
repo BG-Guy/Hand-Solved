@@ -1,0 +1,401 @@
+/* Story.css: stacked by default (no script, reduced motion, short screens), pinned otherwise. No motion here: scene fades, chip assembly and the bar's draw are motion.css.
+   html[data-js] gates the pinned layout, because it is set before first paint, so turning the pin on never shifts the page. It hides no step text. */
+
+.story {
+  isolation: isolate;
+  display: grid;
+  gap: var(--space-xl);
+}
+
+/* Stacked: the three wrappers step aside so steps and scenes alternate in one grid. */
+.story__steps,
+.story__stage,
+.story__phone {
+  display: contents;
+}
+
+.story__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.story__step:nth-child(1) { order: 1; }
+.story__scene:nth-of-type(1) { order: 2; }
+.story__step:nth-child(2) { order: 3; }
+.story__scene:nth-of-type(2) { order: 4; }
+.story__step:nth-child(3) { order: 5; }
+.story__scene:nth-of-type(3) { order: 6; }
+
+.story__ghost,
+.story__base,
+.story__dots {
+  display: none;
+}
+
+/* A step */
+.story__step {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--space-md);
+}
+
+.story__head {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.story__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.story__title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}
+
+.story__body {
+  max-inline-size: 30rem;
+}
+
+.story__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A scene when stacked: phone 240 wide, its callouts as one line of text under it. */
+.story__scene {
+  --device-w: 15rem;
+  display: grid;
+  gap: var(--space-md);
+  justify-items: start;
+  margin: 0;
+  padding-block-start: var(--space-sm);
+}
+
+.story__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* Under 768 a callout is a line of text, not a slip. display: block keeps the real spaces around the pen marks. */
+.story__chip {
+  --wipe-bg: var(--surface-page);
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  white-space: normal;
+}
+
+/* Stacked from 768: text left, phone right, one row per step. */
+@media (min-width: 48rem) {
+  .story {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr);
+    gap: var(--space-3xl) var(--grid-gap);
+    align-items: start;
+  }
+
+  /* The phones hold the container's right edge, like the band's phone below them. */
+  .story__scene {
+    justify-items: end;
+    padding-block-start: 0;
+  }
+
+  .story__chips {
+    justify-content: flex-end;
+  }
+}
+
+/* Pinned, under 768: the stage sticks to the top of the screen on an opaque ground, and the copy scrolls out from under it. The phone is cut by the stage's bottom edge. */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) {
+  html[data-js] .story {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  html[data-js] .story__steps {
+    display: block;
+  }
+
+  html[data-js] .story__step {
+    padding-block: var(--space-xl) var(--space-3xl);
+    padding-inline-start: var(--space-md);
+  }
+
+  html[data-js] .story__stage {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    order: -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-md);
+    align-items: end;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-block-start: var(--scroll-pad);
+    padding-inline: var(--gutter);
+    border-block-end: var(--border-hair) solid var(--line-strong);
+    background: var(--surface-page);
+  }
+
+  html[data-js] .story__stage {
+    --story-w: min(50vw, calc(var(--phone-w-story) * 1.5));
+    --story-h: 36svh; /* The stage's phone window. UX.md caps it at 38svh */
+  }
+
+  html[data-js] .story__phone {
+    position: relative;
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    inline-size: var(--story-w);
+    block-size: var(--story-h);
+    /* Cut at the stage's bottom edge. The chip on the top edge and the callout text to the left stay uncut. */
+    clip-path: inset(calc(var(--space-md) * -1) 0 0 -100vw);
+  }
+
+  html[data-js] .story__base {
+    --device-w: 100%;
+    display: block;
+    position: absolute;
+    inset: 0 0 auto;
+  }
+
+  html[data-js] .story__scene {
+    --device-w: 100%;
+    position: absolute;
+    inset: 0 0 auto;
+    display: block;
+    padding: 0;
+  }
+
+  html[data-js] .story__scene:not(.is-active) {
+    opacity: 0;
+  }
+
+  /* The frame's chip is the base's; the scenes show only the screen on it. */
+  html[data-js] .story__device .device__chip {
+    display: none;
+  }
+
+  /* Callouts: text to the left of the phone, above the dots. */
+  html[data-js] .story__chips {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: calc(100% + var(--space-md));
+    inline-size: calc(100vw - var(--story-w) - var(--gutter) * 2 - var(--space-md));
+    block-size: var(--story-h);
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    padding-block-end: calc(var(--space-md) + var(--space-sm) * 2);
+  }
+
+  html[data-js] .story__dots {
+    display: flex;
+    grid-column: 1;
+    grid-row: 2;
+    gap: var(--space-sm);
+    padding-block-end: var(--space-md);
+  }
+
+  .story__dot {
+    inline-size: var(--space-sm);
+    block-size: var(--space-sm);
+    border-radius: var(--radius-full);
+    background: var(--line-control);
+  }
+
+  .story__dot.is-active {
+    background: var(--text-main);
+  }
+
+  /* Inactive and passed steps sit back; the active one carries the red bar. Only with .story--js, so a failed script leaves every step at full strength. */
+  .story--js .story__step:not(.is-active) {
+    color: var(--text-muted);
+  }
+
+  .story--js .story__step:not(.is-active) .slip {
+    color: var(--text-muted);
+  }
+
+  .story--js .story__step::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: calc(var(--border-hair) * 2);
+    background: var(--primary);
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+
+  .story--js .story__step.is-active::before {
+    transform: none;
+  }
+}
+
+/* Pinned, from 768: copy left, phone pinned right on the ghost chart, callouts beside it, dots upright on its right side. */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) and (min-width: 48rem) {
+  html[data-js] .story {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+    /* The ghost chart stops at the top and bottom of the story, so it never runs under the lead or the footnote. The padding keeps the chip on the phone's top edge inside the clip. */
+    overflow-y: clip;
+    overflow-x: visible;
+    padding-block-start: var(--space-md);
+  }
+
+  /* The copy keeps its own ground above the ghost chart, so the grid never runs behind a word. */
+  html[data-js] .story__steps {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / span calc(var(--grid-cols) / 2);
+    grid-row: 1;
+    /* The ground runs up over the story's top padding too. */
+    margin-block-start: calc(var(--space-md) * -1);
+    padding-block: var(--space-md) 40svh;
+    background: var(--surface-page);
+  }
+
+  html[data-js] .story__step {
+    margin-block-end: 44svh;
+    padding-block: 0;
+    padding-inline-start: var(--space-lg);
+  }
+
+  html[data-js] .story__step:last-child {
+    margin-block-end: 0;
+  }
+
+  html[data-js] .story__stage {
+    grid-column: calc(var(--grid-cols) / 2 + 1) / -1;
+    grid-row: 1;
+    inset-block-start: calc(var(--nav-h-scrolled) + var(--nav-inset) + var(--space-lg));
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    order: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  html[data-js] .story__ghost {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    z-index: -1;
+    display: block;
+    inline-size: calc(var(--chart-u-ghost) * 13);
+    block-size: calc(var(--chart-u-ghost) * 13);
+    background: url('../../assets/svg/bg-chart-ghost.svg') center / 100% 100% no-repeat;
+    transform: translate(-50%, -50%);
+  }
+
+  html[data-js] .story__stage {
+    --story-w: var(--phone-w-story);
+  }
+
+  html[data-js] .story__phone {
+    block-size: calc(var(--story-w) * var(--phone-height));
+    clip-path: none;
+  }
+
+  /* Upright on the phone's left side, facing the copy, clear of the callouts. */
+  html[data-js] .story__dots {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(50% - var(--story-w) / 2 - var(--space-lg));
+    flex-direction: column;
+    padding: 0;
+    transform: translateY(-50%);
+  }
+
+  /* Callouts: slips hung on the phone's edges. --at is set per scene by the page that places the story. */
+  html[data-js] .story__chips {
+    inset: 0;
+    display: block;
+    inline-size: auto;
+    block-size: auto;
+    padding: 0;
+  }
+
+  html[data-js] .story__chip {
+    position: absolute;
+    inset-block-start: var(--at, 30%);
+    z-index: 1;
+    --wipe-bg: var(--surface-raised);
+    inline-size: max-content;
+    max-inline-size: 8.5rem;
+    padding: var(--space-xs) var(--space-sm);
+    border: var(--border-hair) solid var(--line-strong);
+    background: var(--surface-raised);
+    color: var(--text-main);
+  }
+
+  /* 768 to 1023: the stage is barely wider than the phone, so the slips hang just past its edges, over the screen. */
+  html[data-js] .story__chip:nth-child(1) {
+    inset-inline-start: calc(var(--space-sm) * -1.5);
+  }
+
+  html[data-js] .story__chip:nth-child(2) {
+    inset-inline-end: calc(var(--space-sm) * -1.5);
+  }
+}
+
+/* From 1024: wider stage, so the callouts hang clear of the copy. */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) and (min-width: 64rem) {
+  html[data-js] .story__steps {
+    grid-column: 1 / span 5;
+  }
+
+  html[data-js] .story__stage {
+    grid-column: 6 / -1;
+  }
+
+  html[data-js] .story__step {
+    padding-inline-start: var(--space-xl);
+  }
+
+  /* From 1024 the slips stand beside the phone, overlapping only its bezel side, and never reach the copy. */
+  html[data-js] .story__chip:nth-child(1) {
+    inset-inline: auto calc(100% - var(--space-xl));
+  }
+
+  html[data-js] .story__chip:nth-child(2) {
+    inset-inline: calc(100% - var(--space-xl)) auto;
+  }
+}
+
+/* From 1200 there is room for each slip on one line. */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) and (min-width: 75rem) {
+  html[data-js] .story__chip {
+    max-inline-size: none;
+  }
+}

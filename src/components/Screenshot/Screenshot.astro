@@ -1,0 +1,54 @@
+---
+// Screenshot.astro: one app capture through Astro's <Picture> (sharp, at build): AVIF and WebP only, so no PNG ships. Sizes come from the capture's kind
+// (ARCHITECTURE.md section 5). The wrapper reserves the exact aspect ratio on a solid placeholder, so nothing shifts while the file loads.
+// Most pages use it through <PhoneFrame> and <LaptopFrame>, which add the device art and the Sample data chip.
+//
+//   <Screenshot name="phone-coach-score" eager />                 the LCP image: loading="eager" fetchpriority="high"
+//   <Screenshot name="desk-insights" sizes="(min-width: 1024px) 560px, 92vw" />
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { screens, type ScreenName } from '../../data/screens';
+import './Screenshot.css';
+
+interface Props {
+  /** The capture's file name in src/assets/screens/, without .png. The alt text comes from src/data/screens.ts. */
+  name: ScreenName;
+  /** Override the alt text: for the second use of one screen on a page, which needs its own sentence (8 to 20 words, ending in Sample data where numbers show). */
+  alt?: string;
+  /** True only for the LCP image (the home hero phone): loads at once with high priority. Every other capture is lazy. */
+  eager?: boolean;
+  /** The `sizes` attribute: how wide the capture renders. Defaults to the phone or desktop value from ARCHITECTURE.md section 5. */
+  sizes?: string;
+  class?: string;
+}
+
+const { name, eager = false, class: className } = Astro.props;
+const info = screens[name];
+const alt = Astro.props.alt ?? info.alt;
+
+// Every PNG in that folder is published, so the folder holds only the captures src/data/screens.ts lists (check-dist fails on any PNG in dist/_astro).
+const images = import.meta.glob<ImageMetadata>('../../assets/screens/*.png', { eager: true, import: 'default' });
+const image = images[`../../assets/screens/${name}.png`];
+if (!image) throw new Error(`Screenshot: src/assets/screens/${name}.png is missing.`);
+
+// Widths, printed size and default sizes per kind: the table in ARCHITECTURE.md section 5.
+const phone = info.kind === 'phone';
+const widths = phone ? [300, 450, 600, 780] : [640, 960, 1280, 1600, 2240];
+const sizes = Astro.props.sizes ?? (phone ? '(min-width: 768px) 320px, 70vw' : '(min-width: 1200px) 1120px, 92vw');
+---
+<div class:list={['screenshot', `screenshot--${info.kind}`, className]} data-alt={alt}>
+  <Picture
+    src={image}
+    alt={alt}
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    widths={widths}
+    sizes={sizes}
+    width={phone ? 780 : 2240}
+    height={phone ? 1688 : 1400}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding={eager ? 'auto' : 'async'}
+    fetchpriority={eager ? 'high' : undefined}
+  />
+</div>
+<script src="./Screenshot.ts"></script>

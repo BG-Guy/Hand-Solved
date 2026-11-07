@@ -1,0 +1,55 @@
+---
+// YourData.astro: #data, "Bring it in, take it out". Three info cards: import, export, use it as an app (UX.md 4.7, DESIGN.md 9.3).
+// Static HTML, no script. All words are COPY.md 4.7. No link, no button and no screen: icons only.
+// Hooks (MOTION.md 3.2): the cards sit under data-reveal-stagger and carry data-reveal="up" (E28); motion.css attaches the rise.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import './YourData.css';
+
+const cards = [
+  {
+    icon: 'data-import',
+    label: 'Import',
+    title: 'Bring your history in',
+    text: 'Sessions from one other tracker come in from its CSV export. A backup file can go back in on any device. A preview shows what an import will do before it runs.',
+  },
+  {
+    icon: 'data-export',
+    label: 'Export',
+    title: 'Take it with you',
+    text: 'Save a full backup of your sessions with their timelines, your hands and your goals. Or save sessions and hands as spreadsheets for Excel, Numbers or Google Sheets.',
+  },
+  {
+    icon: 'data-install',
+    label: 'Use it as an app',
+    title: 'Installs from the browser',
+    text: 'On iPhone it adds to the Home Screen from Safari. Chrome, Edge and Android show an Install button. It opens full screen. This concept site has nothing to install.',
+  },
+];
+---
+<section class="data" id="data" aria-labelledby="data-title">
+  <div class="data__wrap">
+    {/* Card index 8 of clubs (DESIGN.md section 6): top left, and the same turned 180 degrees at the bottom right. Decorative. */}
+    <CornerIndex rank="8" suit="club" />
+
+    <header class="data__head">
+      <h2 class="data__title" id="data-title">Bring it in, take it out</h2>
+      <p class="data__lead">Moving between trackers is normal. HandSolved reads one other tracker’s CSV export and saves your own backups and spreadsheets.</p>
+    </header>
+
+    <ul class="data__cards" role="list" data-reveal-stagger>
+      {
+        cards.map((card) => (
+          <li class="data__card" data-reveal="up">
+            <div class="data__card-top">
+              <Icon name={card.icon} size={32} class="data__icon" />
+              <p class="data__label">{card.label}</p>
+            </div>
+            <h3 class="data__card-title">{card.title}</h3>
+            <p class="data__text">{card.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

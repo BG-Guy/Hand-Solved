@@ -1,0 +1,64 @@
+/* Pen.css: the red pen, defined once (DESIGN.md 7.6). SiteLayout loads it on every page, because the pen appears in the hero slip, the story callouts and the sample-hand verdict.
+   Tick, wave and ring are the icon-pen-* marks (.pen__m); the strike is CSS. The strike and write-in animation is motion.css (E12, E18, E33).
+   A place that needs a different layout overrides it under its own class. The colours come from --pen-ink, so a scope such as .on-ink turns the whole pen white. */
+
+.pen {
+  position: relative;
+  display: inline-block;
+}
+
+.pen__m {
+  color: var(--pen-ink);
+  pointer-events: none;
+}
+
+.pen--tick .pen__m {
+  inline-size: 0.9em;
+  block-size: 0.9em;
+  margin-inline-start: 0.3em;
+}
+
+.pen--wave .pen__m {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: -0.3em;
+  inline-size: 100%;
+  block-size: 0.35em;
+}
+
+.pen--ring .pen__m {
+  position: absolute;
+  inset: -0.25em -0.45em;
+  inline-size: calc(100% + 0.9em);
+  block-size: calc(100% + 0.5em);
+}
+
+del.pen {
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+del.pen::after {
+  content: '';
+  position: absolute;
+  inset-inline: -0.06em;
+  inset-block-start: 52%;
+  block-size: var(--pen-stroke);
+  background: var(--pen-ink);
+  transform: rotate(var(--pen-tilt));
+  transform-origin: left center;
+}
+
+ins.pen {
+  margin-inline-start: 0.5em;
+  color: var(--text-red);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+/* The strike paints with background, which forced colors replaces. It must stay visible: it carries the meaning. */
+@media (forced-colors: active) {
+  del.pen::after {
+    background: CanvasText !important;
+  }
+}

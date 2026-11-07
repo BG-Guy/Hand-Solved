@@ -1,0 +1,128 @@
+/* YourData.css: #data. Head, then three info cards (DESIGN.md 9.3 "Info card", UX.md 4.7). Complete without script and without motion.css.
+   The cards' rise-in (MOTION.md E28) is attached by motion.css through [data-reveal]; the edge change on hover is feedback, so it lives here. */
+
+.data {
+  position: relative;
+}
+
+/* The container is the box the corner index is placed in, so the section padding is on it and the index sits in that padding. */
+.data__wrap {
+  position: relative;
+  inline-size: min(100%, var(--container-max));
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+/* Head: stacked under 1024. From 1024 the title takes 6 columns, so it breaks into two lines, and the lead sits in the last 4, on the title's last line. */
+.data__head {
+  display: grid;
+  gap: var(--space-lg);
+  margin-block-end: var(--space-2xl);
+}
+
+.data__title {
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.data__lead {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+@media (min-width: 1024px) {
+  .data__head {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: end;
+    margin-block-end: var(--space-3xl);
+  }
+
+  .data__title {
+    grid-column: 1 / span 6;
+  }
+
+  .data__lead {
+    grid-column: 9 / -1;
+    padding-block-end: var(--space-xs);
+  }
+}
+
+/* Cards: stacked under 768, three equal columns from 768. */
+.data__cards {
+  display: grid;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.data__card {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  border: var(--border-hair) solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  transition: border-color var(--dur-2);
+}
+
+/* Side by side the three cards share three rows (strip, title, text), so a title that wraps does not push its text out of line with the others.
+   Without subgrid support each card keeps its own rows, which still reads fine. */
+@media (min-width: 768px) {
+  .data__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--grid-gap);
+    row-gap: 0;
+  }
+
+  .data__card {
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: var(--space-sm);
+  }
+}
+
+@media (hover: hover) {
+  .data__card:hover {
+    border-color: var(--line-control);
+  }
+}
+
+/* Icon at the left, the card's name in mono at the right, a hairline under both: reads as the index strip of a card. */
+.data__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-block-end: var(--space-xs);
+  padding-block-end: var(--space-md);
+  border-block-end: var(--border-hair) solid var(--line);
+}
+
+.data__icon {
+  color: var(--text-main);
+}
+
+.data__label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  text-align: end;
+}
+
+.data__card-title {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+.data__text {
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}

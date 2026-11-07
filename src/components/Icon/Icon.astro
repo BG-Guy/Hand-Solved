@@ -1,0 +1,18 @@
+---
+// Icon.astro: one decorative icon from src/assets/svg/icon-<name>.svg, inlined at build. Colour is currentColor, so the parent sets it.
+// An icon beside text stays aria-hidden: the words carry the meaning. For an icon-only control, name the control with aria-label.
+import { svgFile } from './svg-files';
+import './Icon.css';
+
+interface Props {
+  /** The part of the file name after "icon-", for example "close" for icon-close.svg. */
+  name: string;
+  /** Pixel size from DESIGN.md section 10: 12, 14, 16, 20, 24 or 32. Printed as width and height attributes, so no inline style. */
+  size?: 12 | 14 | 16 | 20 | 24 | 32;
+  class?: string;
+}
+
+const { name, size = 16, class: className } = Astro.props;
+const Svg = svgFile(`icon-${name}`);
+---
+<Svg class:list={['icon', className]} width={size} height={size} aria-hidden="true" focusable="false" />

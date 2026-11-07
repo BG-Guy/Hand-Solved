@@ -1,0 +1,33 @@
+---
+// ClosingBand.astro: the closing band (#start): H2, one line, the demo button and a text link to the pricing section (COPY.md, Footer).
+// SiteFooter prints it inside the card back on every page except privacy, terms and the 404, and passes inFooter. A page never places it itself:
+// a <ClosingBand /> in a page prints nothing (and says so at build), so a page can never end up with two bands and two #start ids.
+// It sits on the red card, so the ground scope (.on-red) turns the button Face White and the text Face White.
+import CtaButton from '../CtaButton/CtaButton.astro';
+import TextLink from '../TextLink/TextLink.astro';
+import { closingBand } from '../../data/site';
+import './ClosingBand.css';
+
+interface Props {
+  /** True on the home page, where the pricing link stays on the page (#pricing). Elsewhere it goes to /#pricing. */
+  home?: boolean;
+  /** Only SiteFooter passes this. */
+  inFooter?: boolean;
+}
+
+const { home = false, inFooter = false } = Astro.props;
+const pricingHref = home ? '#pricing' : closingBand.pricingLink.href;
+if (!inFooter) console.warn('[ClosingBand] SiteFooter prints the closing band. Remove <ClosingBand /> from the page; it prints nothing here.');
+---
+{
+  inFooter && (
+    <section class="closing-band" id="start" aria-labelledby="closing-band-title">
+      <h2 class="closing-band__title" id="closing-band-title">{closingBand.heading}</h2>
+      <p class="closing-band__line">{closingBand.line}</p>
+      <div class="closing-band__actions">
+        <CtaButton dialog="dlg-sample" cta="closing" size="lg" />
+        <TextLink href={pricingHref}>{closingBand.pricingLink.label}</TextLink>
+      </div>
+    </section>
+  )
+}

@@ -1,0 +1,26 @@
+/* CardChip.css: a card inside a sentence, small, on a hairline (the same look as the pop-up's card chip). */
+
+.card-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0 0.35em;
+  border: var(--border-hair) solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.card-chip .icon {
+  inline-size: 0.8em;
+  block-size: 0.8em;
+}
+
+.card-chip--red {
+  color: var(--text-red);
+}

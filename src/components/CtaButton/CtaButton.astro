@@ -1,0 +1,56 @@
+---
+// CtaButton.astro: the site's button. With `dialog` it opens a pop-up (the one delegated listener in Dialog.ts does the work, so a section needs no script).
+// Without `dialog` but with `href` it is a plain link drawn as a button. Demo buttons also print a <noscript> link to the worked example.
+//
+//   <CtaButton dialog="dlg-sample" cta="hero" size="lg" />                         "Grade a sample hand"
+//   <CtaButton dialog="dlg-early" cta="pricing-pro" plan="pro" full />             "Get early access", plan chip "pro"
+//   <CtaButton href="/" variant="secondary" label="Back to home" cta="404-home" />   a link
+import { cta as ctaLabels, noScriptDemo } from '../../data/site';
+import '../TextLink/TextLink.css';
+import './CtaButton.css';
+
+interface Props {
+  /** Id of the dialog to open: "dlg-sample" (pop-up 1) or "dlg-early" (pop-up 2). */
+  dialog?: 'dlg-sample' | 'dlg-early';
+  /** Link target, when there is no dialog. */
+  href?: string;
+  /** The data-cta value, so measurement can be added later: hero, header, story, numbers, closing, mobile-bar, menu, pricing-free, pricing-pro and so on. */
+  cta: string;
+  /** Pop-up 2 only: which plan chip to show ("free", "pro" or "pro-yearly"). The pop-up reads it from the trigger. */
+  plan?: string;
+  /** Visible text. Default: "Grade a sample hand" for dlg-sample, "Get early access" for dlg-early. Required for a link. */
+  label?: string;
+  variant?: 'primary' | 'secondary';
+  /** sm is 44 px tall (the navbar), md 48, lg 56 (hero, mobile bar, sheets). */
+  size?: 'sm' | 'md' | 'lg';
+  /** Fill the width of the parent: sheets, the mobile bar, plan cards. */
+  full?: boolean;
+  /** Print the <noscript> "Read a worked example" link beside the button. Default: true for dlg-sample, false otherwise. */
+  fallback?: boolean;
+  class?: string;
+}
+
+const { dialog, href, cta, plan, variant = 'primary', size = 'md', full = false, class: className } = Astro.props;
+const label = Astro.props.label ?? (dialog === 'dlg-early' ? ctaLabels.early : ctaLabels.demo);
+const fallback = Astro.props.fallback ?? dialog === 'dlg-sample';
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, full && 'btn--full', className];
+if (!dialog && !href) throw new Error('CtaButton: give it a dialog or an href.');
+---
+{
+  dialog ? (
+    <button type="button" class:list={classes} aria-haspopup="dialog" data-dialog-open={dialog} data-cta={cta} data-plan={plan}>
+      {label}
+    </button>
+  ) : (
+    <a class:list={classes} href={href} data-cta={cta}>
+      {label}
+    </a>
+  )
+}
+{
+  fallback && (
+    <noscript>
+      <a class="text-link" href={noScriptDemo.href}>{noScriptDemo.label}</a>
+    </noscript>
+  )
+}

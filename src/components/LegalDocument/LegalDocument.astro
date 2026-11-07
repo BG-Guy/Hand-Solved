@@ -1,0 +1,56 @@
+---
+// LegalDocument.astro: shared layout for /privacy and /terms: title block, summary box, contents list, clauses and the way back home.
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.astro';
+import type { LegalDoc } from '../../data/legal';
+import type { PageEntry } from '../../data/pages';
+import './LegalDocument.css';
+
+interface Props {
+  page: PageEntry;
+  doc: LegalDoc;
+  /** The other legal page, linked at the end (SEO.md section 6: each links to the other). */
+  other: { label: string; href: string };
+}
+
+const { page, doc, other } = Astro.props;
+if (!page.lastmod) throw new Error(`LegalDocument: ${page.path} needs a lastmod date.`);
+// "Last updated" is a real date: the same value feeds the <time> element and the sitemap lastmod.
+const updated = new Date(`${page.lastmod}T00:00:00Z`).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+<article class="legal">
+  <header class="legal__head">
+    <Breadcrumbs trail={page.breadcrumb ?? []} />
+    <h1>{page.h1}</h1>
+    <p class="legal__updated">Last updated: <time datetime={page.lastmod}>{updated}</time></p>
+    <div class="legal__summary">
+      <p>{doc.summary}</p>
+    </div>
+  </header>
+  <div class="legal__body">
+    <nav class="legal__toc" aria-labelledby="toc-label">
+      <p class="legal__toc-label" id="toc-label">{doc.tocLabel}</p>
+      <ol>
+        {doc.clauses.map((clause) => <li><a href={`#${clause.id}`}>{clause.heading}</a></li>)}
+      </ol>
+    </nav>
+    <div class="legal__prose flow">
+      {
+        doc.clauses.map((clause) => (
+          <>
+            <h2 id={clause.id}>{clause.heading}</h2>
+            {clause.paragraphs.map((text) => <p>{text}</p>)}
+          </>
+        ))
+      }
+      <p class="legal__end">
+        <a href="/">Back to home</a>
+        <a href={other.href}>{other.label}</a>
+      </p>
+    </div>
+  </div>
+</article>

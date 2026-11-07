@@ -1,0 +1,97 @@
+---
+// SampleHandDialog.astro: pop-up 1, #dlg-sample, built on the shared Dialog shell. All fixed copy is static HTML here; SampleHandDialog.ts (loaded by Dialog.ts on first intent)
+// fills the hand, the choices and the verdict. Before that module arrives the dialog shows the loading state from docs/site/DESIGN.md 9.8: empty table, flat blocks, aria-busy.
+import { cta } from '../../data/site';
+import Dialog from '../Dialog/Dialog.astro';
+import Icon from '../Icon/Icon.astro';
+import UnitSwitch from '../UnitSwitch/UnitSwitch.astro';
+import { sprite } from './icons';
+import { table } from './table';
+import './SampleHandDialog.css';
+
+// Icons the dialog script draws with <use>: the suits on the cards, a grade icon on the stamp, the three pen marks, the chevron on a disclosure and the cue's arrow.
+const icons = sprite('hs', [
+  'suit-spade', 'suit-heart', 'suit-diamond', 'suit-club',
+  'grade-best', 'grade-good', 'grade-inaccuracy', 'grade-mistake', 'grade-blunder',
+  'pen-tick', 'pen-wave', 'pen-ring',
+  'chevron-down', 'arrow-down',
+]);
+---
+<Dialog id="dlg-sample" size="sample">
+  <Fragment slot="header">
+    <div class="hs-head">
+      <h2 class="hs-title" id="dlg-sample-title" tabindex="-1" autofocus>{cta.demo}</h2>
+      <div class="hs-progress">
+        <p class="hs-count">Hand <span data-count>1</span> of 3</p>
+        <ol class="hs-dots">
+          <li class="is-done" data-dot aria-current="step"><span class="visually-hidden">Hand 1</span></li>
+          <li data-dot><span class="visually-hidden">Hand 2</span></li>
+          <li data-dot><span class="visually-hidden">Hand 3</span></li>
+        </ol>
+      </div>
+      <UnitSwitch compact hideLabel class="hs-unit" />
+    </div>
+  </Fragment>
+
+  <Fragment set:html={icons} />
+  <div class="hs-body">
+    <div class="hs-scene">
+      <div class="hs-scene__box" data-scene set:html={table()} />
+      <div class="hs-error" data-error hidden>
+        <Icon name="alert" size={32} />
+        <p class="hs-error__h" data-error-h tabindex="-1">This sample hand could not load. Close this box and reopen it, or read how a hand is graded.</p>
+        <a href="/#how" data-dialog-close>See how it works</a>
+        <button type="button" class="hs-btn" data-dialog-close>Close</button>
+      </div>
+    </div>
+
+    <div class="hs-main">
+      <details class="hs-disc" data-intro open>
+        <summary>What am I looking at?<Icon name="chevron-down" /></summary>
+        <p>You are one player at an 8-seat poker table. Each hand stops at one decision. Pick what you would do, then see what GTO does, how often, and what each choice is worth. Your pick gets a grade.</p>
+      </details>
+      <details class="hs-disc">
+        <summary>What do these words mean?<Icon name="chevron-down" /></summary>
+        <dl class="hs-gloss">
+          <div><dt>GTO</dt><dd>Game theory optimal, the strategy a poker solver computes. Use it as a baseline to compare your play with.</dd></div>
+          <div><dt>bb</dt><dd>Big blind, the forced bet that sets the stakes. At $1/$2 it is $2. Amounts are counted in big blinds, and the BB/$ switch shows dollars.</dd></div>
+          <div><dt>Worth</dt><dd>The average result of a choice from this point on, in big blinds. Folding is worth 0.</dd></div>
+        </dl>
+      </details>
+
+      <div class="hs-stage" data-stage aria-busy="true">
+        <div class="hs-skel" aria-hidden="true">
+          <span class="sk sk--h"></span><span class="sk sk--t"></span><span class="sk sk--t"></span><span class="sk sk--q"></span>
+          <span class="sk sk--b"></span><span class="sk sk--b"></span>
+        </div>
+      </div>
+
+      {/* Verdict navigation, two variants so Tab order follows the visual order. Dialog.ts opens pop-up 2 from the data-dialog-open buttons. */}
+      <div class="hs-nav" data-nav="mid" hidden>
+        <button type="button" class="hs-btn hs-btn--primary" data-act="next">Deal next hand</button>
+        <button type="button" class="hs-btn hs-btn--secondary" data-dialog-open="dlg-early" data-cta="verdict-early" aria-haspopup="dialog">{cta.early}</button>
+      </div>
+      <div class="hs-nav" data-nav="end" hidden>
+        <p class="hs-done">That is all three hands. The early-access form checks an address and sends nothing.</p>
+        <button type="button" class="hs-btn hs-btn--primary" data-dialog-open="dlg-early" data-cta="verdict-early" aria-haspopup="dialog">{cta.early}</button>
+        <button type="button" class="hs-btn hs-btn--secondary" data-act="again">Start over</button>
+      </div>
+    </div>
+  </div>
+
+  {/* Copied into each verdict by the dialog script. */}
+  <template data-explain-t>
+    <details class="hs-disc">
+      <summary>What the grade means<Icon name="chevron-down" /></summary>
+      <p>Every choice has an average result if the same spot came up many times. GTO, the strategy a poker solver computes, puts a number on each option, in big blinds. The grade compares your choice with the best one. The less yours gives up, compared with the size of the pot, the higher the score, from 0 to 100. The grade judges the choice, so how the hand turned out has no effect on it.</p>
+      <p>Best move 97 and up. Good 80 and up. Inaccuracy 55 and up. Mistake 30 and up. Blunder below 30.</p>
+      <p>Percentages are rounded, so 0% can mean a hair above zero.</p>
+    </details>
+  </template>
+
+  <p class="visually-hidden" role="status" aria-live="polite" data-live></p>
+
+  <Fragment slot="footer">
+    <p class="hs-foot">Saved sample run from the real engine. Live solves can differ slightly. Amounts in <span data-unit-name>big blinds</span>.</p>
+  </Fragment>
+</Dialog>

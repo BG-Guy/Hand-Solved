@@ -1,0 +1,64 @@
+---
+// RangeChartList.astro: the 13 by 13 preflop chart as text (WCAG 1.1.1, docs/site/qa/a11y.md A11Y-04). The chart is an image to a screen reader, so which hand raises, calls or folds
+// exists only as colour there. This closed <details> lists every hand by what it does, worked out at build from src/data/range-chart.json (f is [fold, call, raise]).
+// Closed, it adds a few dozen nodes of plain text and no layout. It sits under the chart's caption, the way "View data as a table" sits under the bankroll chart.
+//
+//   <RangeChartList />
+import Icon from '../Icon/Icon.astro';
+import rangeChart from '../../data/range-chart.json';
+import '../TextLink/TextLink.css';
+import './RangeChartList.css';
+
+type Hand = { hand: string; f: number[] };
+const rows: Hand[] = rangeChart.rows;
+
+const percent = (share: number) => `${Math.round(share * 100)}%`;
+// A hand with more than one action reads as "A8s: raise 34%, call 66%", the actions in the order the chart's colours stack: raise, call, fold.
+const mixText = ({ hand, f }: Hand) =>
+  `${hand}: ${[
+    f[2] > 0 && `raise ${percent(f[2])}`,
+    f[1] > 0 && `call ${percent(f[1])}`,
+    f[0] > 0 && `fold ${percent(f[0])}`,
+  ]
+    .filter(Boolean)
+    .join(', ')}`;
+
+const kind = ({ f }: Hand) => [f[2] > 0 && 'raise', f[1] > 0 && 'call', f[0] > 0 && 'fold'].filter(Boolean).join(' ');
+const inGroup = (key: string) => rows.filter((row) => kind(row) === key);
+const knownKinds = ['raise', 'raise call', 'call', 'call fold', 'fold'];
+const other = rows.filter((row) => !knownKinds.includes(kind(row)));
+
+// Pure groups list the hands. Mixed groups list each hand with its shares. Fold is every hand not named above, so it is not listed twice.
+const groups = [
+  { name: 'Always raise', hands: inGroup('raise').map((row) => row.hand) },
+  { name: 'Raise or call', mixes: inGroup('raise call').map(mixText) },
+  { name: 'Always call', hands: inGroup('call').map((row) => row.hand) },
+  { name: 'Call or fold', mixes: inGroup('call fold').map(mixText) },
+  ...(other.length > 0 ? [{ name: 'Other mixes', mixes: other.map(mixText) }] : []),
+].filter((group) => (group.hands ?? group.mixes ?? []).length > 0);
+---
+<details class="rcl">
+  <summary class="rcl__summary text-link"><span>View the chart as a list</span><Icon name="chevron-down" size={16} class="rcl__chevron" /></summary>
+  <dl class="rcl__groups">
+    {
+      groups.map((group) => (
+        <div>
+          <dt>{group.name}</dt>
+          {group.hands ? (
+            <dd>{group.hands.join(', ')}</dd>
+          ) : (
+            <dd>
+              <ul role="list">
+                {group.mixes?.map((mix) => <li>{mix}</li>)}
+              </ul>
+            </dd>
+          )}
+        </div>
+      ))
+    }
+    <div>
+      <dt>Fold</dt>
+      <dd>Every other hand</dd>
+    </div>
+  </dl>
+</details>

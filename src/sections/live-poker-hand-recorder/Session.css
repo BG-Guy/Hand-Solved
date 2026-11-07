@@ -1,0 +1,89 @@
+/* Session.css: the whole-session row on stock: words on one side, the History capture on the other (UX.md 5.2 block 4).
+   The session stamp is the coach's pen: a letter in Pip Red with one rim around it, a degree or two off true. Decorative. */
+
+.ses__frame {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2xl);
+  align-items: center;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.ses__text {
+  display: grid;
+  gap: var(--space-lg);
+  align-content: center;
+}
+
+.ses__head {
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
+}
+
+.ses__stamp {
+  display: grid;
+  place-items: center;
+  inline-size: var(--space-3xl);
+  block-size: var(--space-3xl);
+  border: var(--border-error) solid var(--pen-ink);
+  border-radius: var(--radius-md);
+  outline: var(--border-hair) solid var(--pen-ink);
+  outline-offset: 2px;
+  color: var(--pen-ink);
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+  transform: rotate(var(--stamp-tilt-session));
+}
+
+.ses__title {
+  max-inline-size: 9em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.ses__body {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+}
+
+/* The Sample data tag hangs on the frame's top edge, so the column keeps room above it. */
+.ses__device {
+  display: grid;
+  justify-items: center;
+  padding-block-start: var(--space-md);
+}
+
+.ses__phone {
+  --device-w: var(--phone-w-panel);
+}
+
+@media (min-width: 48rem) {
+  .ses__frame {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+
+  .ses__device {
+    justify-items: end;
+  }
+}
+
+@media (min-width: 64rem) {
+  .ses__frame {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  }
+
+  .ses__text {
+    grid-column: 1 / span 5;
+  }
+
+  .ses__device {
+    grid-column: 8 / -1;
+  }
+}

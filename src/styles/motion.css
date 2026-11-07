@@ -1,0 +1,900 @@
+/* motion.css: how the site moves. Purposes, timings and fallbacks are in docs/site/MOTION.md; the E numbers below are its effect numbers.
+   One gated block: under reduced motion or print this file adds nothing and every element sits at rest. Component CSS is complete without it.
+   Scroll-linked rules hold only five longhands (name, timing-function, fill-mode, timeline, range). Lightning CSS folds anything more into a shorthand that browsers reject (MOTION.md 2.5).
+   Anything hidden until it animates is hidden here, and only behind a class a script added (html.reveal-io, .story--js, .toolbox--js), so a failed script leaves it visible. */
+
+.veil {
+  display: none;
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* E08 Anchor scroll. Native scrolling only: nothing intercepts the wheel or touch. */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* E01 The cut. Two flat doors over a hero that is already painted. Transform only, gone at 820 ms: 200 + 60 + 560. head-guard.js sets data-veil="seen" after the first play in a session. */
+  html:not([data-veil='seen']) .veil {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-veil);
+    display: block;
+    pointer-events: none;
+    contain: strict;
+    animation: veil-end 1ms linear calc(var(--dur-2) + var(--stagger) + var(--dur-4)) forwards;
+  }
+
+  .veil__door {
+    position: absolute;
+    inset-block: 0;
+    inline-size: calc(50% + 0.5px);
+    overflow: clip;
+    background: var(--surface-dark);
+    color: var(--text-inverse);
+  }
+
+  .veil__door--l {
+    inset-inline-start: 0;
+    animation: veil-l var(--dur-4) var(--ease-in-out) var(--dur-2) forwards;
+  }
+
+  .veil__door--r {
+    inset-inline-end: 0;
+    animation: veil-r var(--dur-4) var(--ease-in-out) calc(var(--dur-2) + var(--stagger)) forwards;
+  }
+
+  /* Each door holds a copy of the mark, centred on its seam edge, so the mark and the red cell split down the middle as the doors part. */
+  .veil__mark {
+    position: absolute;
+    inset-block-start: calc(50% - 52px);
+    inline-size: 104px;
+    block-size: 104px;
+  }
+
+  .veil__door--l .veil__mark {
+    inset-inline-end: -52px;
+  }
+
+  .veil__door--r .veil__mark {
+    inset-inline-start: -52px;
+  }
+
+  .veil__mark .mark-cell {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: veil-cell var(--dur-2) var(--ease-spring) both;
+  }
+
+  @keyframes veil-l {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes veil-r {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes veil-cell {
+    from {
+      transform: scale(0.4);
+    }
+  }
+
+  @keyframes veil-end {
+    to {
+      visibility: hidden;
+    }
+  }
+
+  /* E02 Page to page. No script. The header and the mobile bar persist; the rest fades through the page ground. Opacity only. The @view-transition rule itself is inline in SiteLayout.astro: see the note there. */
+  .site-header {
+    view-transition-name: site-header;
+  }
+
+  .mobile-cta {
+    view-transition-name: mobile-cta;
+  }
+
+  ::view-transition-group(site-header),
+  ::view-transition-group(mobile-cta) {
+    z-index: 1;
+  }
+
+  ::view-transition-old(site-header),
+  ::view-transition-new(site-header),
+  ::view-transition-old(mobile-cta),
+  ::view-transition-new(mobile-cta) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-old(root) {
+    animation: vt-out var(--dur-1) var(--ease-in-out) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: vt-in var(--dur-3) var(--ease-out) both;
+  }
+
+  @keyframes vt-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes vt-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* Shared keyframes. Each one lands on whatever the element's own rule says, so a rest pose never has to be repeated here. */
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--space-sm));
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes line-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @keyframes num-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5em);
+    }
+  }
+
+  @keyframes num-out {
+    to {
+      opacity: 0;
+      transform: translateY(-0.5em);
+    }
+  }
+
+  /* E06 The burger's close icon turns in as the panel grows. The panel, links and button are in Navbar.css. */
+  .nav__menu[data-state='open'] .nav__menu-close .icon {
+    animation: icon-turn var(--dur-3) var(--ease-spring) both;
+  }
+
+  @keyframes icon-turn {
+    from {
+      opacity: 0;
+      transform: rotate(-90deg);
+    }
+  }
+
+  /* E10 The H1 lines and the phone settle. Nothing here touches opacity: both are painted from frame one, and the masks show about 70 percent of each line.
+     The phone's rise is on its body, not on .tilt: under 768 .tilt holds the crop, which has to stay on the printed rule while the phone rises behind it. */
+  .hero__h1 .line__in {
+    animation: line-rise var(--dur-4) var(--ease-out) calc(var(--dur-1) + var(--n, 0) * var(--stagger)) both;
+  }
+
+  .hero__h1 .line:nth-child(4) {
+    --n: 1;
+  }
+
+  .hero__h1 .line:nth-child(5) {
+    --n: 2;
+  }
+
+  .hero__device .tilt__body {
+    animation: phone-rise var(--dur-4) var(--ease-out) var(--dur-2) both;
+  }
+
+  @keyframes line-rise {
+    from {
+      transform: translateY(0.28em);
+    }
+  }
+
+  @keyframes phone-rise {
+    from {
+      transform: translateY(var(--space-xl));
+    }
+  }
+
+  /* E11 The chart reads itself: one hairline ring per pure-raise cell, in data order, one per --stagger. No cell moves. No fill mode: a held end frame would beat the wake's hover below. */
+  .hero {
+    --scan-start: var(--dur-5);
+  }
+
+  .plate__grid > .r::after {
+    animation: scan-ring var(--dur-5) linear calc(var(--scan-start) + var(--k) * var(--stagger));
+  }
+
+  .plate__grid > :nth-child(1) { --k: 0; }
+  .plate__grid > :nth-child(2) { --k: 1; }
+  .plate__grid > :nth-child(3) { --k: 2; }
+  .plate__grid > :nth-child(4) { --k: 3; }
+  .plate__grid > :nth-child(5) { --k: 4; }
+  .plate__grid > :nth-child(6) { --k: 5; }
+  .plate__grid > :nth-child(14) { --k: 6; }
+  .plate__grid > :nth-child(15) { --k: 7; }
+  .plate__grid > :nth-child(16) { --k: 8; }
+  .plate__grid > :nth-child(17) { --k: 9; }
+  .plate__grid > :nth-child(27) { --k: 10; }
+  .plate__grid > :nth-child(28) { --k: 11; }
+  .plate__grid > :nth-child(29) { --k: 12; }
+  .plate__grid > :nth-child(30) { --k: 13; }
+  .plate__grid > :nth-child(40) { --k: 14; }
+  .plate__grid > :nth-child(43) { --k: 15; }
+  .plate__grid > :nth-child(44) { --k: 16; }
+  .plate__grid > :nth-child(53) { --k: 17; }
+  .plate__grid > :nth-child(57) { --k: 18; }
+  .plate__grid > :nth-child(71) { --k: 19; }
+  .plate__grid > :nth-child(85) { --k: 20; }
+  .plate__grid > :nth-child(99) { --k: 21; }
+  .plate__grid > :nth-child(113) { --k: 22; }
+  .plate__grid > :nth-child(127) { --k: 23; }
+  .plate__grid > :nth-child(141) { --k: 24; }
+
+  @keyframes scan-ring {
+    0%,
+    100% {
+      opacity: 0;
+    }
+
+    15%,
+    60% {
+      opacity: 1;
+    }
+  }
+
+  /* E12, E18, E33 The red pen. One gesture in three places: the strike draws, then the better play is wiped in, left to right, from under a cover in the ground's colour.
+     The hero slip arrives whole, with its worth line, as the chart scan starts, and is never seen as an empty box. The pen then marks it: strike at 1220 ms, Fold written in by 1860 ms.
+     The scan keeps lighting its rings after that; the slip does not wait for it. Longhands only, as for every effect written here. */
+  .hero__slip {
+    --slip-delay: var(--scan-start);
+    --pen-delay: calc(var(--slip-delay) + var(--dur-3));
+    animation-name: rise-in;
+    animation-duration: var(--dur-3);
+    animation-timing-function: var(--ease-out);
+    animation-delay: var(--slip-delay);
+    animation-fill-mode: both;
+  }
+
+  .story__scene {
+    --pen-delay: var(--dur-3);
+  }
+
+  .hs-yc {
+    --pen-delay: calc(var(--dur-2) - var(--dur-1));
+    --write-delay: calc(2 * var(--dur-1));
+    --wipe-bg: var(--surface-page);
+  }
+
+  :is(.hero__slip, .story--js .story__scene.is-active) del.pen::after,
+  .hs-view.is-new del.pen.is-new::after {
+    animation: pen-strike var(--dur-3) var(--ease-out) var(--pen-delay) both;
+  }
+
+  :is(.hero__slip, .story--js .story__scene.is-active) ins.pen::before,
+  .hs-view.is-new del.pen.is-new + ins.pen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--wipe-bg, var(--surface-raised));
+    transform: scaleX(0);
+    transform-origin: right center;
+    animation: pen-write var(--dur-3) var(--ease-out) var(--write-delay, calc(var(--pen-delay) + var(--dur-3))) both;
+  }
+
+  @keyframes pen-strike {
+    from {
+      transform: rotate(var(--pen-tilt)) scaleX(0);
+    }
+  }
+
+  @keyframes pen-write {
+    from {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    /* E13 Chart wake: the ring lights at once and fades, so a moving pointer leaves a trail. */
+    .plate__grid > i::after {
+      transition: opacity var(--dur-5) var(--ease-out);
+    }
+
+    .plate__grid > i:hover::after {
+      opacity: 1;
+      transition: none;
+    }
+
+    /* E14 Phone tilt: the hovered side leans away. The nine zones belong to the static wrapper, so the lean cannot move a zone out from under the pointer. */
+    .tilt__body {
+      transition: transform var(--dur-4) var(--ease-out);
+    }
+
+    .tilt:has(.tilt__zones :hover) .tilt__body {
+      transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    }
+
+    .tilt:has(.z1:hover) { --rx: 2.5deg; --ry: -2.5deg; }
+    .tilt:has(.z2:hover) { --rx: 2.5deg; }
+    .tilt:has(.z3:hover) { --rx: 2.5deg; --ry: 2.5deg; }
+    .tilt:has(.z4:hover) { --ry: -2.5deg; }
+    .tilt:has(.z6:hover) { --ry: 2.5deg; }
+    .tilt:has(.z7:hover) { --rx: -2.5deg; --ry: -2.5deg; }
+    .tilt:has(.z8:hover) { --rx: -2.5deg; }
+    .tilt:has(.z9:hover) { --rx: -2.5deg; --ry: 2.5deg; }
+
+    /* E30 Pro rim: draws once on hover, retracts quickly. Its static geometry is in Pricing.css, and at rest it is invisible. */
+    .rim rect {
+      transition:
+        stroke-dashoffset var(--dur-2) var(--ease-in-out),
+        opacity var(--dur-2) var(--ease-in-out);
+    }
+
+    .plan--pro:hover .rim rect {
+      stroke-dashoffset: 0;
+      opacity: 1;
+      transition:
+        stroke-dashoffset var(--dur-4) var(--ease-out),
+        opacity var(--dur-1) linear;
+    }
+  }
+
+  /* E16, E17 The story. State-driven in every browser: Story.ts sets .is-active, and these are time-based, because a pen stroke frozen half-struck mid-scroll looks broken (MOTION.md ruling 6). */
+  html[data-js] .story__scene {
+    transition: opacity var(--dur-4) var(--ease-in-out);
+  }
+
+  .story__dot {
+    transition: background-color var(--dur-3) linear;
+  }
+
+  .story--js .story__step,
+  .story--js .story__step .slip {
+    transition: color var(--dur-3) linear;
+  }
+
+  .story--js .story__scene.is-active .story__chip {
+    animation: rise-in var(--dur-4) var(--ease-out) calc(var(--dur-2) + var(--n, 0) * var(--stagger)) both;
+  }
+
+  .story--js .story__chip:nth-child(2) {
+    --n: 1;
+  }
+
+  .story--js .story__scene:not(.is-active) .story__chip {
+    opacity: 0;
+    transition: opacity var(--dur-2) var(--ease-in-out);
+  }
+
+  .story--js .story__step::before {
+    transition:
+      transform var(--dur-3) var(--ease-out),
+      opacity var(--dur-2) var(--ease-in-out);
+  }
+
+  /* A passed step keeps its bar and loses it by fading, so the bar never runs backwards as you scroll on. */
+  .story--js .story__step:has(~ .story__step.is-active)::before {
+    opacity: 0;
+    transform: none;
+  }
+
+  /* E21 Counters and the dashboard tiles. The roll itself is in Counter.css; the tiles finish while the line is still drawing. */
+  .kpi .count__strip {
+    transition-duration: var(--dur-4);
+  }
+
+  /* E25 BB to $: the old value leaves upward, the new one arrives from below. No clipping, so no mask problems. */
+  .num.is-roll .num__v {
+    display: inline-block;
+    animation: num-in var(--dur-3) var(--ease-out) both;
+  }
+
+  .num.is-roll::before {
+    content: attr(data-prev);
+    position: absolute;
+    inset: 0;
+    white-space: nowrap;
+    animation: num-out var(--dur-3) var(--ease-out) both;
+  }
+
+  /* E26 The point under the readout grows. */
+  .dot {
+    transition: transform var(--dur-1) linear;
+  }
+
+  /* E24 Bankroll: the line and its dots share one timeline and one 0 to 1. --t is the arc length to a dot, so a dot appears as the line reaches it. */
+  .chart__line {
+    stroke-dasharray: 1;
+  }
+
+  .dot[data-t='1'] { --t: 0.05; }
+  .dot[data-t='2'] { --t: 0.1; }
+  .dot[data-t='3'] { --t: 0.15; }
+  .dot[data-t='4'] { --t: 0.2; }
+  .dot[data-t='5'] { --t: 0.25; }
+  .dot[data-t='6'] { --t: 0.3; }
+  .dot[data-t='7'] { --t: 0.35; }
+  .dot[data-t='8'] { --t: 0.4; }
+  .dot[data-t='9'] { --t: 0.45; }
+  .dot[data-t='10'] { --t: 0.5; }
+  .dot[data-t='11'] { --t: 0.55; }
+  .dot[data-t='12'] { --t: 0.6; }
+  .dot[data-t='13'] { --t: 0.65; }
+  .dot[data-t='14'] { --t: 0.7; }
+  .dot[data-t='15'] { --t: 0.75; }
+  .dot[data-t='16'] { --t: 0.8; }
+  .dot[data-t='17'] { --t: 0.85; }
+  .dot[data-t='18'] { --t: 0.9; }
+  .dot[data-t='19'] { --t: 0.95; }
+  .dot[data-t='20'] { --t: 1; }
+
+  @keyframes dot-in {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+
+  @keyframes last-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--space-xs));
+    }
+  }
+
+  /* Scroll-linked effects, where the browser has scroll timelines. Everywhere else these elements are simply visible, or html.reveal-io takes over below. */
+  @supports (animation-timeline: view()) {
+    /* E15 Hero art lag. The whole wrapper moves, so phone and plate never shift against each other. It sinks behind the proof strip, which is opaque so no ink runs under its words.
+       Under 768 the caption sits 43 px above the strip, so the lag stops at 32 px there and the caption never reaches the strip's words. From 768 the art is beside the strip, not above it, and keeps 48 px. */
+    .hero__art {
+      --art-lag: var(--space-xl);
+      animation-name: art-lag;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+
+    @media (min-width: 48rem) {
+      .hero__art {
+        --art-lag: var(--space-2xl);
+      }
+    }
+
+    .hero__proof {
+      position: relative;
+      z-index: 1;
+      background: var(--surface-page);
+    }
+
+    /* E19 Lattice drift, on the story band only (MOTION.md ruling 3): 1 rem either way, behind static text. */
+    .band__lattice {
+      animation-name: lattice-drift;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* E24 The timeline is the plot's, not the card's: the card is taller than the screen, and on the card's timeline the line finished before the plot had come into view.
+       0 when the plot's top is 85 percent down the screen, 1 at 40 percent. Lengths, so the mapping does not depend on the plot's height. */
+    .plot {
+      view-timeline: --bankroll block;
+      /* The mobile bar's scroll padding would otherwise shift this range about 85 px late on phones. */
+      view-timeline-inset: 0;
+    }
+
+    .chart__line {
+      animation-name: line-draw;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --bankroll;
+      animation-range: cover 15vh cover 60vh;
+    }
+
+    .dot {
+      animation-name: dot-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --bankroll;
+      animation-range: cover calc(15vh + var(--t, 0) * 45vh) cover calc(17vh + var(--t, 0) * 45vh);
+    }
+
+    .chart__last {
+      animation-name: last-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --bankroll;
+      animation-range: cover 60vh cover 63vh;
+    }
+
+    /* E37 Section reveals. Three variants, one range, and the stagger shifts the range. The range is capped in lengths and opacity lands at its midpoint:
+       a percentage alone leaves a tall block pale wherever the visitor stops, because only its top has entered. */
+    [data-reveal] {
+      animation-name: reveal-up;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry min(calc(8% + var(--n, 0) * 7%), calc(4vh + var(--n, 0) * 3vh)) entry min(calc(65% + var(--n, 0) * 7%), calc(22vh + var(--n, 0) * 3vh));
+    }
+
+    [data-reveal='rise'] {
+      animation-name: reveal-rise;
+    }
+
+    [data-reveal='row'] {
+      animation-name: reveal-row;
+    }
+
+    @keyframes art-lag {
+      to {
+        transform: translateY(var(--art-lag));
+      }
+    }
+
+    @keyframes lattice-drift {
+      from {
+        transform: translateY(calc(var(--space-md) * -1));
+      }
+
+      to {
+        transform: translateY(var(--space-md));
+      }
+    }
+
+    @keyframes reveal-up {
+      from {
+        opacity: 0;
+        transform: translateY(var(--space-lg));
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes reveal-rise {
+      from {
+        transform: translateY(var(--space-xl));
+      }
+    }
+
+    @keyframes reveal-row {
+      from {
+        opacity: 0;
+        transform: translateX(calc(var(--space-md) * -1));
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+  }
+
+  /* Siblings stagger only where they enter together. Capped at 5, the stagger limit. */
+  @media (min-width: 48rem) {
+    [data-reveal-stagger] > :nth-child(2) { --n: 1; }
+    [data-reveal-stagger] > :nth-child(3) { --n: 2; }
+    [data-reveal-stagger] > :nth-child(4) { --n: 3; }
+    [data-reveal-stagger] > :nth-child(5) { --n: 4; }
+    [data-reveal-stagger] > :nth-child(n + 6) { --n: 5; }
+  }
+
+  /* E37, E24 Fallback for Firefox and Safari below 26. reveal-fallback.ts adds html.reveal-io only after it has marked what is already on screen, so nothing flashes; no class, no start pose. */
+  html.reveal-io [data-reveal='up']:not(.is-in) {
+    opacity: 0;
+    transform: translateY(var(--space-lg));
+  }
+
+  html.reveal-io [data-reveal='rise']:not(.is-in) {
+    transform: translateY(var(--space-xl));
+  }
+
+  html.reveal-io [data-reveal='row']:not(.is-in) {
+    opacity: 0;
+    transform: translateX(calc(var(--space-md) * -1));
+  }
+
+  html.reveal-io [data-reveal].is-in {
+    transition:
+      opacity var(--dur-4) var(--ease-out),
+      transform var(--dur-4) var(--ease-out);
+    transition-delay: calc(var(--n, 0) * var(--stagger));
+  }
+
+  html.reveal-io [data-draw]:not(.is-in) .chart__line {
+    stroke-dashoffset: 1;
+  }
+
+  html.reveal-io [data-draw]:not(.is-in) :is(.dot, .chart__last) {
+    opacity: 0;
+  }
+
+  html.reveal-io [data-draw]:not(.is-in) .dot {
+    transform: scale(0);
+  }
+
+  /* Linear, like the scroll-linked draw: each dot's delay is a share of --dur-5, so it lands as the line reaches it. */
+  html.reveal-io [data-draw].is-in .chart__line {
+    transition: stroke-dashoffset var(--dur-5) linear;
+  }
+
+  html.reveal-io [data-draw].is-in .dot {
+    transition:
+      opacity var(--dur-2) var(--ease-out) calc(var(--t, 0) * var(--dur-5)),
+      transform var(--dur-2) var(--ease-out) calc(var(--t, 0) * var(--dur-5));
+  }
+
+  html.reveal-io [data-draw].is-in .chart__last {
+    transition: opacity var(--dur-2) var(--ease-out) var(--dur-5);
+  }
+
+  /* E27 Tabs. The thumb springs; the leaving panel fades, then hidden swaps (Toolbox.ts); the device and chips assemble on first view and on each tab change. */
+  .toolbox__thumb {
+    transition:
+      transform var(--dur-3) var(--ease-spring),
+      inline-size var(--dur-3) var(--ease-spring);
+  }
+
+  .toolbox__panel.is-leaving {
+    opacity: 0;
+    transition: opacity var(--dur-1) var(--ease-in-out);
+  }
+
+  .toolbox--js .toolbox__panel:not([hidden]) {
+    animation: rise-in var(--dur-3) var(--ease-out) backwards;
+  }
+
+  .toolbox--js:not(.is-seen) .toolbox__device {
+    transform: translateY(var(--space-md));
+  }
+
+  .toolbox--js:not(.is-seen) .toolbox__chips li {
+    opacity: 0;
+  }
+
+  .toolbox--js.is-seen .toolbox__panel:not([hidden]) .toolbox__device {
+    animation: device-up var(--dur-4) var(--ease-out) backwards;
+  }
+
+  .toolbox--js.is-seen .toolbox__panel:not([hidden]) .toolbox__chips li {
+    animation: rise-in var(--dur-4) var(--ease-out) calc(var(--n, 0) * var(--stagger)) backwards;
+  }
+
+  .toolbox__chips li:nth-child(2) {
+    --n: 1;
+  }
+
+  .toolbox__chips li:nth-child(3) {
+    --n: 2;
+  }
+
+  @keyframes device-up {
+    from {
+      transform: translateY(var(--space-md));
+    }
+  }
+
+  /* E31 FAQ height. The closed look is 0fr, so an item that opens always has a 0fr style to grow from. Faq.ts sets data-state; a native open (find-in-page, a hash) has none and is instant. */
+  .faq__item:not([open]) .faq__panel,
+  .faq__item:is([data-state='opening'], [data-state='closing']) .faq__panel {
+    grid-template-rows: 0fr;
+  }
+
+  .faq__item[data-state] .faq__panel {
+    transition: grid-template-rows var(--dur-3) var(--ease-out);
+  }
+
+  /* E32 The sheet lifts, the card back is uncovered. --reveal-footer-p comes from SiteFooter.ts: 0 covered, 1 clear, 1 with no script. Dim and medallion consumers are in SiteFooter.css.
+     Sticky only with the script (it measures that the footer fits) and only from 1024: below that the footer is in flow, at its end state. */
+  @media (min-width: 64rem) {
+    .reveal-footer--js:not(.reveal-footer--flow) .site-footer {
+      position: sticky;
+      inset-block-end: 0;
+    }
+  }
+
+  .cardback__stage {
+    transform: translateY(calc((1 - var(--reveal-footer-p, 1)) * 8svh));
+  }
+
+  .medallion .mark-cell {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(clamp(0, (var(--reveal-footer-p, 1) - 0.85) * 6.667, 1));
+  }
+
+  /* E09 A dialog comes from its trigger and leaves fast and small. The way in, the scrim and the sheet are in Dialog.css. */
+  @media (min-width: 48rem) {
+    .dialog[data-state='closing'] {
+      transform: scale(0.92);
+    }
+  }
+
+  /* E33 Commit: t = 0. The pick takes the pressed look and the rest lock, then the choose view fades. The verdict mounts at --dur-1, so the delays below are the plan's times minus 120. */
+  .hs-choice.is-picked {
+    border-color: var(--text-main);
+    background: var(--text-main);
+    color: var(--text-inverse);
+    transform: scale(0.98);
+  }
+
+  .hs-choice.is-picked .hs-choice__s {
+    color: var(--text-inverse);
+  }
+
+  #dlg-sample[data-view='leaving'] .hs-choice {
+    pointer-events: none;
+  }
+
+  #dlg-sample[data-view='leaving'] .hs-view {
+    opacity: 0;
+    transition: opacity var(--dur-1) var(--ease-in-out);
+  }
+
+  .hs-view.is-new {
+    animation: rise-in var(--dur-3) var(--ease-out) backwards;
+  }
+
+  #dlg-sample[data-view='verdict'] .hs-view.is-new {
+    animation: none;
+  }
+
+  /* t = 120: the stamp lands. */
+  .stamp.is-new {
+    animation:
+      stamp-land var(--dur-2) var(--ease-out) both,
+      fade-in var(--dur-1) linear both;
+  }
+
+  /* t = 160: the heading and the sentence. */
+  .hs-view.is-new :is(.hs-vh, .hs-vs) {
+    animation: rise-in var(--dur-3) var(--ease-out) calc(var(--dur-2) / 5) both;
+  }
+
+  /* t = 160 + 60n: each option row's bar and numbers. */
+  .hs-opt:nth-of-type(2) { --n: 1; }
+  .hs-opt:nth-of-type(3) { --n: 2; }
+  .hs-opt:nth-of-type(4) { --n: 3; }
+
+  .bar.is-new .bar__f {
+    animation: bar-grow var(--dur-3) var(--ease-out) calc(var(--dur-2) / 5 + var(--n, 0) * var(--stagger)) both;
+  }
+
+  .hs-view.is-new :is(.hs-opt__p, .hs-opt__w) {
+    animation: num-in var(--dur-3) var(--ease-out) calc(var(--dur-2) / 5 + var(--n, 0) * var(--stagger)) both;
+  }
+
+  /* The labels arrive with their row, so the table never lands ahead of the heading above it. */
+  .hs-view.is-new :is(.hs-oh, .hs-opt__n) {
+    animation: fade-in var(--dur-2) linear calc(var(--dur-2) / 5 + var(--n, 0) * var(--stagger)) both;
+  }
+
+  /* t = 200: You and GTO, with the mark on "You": tick, wave or ring drawn with dashes, or the strike and write-in above. */
+  .hs-view.is-new .hs-yc {
+    animation: rise-in var(--dur-3) var(--ease-out) calc(var(--dur-2) - var(--dur-1)) both;
+  }
+
+  .hs-view.is-new .pen__m {
+    stroke-dasharray: 1;
+    animation: line-draw var(--dur-3) var(--ease-out) calc(var(--dur-2) - var(--dur-1)) both;
+  }
+
+  /* t = 260: everything else. Done by 680. The action bar's buttons fade, not the bar: it is sticky, and its opaque ground keeps the text behind it from showing through. */
+  .hs-view.is-new :is(.hs-note, .hs-tiles, .hs-hint, .hs-bullets, [data-explain]),
+  #dlg-sample[data-view='verdict'] .hs-nav:not([hidden]) > * {
+    animation: fade-in var(--dur-2) linear calc(var(--dur-2) - var(--stagger)) both;
+  }
+
+  @keyframes stamp-land {
+    from {
+      transform: rotate(var(--stamp-tilt)) scale(1.15);
+    }
+  }
+
+  @keyframes bar-grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  /* E34 Deal next hand: the old cards turn edge-on from a layer over the new table, and the new cards turn back from edge-on. Yours first, then the board at n * --stagger. Done by 860. */
+  .hs-scene > [data-scene] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-scene] > .tb {
+    grid-area: 1 / 1;
+  }
+
+  .tb--out {
+    pointer-events: none;
+  }
+
+  .tb--out > :not(.tb__board, .tb__hole),
+  .tb--out .pc--empty {
+    visibility: hidden;
+  }
+
+  .tb__board .pc:nth-child(1) { --n: 1; }
+  .tb__board .pc:nth-child(2) { --n: 2; }
+  .tb__board .pc:nth-child(3) { --n: 3; }
+  .tb__board .pc:nth-child(4) { --n: 4; }
+  .tb__board .pc:nth-child(5) { --n: 5; }
+
+  .tb--out .pc {
+    animation: card-out calc(var(--dur-4) / 2) var(--ease-in-out) calc(var(--n, 0) * var(--stagger)) both;
+  }
+
+  .tb.is-new .pc:not(.pc--empty) {
+    animation: card-in calc(var(--dur-4) / 2) var(--ease-out) calc(var(--dur-4) / 2 + var(--n, 0) * var(--stagger)) both;
+  }
+
+  @keyframes card-out {
+    to {
+      transform: perspective(600px) rotateY(90deg);
+    }
+  }
+
+  @keyframes card-in {
+    from {
+      transform: perspective(600px) rotateY(90deg);
+    }
+  }
+
+  /* E35 What-if: the "You" tag flies from its old row (--fx, --fy from SampleHandDialog.ts). It has no offset the first time, so a verdict's first tag stays put. The sentence and the grade cross-fade. */
+  .tag--you {
+    animation: tag-flip var(--dur-3) var(--ease-spring) backwards;
+  }
+
+  [data-top].is-swap > * {
+    animation: fade-in var(--dur-2) linear;
+  }
+
+  @keyframes tag-flip {
+    from {
+      transform: translate(var(--fx, 0), var(--fy, 0));
+    }
+  }
+
+  /* E36 Success. The form fades, the view mounts at --dur-1 and the panel's height morphs (EarlyAccessDialog.ts). Ring at 200, tick at 480, text at 280: the plan's times minus 120. */
+  .ea-view.is-leaving {
+    opacity: 0;
+    transition: opacity var(--dur-1) var(--ease-in-out);
+  }
+
+  .ea-done:not([hidden]) .ea-ring circle {
+    animation: line-draw var(--dur-4) var(--ease-out) calc(var(--dur-2) - var(--dur-1)) both;
+  }
+
+  .ea-done:not([hidden]) .ea-ring path {
+    animation: line-draw var(--dur-3) var(--ease-out) calc(3 * var(--dur-1)) both;
+  }
+
+  .ea-done:not([hidden]) > :not(.ea-ring) {
+    animation: rise-in var(--dur-3) var(--ease-out) calc(var(--dur-2) * 0.8) both;
+  }
+
+  /* Section 8 The 404's three cards deal in once. Transform only. --n is set in 404.astro. */
+  .nf__card {
+    animation: deal-in var(--dur-4) var(--ease-out) calc(var(--n, 0) * var(--stagger)) both;
+  }
+
+  @keyframes deal-in {
+    from {
+      transform: translateY(var(--space-lg));
+    }
+  }
+}

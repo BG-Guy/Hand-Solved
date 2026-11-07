@@ -1,0 +1,215 @@
+/* CompactHero.css: the product-page hero (DESIGN.md 9.3, 7.1 "Quiet", 8). Complete without motion.css and without script.
+   Under 768: one column, copy then a phone cropped at the bottom. 768 to 1023: copy, then the devices full width on the Quiet chart.
+   From 1024: copy in 5 columns, devices in 7. The Quiet chart sits behind the devices only (no text on it) and bleeds to the viewport's right edge. */
+
+.chero {
+  /* Distance from the content's right edge to the viewport's right edge: the Quiet chart reaches out to it. */
+  --hero-right: max(var(--gutter), calc((100cqi - var(--container-max)) / 2 + var(--gutter)));
+  --quiet-cell: var(--space-2xl);
+  container-type: inline-size;
+  position: relative;
+  overflow: clip;
+  padding-block-start: calc(var(--nav-inset) + var(--nav-h-top) + var(--space-md));
+  padding-block-end: var(--section-y-compact);
+}
+
+/* With no script the header sits in the flow under 1024, so the hero does not need to clear it. */
+@media (max-width: 63.99rem) {
+  html:not([data-js]) .chero {
+    padding-block-start: var(--space-xl);
+  }
+}
+
+.chero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2xl);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Copy ------------------------------------------------------------------------- */
+
+.chero__copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  min-inline-size: 0;
+}
+
+.chero__h1 {
+  margin-block-start: var(--space-sm);
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.chero__sub {
+  max-inline-size: var(--measure-lead);
+  margin-block-start: var(--space-md);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+.chero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  inline-size: 100%;
+  gap: 0 var(--space-lg);
+  margin-block-start: var(--space-md);
+}
+
+/* The line under the buttons, in the home hero's micro-line style (Hero.css). */
+.chero__note {
+  max-inline-size: var(--measure-lead);
+  margin-block-start: var(--space-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* Under 768 the button fills the column and the link sits on the next line. */
+.chero__cta {
+  inline-size: 100%;
+}
+
+.chero__link .icon {
+  transition: transform var(--dur-2);
+}
+
+@media (hover: hover) {
+  .chero__link:hover .icon {
+    transform: translateY(calc(var(--border-hair) * 2));
+  }
+}
+
+/* Art -------------------------------------------------------------------------- */
+
+.chero__art {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-inline-size: 0;
+}
+
+/* The devices keep room above them: the Sample data tag hangs on the top edge of a frame and no ancestor may clip it. */
+.chero__devices {
+  position: relative;
+  z-index: 1;
+  padding-block-start: var(--space-md);
+}
+
+/* A device is centred in its column under 768, and sits at the column's right end from 768 (below). */
+.chero__phone,
+.chero__pair {
+  margin-inline: auto;
+}
+
+/* A phone on its own. Under 768 it is cut by a printed rule, so the crop reads as the edge of a plate (the same device the home hero uses). */
+.chero__phone {
+  --device-w: var(--phone-w-panel);
+}
+
+.chero__crop {
+  position: relative;
+}
+
+@media (max-width: 47.99rem) {
+  .chero__crop {
+    block-size: calc(var(--phone-w-panel) * 1.45);
+    /* The negative insets keep the chip on the top edge and the frame's sides uncut. Only the bottom is cut. */
+    clip-path: inset(calc(var(--space-md) * -1) calc(var(--space-md) * -1) 0);
+    border-block-end: var(--border-hair) solid var(--line-strong);
+  }
+}
+
+/* The laptop and phone pair is for 768 and up. Below it only the phone shows, and the desktop capture is never fetched (it is lazy and hidden). */
+.chero__wide {
+  display: none;
+}
+
+.chero__pair {
+  --device-w: var(--laptop-w-hero);
+  --device-ground: var(--surface-page);
+}
+
+/* LaptopFrame.css styles every .device__body and .device__screen below a laptop, and the phone in the pair is below one, so the phone would take the laptop's aspect ratio and inset.
+   These put the phone's own geometry (PhoneFrame.css) back, one step more specific, whatever order the two files load in. */
+.chero__pair .device__pair .device--phone .device__body {
+  aspect-ratio: 1 / var(--phone-height);
+}
+
+.chero__pair .device__pair .device--phone .device__screen {
+  inset-inline: calc(var(--phone-bezel) * 100%);
+  inset-block: calc(var(--phone-bezel) / var(--phone-height) * 100%);
+  aspect-ratio: auto;
+  border-radius: calc(var(--phone-radius-screen) / (1 - 2 * var(--phone-bezel)) * 100%) /
+    calc(var(--phone-radius-screen) / (var(--phone-height) - 2 * var(--phone-bezel)) * 100%);
+}
+
+@media (min-width: 48rem) {
+  .chero__narrow {
+    display: none;
+  }
+
+  .chero__wide {
+    display: block;
+  }
+
+  .chero__cta {
+    inline-size: auto;
+  }
+
+  /* The Quiet chart: 13 cells of 48 px, flat tints, no text, flush to the viewport's right edge. Not shown under 768. */
+  .chero__art::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset-block-start: 0;
+    inset-inline-end: calc(var(--hero-right) * -1);
+    /* Never wider than the art column plus the gutter at its right, so the chart stops short of the copy. The cells keep their size: the chart is cut on its left, not squeezed. */
+    inline-size: min(calc(var(--quiet-cell) * 13), calc(100% + var(--hero-right)));
+    block-size: calc(var(--quiet-cell) * 13);
+    background: url('../../assets/svg/bg-chart-quiet.svg') right top / calc(var(--quiet-cell) * 13) calc(var(--quiet-cell) * 13) no-repeat;
+  }
+
+  .chero__devices {
+    padding-block: var(--space-xl);
+  }
+
+  .chero__pair {
+    margin-inline: auto 0;
+  }
+
+  /* A phone on its own is as wide as the panel size says, at the right end of the column. */
+  .chero__phone {
+    margin-inline: auto var(--space-xl);
+  }
+}
+
+@media (min-width: 64rem) {
+  .chero__inner {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: center;
+  }
+
+  .chero__copy {
+    grid-column: 1 / span 5;
+  }
+
+  .chero__art {
+    grid-column: 6 / -1;
+  }
+
+  /* From 1024 the chart is centred on the devices. */
+  .chero__art::before {
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+  }
+}

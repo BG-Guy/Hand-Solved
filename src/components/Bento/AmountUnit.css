@@ -1,0 +1,19 @@
+/* AmountUnit.css: the small unit beside a big figure. Which one shows follows <html data-unit>, which head-guard.js sets before first paint. */
+
+.amt-unit {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  white-space: nowrap;
+}
+
+.amt-unit--usd,
+html[data-unit='usd'] .amt-unit--bb {
+  display: none;
+}
+
+html[data-unit='usd'] .amt-unit--usd {
+  display: inline;
+}

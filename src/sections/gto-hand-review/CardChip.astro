@@ -1,0 +1,15 @@
+---
+// CardChip.astro: one card named inside a sentence: rank and suit drawn as SVG, with its words ("8 of hearts") for a screen reader (COPY.md: suits are SVG shapes, never text characters).
+// Spade and club are Key Black, heart and diamond Pip Red; the suits differ by shape, so colour is never the only cue (DESIGN.md 9.9).
+import Icon from '../../components/Icon/Icon.astro';
+import type { Card } from './worked-example';
+import './CardChip.css';
+
+interface Props {
+  card: Card;
+}
+
+const { card } = Astro.props;
+const red = card.suit === 'heart' || card.suit === 'diamond';
+---
+<span class:list={['card-chip', red && 'card-chip--red']}><span aria-hidden="true">{card.rank}</span><Icon name={`suit-${card.suit}`} size={12} /><span class="visually-hidden">{card.name}</span></span>

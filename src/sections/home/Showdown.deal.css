@@ -1,0 +1,888 @@
+/* Showdown.deal.css: the choreography of the Showdown section, loaded with its script (never without it). One attribute (data-street) starts each deal; everything else is delays from that moment, so the whole river is one score,
+   written in the table below, and every part of it runs on the compositor: transform and opacity only, longhands only (ARCHITECTURE.md section 4 rule 1).
+   Reduced motion: the last block. No flight, no flood, no camera: deals are quick fades and the finale still shows the fan. */
+
+.sd {
+  /* New curves, scoped here. X runs out early and Y catches up late, so a thrown card travels an arc, not a line. */
+  --sd-x: cubic-bezier(0.2, 0.66, 0.3, 1);
+  --sd-y: cubic-bezier(0.5, 0.02, 0.3, 1);
+  --sd-flip: cubic-bezier(0.5, 0, 0.5, 1); /* Symmetric: at half the time the card is edge-on. */
+  --sd-settle: cubic-bezier(0.3, 0.7, 0.3, 1);
+  --sd-push: cubic-bezier(0.3, 0, 0.2, 1);
+  --sd-yank: cubic-bezier(0.6, -0.3, 0.3, 1.3);
+
+  /* The small reactions, longest first. */
+  --sd-ring: 1100ms;
+  --sd-beat: 620ms;
+  --sd-sag: 560ms;
+  --sd-ink-gap: 90ms; /* Pip Red chases Overprint Red by this much. */
+  --sd-ink-under: 160ms; /* How long after the ink starts the printed table goes under it. */
+
+  /* The flop: three cards in a run. */
+  --f-burn: 340ms;
+  --f-at: 200ms;
+  --f-gap: 210ms;
+  --f-fly: 560ms;
+  --f-flip: 420ms;
+  --f-race: 1230ms;
+  --end-flop: 1800; /* The script reads these, in ms. Unitless, because the CSS minifier rewrites 1800ms as 1.8s. */
+
+  /* The turn: one card, slower and heavier, then a beat, then the flip that turns the race. */
+  --t-burn: 480ms;
+  --t-at: 380ms;
+  --t-fly: 880ms;
+  --t-land: 1260ms;
+  --t-flip-at: 1700ms;
+  --t-flip: 680ms;
+  --t-hit: 2380ms;
+  --t-yank-at: 2010ms;
+  --t-yank: 1150ms;
+  --end-turn: 3350;
+
+  /* The river, in time from the press. */
+  --r-burn-at: 500ms;
+  --r-burn: 700ms;
+  --r-slide-at: 1250ms;
+  --r-slide: 1600ms;
+  --r-peel: 3700ms; /* The table has held its breath for 850 ms. */
+  --r-peel-d: 3700ms;
+  --r-flip-at: 7400ms; /* The peel holds for its last 900 ms. */
+  --r-flip: 520ms;
+  --r-land: 7920ms;
+  --r-flood: 8300ms; /* 380 ms of the white card alone on the dark table. */
+  --r-flood-d: 1500ms;
+  --r-lattice: 9150ms;
+  --r-recede: 9000ms;
+  --r-fan: 9450ms;
+  --r-fan-gap: 110ms;
+  --r-fan-d: 660ms;
+  --r-title: 10500ms;
+  --r-strike: 11240ms;
+  --r-end: 11400ms;
+  --end-river: 11600;
+
+  --end-reset: 760;
+}
+
+/* A real pull where linear() exists: the rope strains the wrong way, goes, overshoots and rocks to rest. */
+@supports (transition-timing-function: linear(0, 1)) {
+  .sd {
+    --sd-yank: linear(0, -0.02 6%, -0.05 14%, -0.06 22%, -0.03 27%, 0.12 31%, 0.55 36%, 0.95 41%, 1.12 46%, 1.14 49%, 1.08 55%, 0.985 66%, 0.975 72%, 1.005 84%, 1);
+  }
+}
+
+/* What every deal waits for: hands, numbers and rope change at --race-at, set per street. */
+.sd-hand {
+  transition:
+    opacity var(--dur-2) linear var(--race-at, 0ms),
+    visibility 0s linear var(--race-at, 0ms);
+}
+
+.sd[data-street='flop'] { --race-at: var(--f-race); }
+.sd[data-street='turn'] { --race-at: var(--t-hit); }
+.sd[data-street='river'] { --race-at: var(--r-land); }
+
+.sd-roll {
+  transition: transform var(--dur-4) var(--ease-out) var(--race-at, 0ms);
+}
+
+.sd-seat__win {
+  transition:
+    transform var(--dur-4) var(--ease-spring) var(--race-at, 0ms),
+    color var(--dur-2) linear var(--race-at, 0ms);
+}
+
+.sd-rope__them,
+.sd-rope__us,
+.sd-rope__knot {
+  transition: transform var(--rope-d, var(--dur-4)) var(--rope-e, var(--ease-out)) var(--rope-at, 0ms);
+}
+
+.sd[data-street='flop'] {
+  --rope-at: var(--f-race);
+}
+
+.sd[data-street='turn'] {
+  --rope-at: var(--t-yank-at);
+  --rope-d: var(--t-yank);
+  --rope-e: var(--sd-yank);
+}
+
+.sd[data-street='river'] {
+  --rope-at: var(--r-land);
+  --rope-d: var(--dur-3);
+}
+
+/* A selected card lifts off its shadow. */
+.c__shadow {
+  transition:
+    transform var(--dur-3) var(--ease-spring),
+    opacity var(--dur-3) linear;
+}
+
+/* The next places on the felt are the bright ones, and they wake when the puck is hovered. */
+.sd-slot {
+  transition: border-color var(--dur-2) linear;
+}
+
+/* The headline leaves when the deal begins, and the reason steps out of the way until the card has landed. */
+.sd-intro {
+  transition: opacity var(--dur-3) linear var(--intro-at, 0ms);
+}
+
+.sd[data-reset] {
+  --intro-at: var(--dur-4);
+}
+
+.sd:not([data-street='preflop']) .sd-intro {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sd:not([data-street='preflop']) :is(.sd-intro__kicker, .sd-intro__line) {
+  visibility: hidden;
+}
+
+.sd-whys {
+  transition: opacity var(--dur-2) linear;
+}
+
+.sd[data-busy] .sd-whys {
+  opacity: 0;
+}
+
+.sd-why {
+  /* It settles down into place: a move upward would add scrollable overflow to the panel. */
+  transform: translateY(calc(-5 * var(--u)));
+  transition:
+    opacity var(--dur-1) linear,
+    transform 0s linear var(--dur-1),
+    visibility 0s linear var(--dur-1);
+}
+
+.sd-why.is-on {
+  transform: none;
+  transition:
+    opacity var(--dur-3) linear var(--stagger),
+    transform var(--dur-3) var(--ease-out) var(--stagger),
+    visibility 0s linear;
+}
+
+.sd-hint {
+  transition: opacity var(--dur-3) linear;
+}
+
+/* ---------- The carousel's timer (Showdown.ts moves on when it ends). Motion allowed only: under reduced motion nothing rotates. ---------- */
+.sd {
+  --sd-auto: 3000ms;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sd[data-auto]:not([data-busy]) .sd-menu__item[aria-pressed='true'] .sd-menu__bar {
+    animation-name: sd-tick;
+    animation-duration: var(--sd-auto);
+    animation-timing-function: linear;
+  }
+
+  /* It holds while the visitor reads (a pointer on the reason or the menu, or the keyboard in it), and while the table is off screen. */
+  .sd[data-auto]:is([data-away], :has(.sd-whys:hover, .sd-whys:focus-within)) .sd-menu__bar {
+    animation-play-state: paused;
+  }
+
+  @keyframes sd-tick {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+}
+
+.sd-slots__label {
+  transition: color var(--dur-3) linear;
+}
+
+.sd:not([data-street='preflop']) .sd-slots__label--flop,
+.sd[data-street='turn'] .sd-slots__label--turn,
+.sd[data-street='river'] .sd-slots__label--turn,
+.sd[data-street='river'] .sd-slots__label--river {
+  /* A dealt street's label steps up one ink, from quiet to muted: enough to say where the cards are, never louder than the reason. */
+  color: var(--text-muted);
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* ---------- Arrival: the lights go down on the page above, the navbar steps away, the table comes up. All scrubbed by the scroll, so it is the visitor's own hand doing it. ---------- */
+  @supports (animation-timeline: view()) {
+    html:has(.sd) {
+      timeline-scope: --sd-view;
+    }
+
+    /* The room this frees (--sd-top) is set in Showdown.shell.css, so the size is right before this file loads. */
+    .sd {
+      view-timeline-name: --sd-view;
+      view-timeline-axis: block;
+    }
+
+    .sd__dusk {
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: 100%;
+      display: block;
+      block-size: 100svh;
+      background: var(--surface-ink);
+      pointer-events: none;
+      animation-name: sd-dusk;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --sd-view;
+      animation-range: entry 4% entry 58%;
+    }
+
+    .sd__canvas {
+      animation-name: sd-come-up;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --sd-view;
+      animation-range: entry 20% entry 92%;
+    }
+
+    html:has(.sd) .nav:not(:focus-within) {
+      animation-name: sd-nav-away, sd-nav-back;
+      animation-timing-function: linear;
+      animation-fill-mode: both, forwards;
+      animation-timeline: --sd-view;
+      animation-range: entry 76% entry 98%, exit 2% exit 26%;
+    }
+  }
+
+  /* ---------- Idle: one beat when the table is in view and each time it is the visitor's turn again. Never a loop. ---------- */
+  .sd[data-lit]:not([data-busy]):not([data-street='river']) .sd-puck__ring {
+    animation-name: sd-ring;
+    animation-duration: var(--sd-ring);
+    animation-delay: var(--dur-3);
+    animation-timing-function: var(--ease-out);
+  }
+
+  .sd[data-lit]:not([data-busy]):not([data-street='river']) .sd-puck__edge {
+    animation-name: sd-beat-edge;
+    animation-duration: var(--sd-beat);
+    animation-delay: var(--dur-2);
+    animation-timing-function: var(--ease-in-out);
+  }
+
+  /* Hovering the puck: the top card of the deck comes up a little, ready. */
+  @media (hover: hover) {
+    .c__lift {
+      transition: transform var(--dur-3) var(--ease-spring);
+    }
+
+    .sd[data-street='preflop']:has(.sd-puck:hover) .c--Ah .c__lift,
+    .sd[data-street='flop']:not([data-busy]):has(.sd-puck:hover) .c--Td .c__lift,
+    .sd[data-street='turn']:not([data-busy]):has(.sd-puck:hover) .c--Ad .c__lift {
+      transform: translate(-3%, -4%) rotate(-3deg);
+    }
+  }
+
+  /* ---------- Hole cards and dealt cards share the flight ---------- */
+  .sd[data-street='flop'] .on-flop {
+    --at: calc(var(--f-at) + var(--n) * var(--f-gap));
+    --fly: var(--f-fly);
+    --pc-flip-delay: calc(var(--at) + var(--fly) + var(--stagger));
+    --pc-flip-dur: var(--f-flip);
+    --pc-flip-ease: var(--sd-flip);
+  }
+
+  .sd[data-street='turn'] .on-turn {
+    --at: var(--t-at);
+    --fly: var(--t-fly);
+    --pc-flip-delay: var(--t-flip-at);
+    --pc-flip-dur: var(--t-flip);
+    --pc-flip-ease: var(--sd-flip);
+  }
+
+  :is(.sd[data-street='flop'] .on-flop, .sd[data-street='turn'] .on-turn) {
+    --from-x: var(--dx);
+    --from-y: var(--dy);
+    animation-name: sd-x;
+    animation-duration: var(--fly);
+    animation-delay: var(--at);
+    animation-timing-function: var(--sd-x);
+    animation-fill-mode: backwards;
+  }
+
+  :is(.sd[data-street='flop'] .on-flop, .sd[data-street='turn'] .on-turn) .c__y {
+    animation-name: sd-y;
+    animation-duration: var(--fly);
+    animation-delay: var(--at);
+    animation-timing-function: var(--sd-y);
+    animation-fill-mode: backwards;
+  }
+
+  /* Pose and shadow run a little past the flight: 80% of the way is touchdown, the rest is the landing. */
+  :is(.sd[data-street='flop'] .on-flop, .sd[data-street='turn'] .on-turn) .c__pose {
+    animation-name: sd-pitch;
+    animation-duration: calc(var(--fly) * 1.25);
+    animation-delay: var(--at);
+    animation-timing-function: var(--sd-settle);
+    animation-fill-mode: backwards;
+  }
+
+  :is(.sd[data-street='flop'] .on-flop, .sd[data-street='turn'] .on-turn) .c__shadow {
+    animation-name: sd-pitch-shadow;
+    animation-duration: calc(var(--fly) * 1.25);
+    animation-delay: var(--at);
+    animation-timing-function: var(--sd-settle);
+    animation-fill-mode: backwards;
+  }
+
+  /* The flip lifts the card off the felt and sets it back down. */
+  :is(.sd[data-street='flop'] .on-flop, .sd[data-street='turn'] .on-turn) .c__lift {
+    animation-name: sd-flip-lift;
+    animation-duration: calc(var(--pc-flip-dur) * 1.3);
+    animation-delay: var(--pc-flip-delay);
+    animation-timing-function: var(--sd-settle);
+    animation-fill-mode: none;
+  }
+
+  /* The turn is heavier: a higher throw, a deeper landing. */
+  .sd[data-street='turn'] .on-turn .c__pose {
+    animation-name: sd-pitch-heavy;
+  }
+
+  .sd[data-street='turn'] .on-turn .c__shadow {
+    animation-name: sd-pitch-shadow-heavy;
+  }
+
+  /* Light, not heavy: nothing shakes. The table, the rope and the cards already down stay still when a card lands; only the dealt cards move.
+     The moment the lead flips on the turn, the aces sag. */
+  .sd[data-street='turn'] .sd-c--them .c__lift {
+    animation-name: sd-sag;
+    animation-duration: var(--sd-sag);
+    animation-delay: var(--t-hit);
+    animation-timing-function: var(--sd-settle);
+  }
+
+  .sd[data-street='turn'] .c--Td .c__lift {
+    animation-name: sd-flip-lift;
+    animation-duration: calc(var(--pc-flip-dur) * 1.3);
+    animation-delay: var(--pc-flip-delay);
+    animation-fill-mode: none;
+  }
+
+  /* ---------- Burn ---------- */
+  :is(.sd[data-street='flop'] .sd-burn--1, .sd[data-street='turn'] .sd-burn--2, .sd[data-street='river'] .sd-burn--3) {
+    animation-name: sd-burn;
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='flop'] .sd-burn--1 { animation-duration: var(--f-burn); }
+  .sd[data-street='turn'] .sd-burn--2 { animation-duration: var(--t-burn); }
+  .sd[data-street='river'] .sd-burn--3 { animation-delay: var(--r-burn-at); animation-duration: var(--r-burn); }
+
+  /* ---------- The river. First the room. ---------- */
+  .sd[data-street='river'] .sd__dim {
+    animation-name: sd-dim;
+    animation-duration: calc(var(--r-flood) + var(--dur-3));
+    animation-timing-function: var(--ease-in-out);
+    animation-fill-mode: backwards;
+  }
+
+  /* The ace slides out, low and slow, no lift, and stops. */
+  .sd[data-street='river'] .c--Ad {
+    --sd-persp: calc(var(--card-w) * 2.6);
+    --pc-perspective: var(--sd-persp);
+    --pc-flip-delay: var(--r-flip-at);
+    --pc-flip-dur: var(--r-flip);
+    --pc-flip-ease: var(--sd-flip);
+    animation-name: sd-go-x, sd-slide-x;
+    animation-duration: var(--r-fan-d), var(--r-slide);
+    animation-delay: var(--go-at), var(--r-slide-at);
+    animation-timing-function: var(--sd-x), var(--sd-push);
+    animation-fill-mode: backwards, backwards;
+  }
+
+  .sd[data-street='river'] .c--Ad .c__y {
+    animation-name: sd-go-y, sd-slide-y;
+    animation-duration: var(--r-fan-d), var(--r-slide);
+    animation-delay: var(--go-at), var(--r-slide-at);
+    animation-timing-function: var(--sd-y), var(--sd-push);
+    animation-fill-mode: backwards, backwards;
+  }
+
+  .sd[data-street='river'] .c--Ad .c__pose {
+    animation-name: sd-rise, sd-slide-pose;
+    animation-duration: var(--r-fan-d), var(--r-slide);
+    animation-delay: var(--go-at), var(--r-slide-at);
+    animation-timing-function: var(--sd-settle), var(--sd-push);
+    animation-fill-mode: backwards, backwards;
+  }
+
+  .sd[data-street='river'] .c--Ad .c__shadow {
+    animation-name: sd-rise-shadow, sd-slide-shadow;
+    animation-duration: var(--r-fan-d), var(--r-slide);
+    animation-delay: var(--go-at), var(--r-slide-at);
+    animation-timing-function: var(--sd-settle), var(--sd-push);
+    animation-fill-mode: backwards, backwards;
+  }
+
+  /* The squeeze: a corner lifts, thinks better of it, and then comes up slowly until the red index shows. Every moving part shares one timing, so the masks stay exact. */
+  .sd[data-street='river'] .sd-peel {
+    animation-name: sd-peel-on, sd-peel-turn;
+    animation-duration: calc(var(--r-peel-d) + var(--r-flip) / 2), var(--r-flip);
+    animation-delay: var(--r-peel), var(--r-flip-at);
+    animation-timing-function: linear, var(--sd-flip);
+    animation-fill-mode: none;
+  }
+
+  .sd[data-street='river'] :is(.sd-peel__hinge, .sd-peel__hole, .sd-peel__shade, .sd-peel__m, .sd-peel__art) {
+    animation-duration: var(--r-peel-d);
+    animation-delay: var(--r-peel);
+    animation-timing-function: cubic-bezier(0.42, 0, 0.36, 1);
+    animation-fill-mode: forwards;
+  }
+
+  .sd[data-street='river'] .sd-peel__m--front::after {
+    animation-name: sd-peel-bend;
+    animation-duration: var(--r-peel-d);
+    animation-delay: var(--r-peel);
+    animation-timing-function: cubic-bezier(0.42, 0, 0.36, 1);
+    animation-fill-mode: forwards;
+  }
+
+  .sd[data-street='river'] .sd-peel__hinge { animation-name: sd-peel-hinge; }
+  .sd[data-street='river'] .sd-peel__hole { animation-name: sd-peel-mask; }
+  .sd[data-street='river'] .sd-peel__shade { animation-name: sd-peel-shade; }
+  .sd[data-street='river'] .sd-peel__m--back { animation-name: sd-peel-mask; }
+  .sd[data-street='river'] .sd-peel__m--back .sd-peel__art { animation-name: sd-peel-art; }
+  .sd[data-street='river'] .sd-peel__m--front { animation-name: sd-peel-mask-f; }
+  .sd[data-street='river'] .sd-peel__m--front .sd-peel__art { animation-name: sd-peel-art-f; }
+
+  /* ---------- The ink. Then everything printed on the table goes under it. ---------- */
+  .sd[data-street='river'] .sd__flood i {
+    animation-name: sd-flood;
+    animation-duration: var(--r-flood-d);
+    animation-delay: var(--r-flood);
+    animation-timing-function: linear;
+    animation-fill-mode: none;
+    will-change: transform;
+  }
+
+  .sd[data-street='river'] .sd__flood i:last-child {
+    animation-delay: calc(var(--r-flood) + var(--sd-ink-gap));
+  }
+
+  /* Hidden until its moment, so a layer this size is not held in memory through the squeeze. */
+  .sd[data-street='river'] .sd__lattice {
+    visibility: visible;
+    transition: visibility 0s linear var(--r-lattice);
+    animation-name: sd-show;
+    animation-duration: var(--dur-3);
+    animation-delay: var(--r-lattice);
+    animation-timing-function: linear;
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] :is(.sd-seat > *, .sd-race__label, .sd-rope, .sd-slots, .sd-deck) {
+    animation-name: sd-hide;
+    animation-duration: var(--dur-3);
+    animation-delay: calc(var(--r-flood) + var(--sd-ink-under));
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  /* Only fades: it must stay focusable until the deal settles and the keyboard moves on. */
+  .sd[data-street='river'] .sd-puck {
+    animation-name: sd-fade;
+    animation-duration: var(--dur-3);
+    animation-delay: calc(var(--r-flood) + var(--sd-ink-under));
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  /* ---------- The losers recede. The five diamonds lift out and come together, lowest first. ---------- */
+  .sd[data-street='river'] .sd-c {
+    --go-at: calc(var(--r-fan) + var(--k, 0) * var(--r-fan-gap));
+  }
+
+  .sd[data-street='river'] .c--Td { --k: 0; }
+  .sd[data-street='river'] .c--Jd { --k: 1; }
+  .sd[data-street='river'] .c--Qd { --k: 2; }
+  .sd[data-street='river'] .c--Kd { --k: 3; }
+  .sd[data-street='river'] .c--Ad { --k: 4; }
+
+  .sd[data-street='river'] :is(.c--As, .c--Ac, .c--Ah, .c--9c) {
+    --go-at: var(--r-recede);
+  }
+
+  /* Their own keyframe names: with the same name the browser would keep the turn's animation running and only re-time it, so the ten would leave early. */
+  .sd[data-street='river'] .sd-c:not(.c--Ad) {
+    animation-name: sd-go-x;
+    animation-duration: var(--r-fan-d);
+    animation-delay: var(--go-at);
+    animation-timing-function: var(--sd-x);
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] .sd-c:not(.c--Ad) .c__y {
+    animation-name: sd-go-y;
+    animation-duration: var(--r-fan-d);
+    animation-delay: var(--go-at);
+    animation-timing-function: var(--sd-y);
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] .sd-c:not(.c--Ad) .c__pose {
+    animation-name: sd-rise;
+    animation-duration: var(--r-fan-d);
+    animation-delay: var(--go-at);
+    animation-timing-function: var(--sd-settle);
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] .sd-c:not(.c--Ad) .c__shadow {
+    animation-name: sd-rise-shadow;
+    animation-duration: var(--r-fan-d);
+    animation-delay: var(--go-at);
+    animation-timing-function: var(--sd-settle);
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] :is(.c--As, .c--Ac, .c--Ah, .c--9c) .c__pose {
+    transition: opacity var(--dur-4) linear var(--r-recede);
+  }
+
+  /* ---------- Then the words, the strike, the way on. ---------- */
+  .sd[data-street='river'] .sd-end__title {
+    transition: visibility 0s linear var(--r-title);
+  }
+
+  .sd[data-street='river'] .sd-end__title span {
+    animation-name: sd-title;
+    animation-duration: var(--dur-4);
+    animation-delay: var(--r-title);
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+  }
+
+
+  .sd[data-street='river'] :is(.sd-score, .sd-end__line) {
+    transition: visibility 0s linear var(--r-title);
+    animation-name: sd-show;
+    animation-duration: var(--dur-3);
+    animation-delay: var(--r-title);
+    animation-timing-function: linear;
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] .sd-score del::after {
+    animation-name: sd-strike;
+    animation-duration: var(--dur-3);
+    animation-delay: var(--r-strike);
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+  }
+
+  .sd[data-street='river'] .sd-end__actions {
+    transition: visibility 0s linear var(--r-end);
+    animation-name: sd-show;
+    animation-duration: var(--dur-3);
+    animation-delay: var(--r-end);
+    animation-timing-function: linear;
+    animation-fill-mode: backwards;
+  }
+
+  /* ---------- Deal it again: everything goes back to the deck, the ink drains. ---------- */
+  .sd[data-reset] :is(.sd-c, .c__y, .c__pose, .c__shadow, .sd-burn) {
+    transition: transform var(--dur-4) var(--ease-in-out);
+  }
+
+  .sd[data-reset] .pc {
+    --pc-flip-dur: var(--dur-3);
+    --pc-flip-delay: 0ms;
+  }
+
+  .sd[data-reset] .sd__lattice {
+    visibility: visible;
+    animation-name: sd-hide;
+    animation-duration: var(--dur-4);
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  .sd[data-reset] :is(.sd-burn--1, .sd-burn--2, .sd-burn--3) {
+    visibility: visible;
+  }
+
+  .sd[data-reset] .sd-burn {
+    transform: translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u))) rotate(0deg) scale(var(--ds));
+  }
+
+  /* ---------- Keyframes ---------- */
+  @keyframes sd-dusk {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes sd-come-up {
+    from { opacity: 0.25; transform: scale(1.025); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes sd-nav-away {
+    to { transform: translateY(-140%); }
+  }
+
+  @keyframes sd-nav-back {
+    from { transform: translateY(-140%); }
+    to { transform: none; }
+  }
+
+  @keyframes sd-ring {
+    0% { opacity: 0.9; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.42); }
+  }
+
+  @keyframes sd-beat-edge {
+    50% { transform: translateY(calc((var(--pe) + 3) * var(--u))); }
+  }
+
+  @keyframes sd-x {
+    from { transform: translateX(calc(var(--from-x) * var(--u))); }
+  }
+
+  @keyframes sd-y {
+    from { transform: translateY(calc(var(--from-y) * var(--u))); }
+  }
+
+  @keyframes sd-go-x {
+    from { transform: translateX(calc(var(--sx) * var(--u))); }
+  }
+
+  @keyframes sd-go-y {
+    from { transform: translateY(calc(var(--sy) * var(--u))); }
+  }
+
+  /* From the deck, up through the top of the arc (scale is height), touchdown at 80%: it presses into the felt, comes back, settles. */
+  @keyframes sd-pitch {
+    0% { transform: rotate(0deg) scale(var(--ds)); }
+    42% { transform: rotate(calc(var(--r) - 9deg)) scale(calc(var(--s) * 1.2)); }
+    80% { transform: rotate(var(--r)) scale(calc(var(--s) * 0.965)); }
+    90% { transform: rotate(var(--r)) scale(calc(var(--s) * 1.012)); }
+    100% { transform: rotate(var(--r)) scale(var(--s)); }
+  }
+
+  @keyframes sd-pitch-heavy {
+    0% { transform: rotate(0deg) scale(var(--ds)); }
+    40% { transform: rotate(calc(var(--r) - 12deg)) scale(calc(var(--s) * 1.34)); }
+    80% { transform: rotate(var(--r)) scale(calc(var(--s) * 0.945)); }
+    90% { transform: rotate(var(--r)) scale(calc(var(--s) * 1.018)); }
+    100% { transform: rotate(var(--r)) scale(var(--s)); }
+  }
+
+  /* The shadow leaves the card as it rises and comes back to it, tighter, as it lands. */
+  @keyframes sd-pitch-shadow {
+    0% { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(0deg) scale(var(--ds)); }
+    42% { opacity: 0.5; transform: translate(calc(16 * var(--u)), calc(30 * var(--u))) rotate(calc(var(--r) - 9deg)) scale(calc(var(--s) * 1.06)); }
+    80% { opacity: 1; transform: translate(calc(0.5 * var(--u)), calc(1 * var(--u))) rotate(var(--r)) scale(calc(var(--s) * 0.97)); }
+    100% { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(var(--r)) scale(var(--s)); }
+  }
+
+  @keyframes sd-pitch-shadow-heavy {
+    0% { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(0deg) scale(var(--ds)); }
+    40% { opacity: 0.42; transform: translate(calc(24 * var(--u)), calc(44 * var(--u))) rotate(calc(var(--r) - 12deg)) scale(calc(var(--s) * 1.1)); }
+    80% { opacity: 1; transform: translate(0, calc(0.5 * var(--u))) rotate(var(--r)) scale(calc(var(--s) * 0.96)); }
+    100% { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(var(--r)) scale(var(--s)); }
+  }
+
+  @keyframes sd-sag {
+    0% { transform: none; }
+    30% { transform: translateY(1.5%) scale(0.975); }
+    100% { transform: none; }
+  }
+
+  @keyframes sd-flip-lift {
+    0% { transform: scale(1); }
+    38% { transform: scale(1.1); }
+    72% { transform: scale(0.97); }
+    86% { transform: scale(1.01); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes sd-burn {
+    from { transform: translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u))) rotate(0deg) scale(var(--ds)); }
+  }
+
+  /* The room goes down fast, then the wait. */
+  @keyframes sd-dim {
+    0% { opacity: 0; }
+    10% { opacity: 0.74; }
+    96% { opacity: 0.74; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes sd-slide-x {
+    from { transform: translateX(calc(var(--dx) * var(--u))); }
+    to { transform: translateX(calc(var(--sx) * var(--u))); }
+  }
+
+  @keyframes sd-slide-y {
+    from { transform: translateY(calc(var(--dy) * var(--u))); }
+    to { transform: translateY(calc(var(--sy) * var(--u))); }
+  }
+
+  @keyframes sd-slide-pose {
+    from { transform: rotate(0deg) scale(var(--ds)); }
+    to { transform: rotate(var(--sr)) scale(var(--ss)); }
+  }
+
+  @keyframes sd-slide-shadow {
+    from { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(0deg) scale(var(--ds)); }
+    to { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(var(--sr)) scale(var(--ss)); }
+  }
+
+  @keyframes sd-peel-on {
+    from, to { visibility: visible; }
+  }
+
+  @keyframes sd-peel-turn {
+    from { transform: perspective(var(--sd-persp)) rotateY(0deg); }
+    to { transform: perspective(var(--sd-persp)) rotateY(-180deg); }
+  }
+
+  /* The peel's score. dx is how far the fold has walked in, the angle is how far the flap has come up. 90 degrees is edge-on: past it the white face shows. */
+  @keyframes sd-peel-hinge {
+    0% { transform: translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)) rotate3d(1, 1, 0, 0deg) translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)); }
+    24% { transform: translate(calc(var(--card-w) * 0.13), calc(var(--card-w) * -0.13)) rotate3d(1, 1, 0, 68deg) translate(calc(var(--card-w) * -0.13), calc(var(--card-w) * 0.13)); }
+    33% { transform: translate(calc(var(--card-w) * 0.105), calc(var(--card-w) * -0.105)) rotate3d(1, 1, 0, 42deg) translate(calc(var(--card-w) * -0.105), calc(var(--card-w) * 0.105)); }
+    74% { transform: translate(calc(var(--card-w) * 0.3), calc(var(--card-w) * -0.3)) rotate3d(1, 1, 0, 140deg) translate(calc(var(--card-w) * -0.3), calc(var(--card-w) * 0.3)); }
+    100% { transform: translate(calc(var(--card-w) * 0.33), calc(var(--card-w) * -0.33)) rotate3d(1, 1, 0, 150deg) translate(calc(var(--card-w) * -0.33), calc(var(--card-w) * 0.33)); }
+  }
+
+  @keyframes sd-peel-mask {
+    0% { transform: translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)) rotate(45deg); }
+    24% { transform: translate(calc(var(--card-w) * 0.13), calc(var(--card-w) * -0.13)) rotate(45deg); }
+    33% { transform: translate(calc(var(--card-w) * 0.105), calc(var(--card-w) * -0.105)) rotate(45deg); }
+    74% { transform: translate(calc(var(--card-w) * 0.3), calc(var(--card-w) * -0.3)) rotate(45deg); }
+    100% { transform: translate(calc(var(--card-w) * 0.33), calc(var(--card-w) * -0.33)) rotate(45deg); }
+  }
+
+  @keyframes sd-peel-shade {
+    0% { opacity: 0; transform: translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)) rotate(45deg) translateY(-100%) scaleY(0); }
+    24% { opacity: 0.3; transform: translate(calc(var(--card-w) * 0.13), calc(var(--card-w) * -0.13)) rotate(45deg) translateY(-100%) scaleY(0.55); }
+    33% { opacity: 0.22; transform: translate(calc(var(--card-w) * 0.105), calc(var(--card-w) * -0.105)) rotate(45deg) translateY(-100%) scaleY(0.4); }
+    74% { opacity: 0.42; transform: translate(calc(var(--card-w) * 0.3), calc(var(--card-w) * -0.3)) rotate(45deg) translateY(-100%) scaleY(1); }
+    100% { opacity: 0.42; transform: translate(calc(var(--card-w) * 0.33), calc(var(--card-w) * -0.33)) rotate(45deg) translateY(-100%) scaleY(1); }
+  }
+
+  @keyframes sd-peel-art {
+    0% { transform: rotate(-45deg) translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)) translateY(-100%); }
+    24% { transform: rotate(-45deg) translate(calc(var(--card-w) * -0.13), calc(var(--card-w) * 0.13)) translateY(-100%); }
+    33% { transform: rotate(-45deg) translate(calc(var(--card-w) * -0.105), calc(var(--card-w) * 0.105)) translateY(-100%); }
+    74% { transform: rotate(-45deg) translate(calc(var(--card-w) * -0.3), calc(var(--card-w) * 0.3)) translateY(-100%); }
+    100% { transform: rotate(-45deg) translate(calc(var(--card-w) * -0.33), calc(var(--card-w) * 0.33)) translateY(-100%); }
+  }
+
+  @keyframes sd-peel-bend {
+    0% { transform: scaleX(0); }
+    24% { transform: scaleX(0.394); }
+    33% { transform: scaleX(0.318); }
+    74% { transform: scaleX(0.909); }
+    100% { transform: scaleX(1); }
+  }
+
+  @keyframes sd-peel-mask-f {
+    0% { transform: translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)) rotate(-45deg); }
+    24% { transform: translate(calc(var(--card-w) * -0.13), calc(var(--card-w) * -0.13)) rotate(-45deg); }
+    33% { transform: translate(calc(var(--card-w) * -0.105), calc(var(--card-w) * -0.105)) rotate(-45deg); }
+    74% { transform: translate(calc(var(--card-w) * -0.3), calc(var(--card-w) * -0.3)) rotate(-45deg); }
+    100% { transform: translate(calc(var(--card-w) * -0.33), calc(var(--card-w) * -0.33)) rotate(-45deg); }
+  }
+
+  @keyframes sd-peel-art-f {
+    0% { transform: rotate(45deg) translate(calc(var(--card-w) * 0), calc(var(--card-w) * 0)) translateY(-100%); }
+    24% { transform: rotate(45deg) translate(calc(var(--card-w) * 0.13), calc(var(--card-w) * 0.13)) translateY(-100%); }
+    33% { transform: rotate(45deg) translate(calc(var(--card-w) * 0.105), calc(var(--card-w) * 0.105)) translateY(-100%); }
+    74% { transform: rotate(45deg) translate(calc(var(--card-w) * 0.3), calc(var(--card-w) * 0.3)) translateY(-100%); }
+    100% { transform: rotate(45deg) translate(calc(var(--card-w) * 0.33), calc(var(--card-w) * 0.33)) translateY(-100%); }
+  }
+
+  /* The ink spreads slowly from the card, then runs. */
+  @keyframes sd-flood {
+    0% { visibility: visible; transform: scale(0); animation-timing-function: cubic-bezier(0.62, 0.02, 0.56, 1); }
+    70% { visibility: visible; transform: scale(var(--flood)); }
+    100% { visibility: visible; transform: scale(var(--flood)); }
+  }
+
+  @keyframes sd-show {
+    from { opacity: 0; }
+  }
+
+  @keyframes sd-hide {
+    to { opacity: 0; visibility: hidden; }
+  }
+
+  @keyframes sd-fade {
+    to { opacity: 0; }
+  }
+
+  /* A card leaves its place: it lifts first, then flies, and sets down with a little weight. */
+  @keyframes sd-rise {
+    0% { transform: rotate(var(--sr)) scale(var(--ss)); }
+    20% { transform: rotate(var(--sr)) scale(calc(var(--ss) * 1.14)); }
+    84% { transform: rotate(var(--r)) scale(calc(var(--s) * 1.03)); }
+    94% { transform: rotate(var(--r)) scale(calc(var(--s) * 0.985)); }
+    100% { transform: rotate(var(--r)) scale(var(--s)); }
+  }
+
+  @keyframes sd-rise-shadow {
+    0% { opacity: 0.9; transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(var(--sr)) scale(var(--ss)); }
+    30% { opacity: 0.5; transform: translate(calc(18 * var(--u)), calc(30 * var(--u))) rotate(var(--sr)) scale(calc(var(--ss) * 1.1)); }
+    84% { opacity: calc(var(--sd-sh) * 0.85); transform: translate(calc(5 * var(--u)), calc(9 * var(--u))) rotate(var(--r)) scale(var(--s)); }
+    100% { opacity: var(--sd-sh); transform: translate(calc(1.5 * var(--u)), calc(2.5 * var(--u))) rotate(var(--r)) scale(var(--s)); }
+  }
+
+  @keyframes sd-title {
+    from { transform: translateY(105%); }
+  }
+
+
+  @keyframes sd-strike {
+    from { transform: rotate(var(--pen-tilt)) scaleX(0); }
+  }
+}
+
+/* ---------- Reduced motion: no flight, no flood, no camera. A card fades in where it belongs. ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sd {
+    --sd-fade: 200ms;
+    --f-race: 0ms;
+    --t-hit: 0ms;
+    --t-yank-at: 0ms;
+    --t-yank: 0.01ms;
+    --r-land: 0ms;
+    --end-flop: 260;
+    --end-turn: 260;
+    --end-river: 420;
+    --end-reset: 240;
+  }
+
+  .sd[data-street='preflop'] :is(.on-flop, .on-turn, .on-river),
+  .sd[data-street='flop'] :is(.on-turn, .on-river),
+  .sd[data-street='turn'] .on-river {
+    --x: var(--sx);
+    --y: var(--sy);
+    --r: var(--sr);
+    --s: var(--ss);
+    opacity: 0;
+  }
+
+  .sd-c {
+    transition: opacity var(--sd-fade) linear;
+  }
+
+  .sd[data-street='river'] .sd__lattice {
+    visibility: visible;
+  }
+
+  .sd[data-street='river'] :is(.sd-seat > *, .sd-race__label, .sd-rope, .sd-slots, .sd-deck, .sd-burn) {
+    visibility: hidden;
+  }
+}

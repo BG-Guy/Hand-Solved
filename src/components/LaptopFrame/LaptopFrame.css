@@ -1,0 +1,59 @@
+/* LaptopFrame.css: laptop geometry from the ratios in tokens.css (DESIGN.md section 8). W is the lid's width; the base is --laptop-base-w times wider,
+   so the whole silhouette is 1.12W wide. Bezel 0.018W, screen radius 0.004W, base 0.028W high, lid radius 0.022W. */
+
+.device--laptop {
+  /* Lid height in W: two bezels plus the screen, whose capture is 2880 x 1800 (0.625 high per unit of width). Then the whole silhouette. */
+  --lap-lid-h: calc((1 - 2 * var(--laptop-bezel)) * 0.625 + 2 * var(--laptop-bezel));
+  --lap-total-h: calc(var(--lap-lid-h) + var(--laptop-base-h));
+  /* The pair is 1.26W wide: the 1.12W laptop, and the phone (0.26W) overlapping the lid by 0.06W, so 0.14W of it stands past the base. */
+  --lap-pair-w: 1.26;
+  --lap-phone-w: 0.26;
+  inline-size: var(--device-w, var(--laptop-w-panel));
+}
+
+.device--laptop .device__laptop {
+  position: relative;
+}
+
+.device--laptop .device__body {
+  aspect-ratio: calc(var(--laptop-base-w) / var(--lap-total-h));
+}
+
+/* The screen sits one bezel inside the lid. The lid is centred over the base, which is wider, hence the side offset. */
+.device--laptop .device__screen {
+  inset-inline: calc(((var(--laptop-base-w) - 1) / 2 + var(--laptop-bezel)) / var(--laptop-base-w) * 100%);
+  inset-block-start: calc(var(--laptop-bezel) / var(--lap-total-h) * 100%);
+  aspect-ratio: var(--laptop-aspect);
+  /* 0.004W across a 0.964W wide, 0.6025W high screen. */
+  border-radius: calc(var(--laptop-radius-screen) / (1 - 2 * var(--laptop-bezel)) * 100%) /
+    calc(var(--laptop-radius-screen) / ((1 - 2 * var(--laptop-bezel)) * 0.625) * 100%);
+}
+
+/* The pair: laptop on the left, phone in front at the right end, bottoms aligned. */
+.device--pair {
+  aspect-ratio: calc(var(--lap-pair-w) / var(--lap-total-h));
+}
+
+.device--pair .device__laptop {
+  inline-size: calc(var(--laptop-base-w) / var(--lap-pair-w) * 100%);
+}
+
+.device--pair .device__pair {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inline-size: calc(var(--lap-phone-w) / var(--lap-pair-w) * 100%);
+}
+
+/* Ink on ink loses the edge, so the phone takes a ground-coloured keyline. */
+.device--pair .device__pair .device--phone {
+  --device-w: 100%;
+  outline: var(--device-keyline) solid var(--device-ground, var(--surface-page));
+  border-radius: calc(var(--phone-radius-outer) * 100%) / calc(var(--phone-radius-outer) / var(--phone-height) * 100%);
+}
+
+/* The chip of the phone in a pair hangs from its right edge, so it never sticks out past the right end of the pair. */
+.device--pair .device__pair .device__chip {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}

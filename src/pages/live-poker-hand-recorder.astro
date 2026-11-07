@@ -1,0 +1,29 @@
+---
+// live-poker-hand-recorder.astro: route "/live-poker-hand-recorder". Thin on purpose: section order only, each section owns its content (UX.md 5.2).
+// The hero owns the breadcrumb and the H1; the closing band is printed by SiteFooter, so it is not placed here. RelatedLinks is shared with the review page.
+// This page is the first to cut if time runs short: remove it from pages.ts, the nav, the footer and the body links in one change.
+import Faq from '../components/Faq/Faq.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import RelatedLinks from '../components/RelatedLinks/RelatedLinks.astro';
+import Details from '../sections/live-poker-hand-recorder/Details.astro';
+import Hero from '../sections/live-poker-hand-recorder/Hero.astro';
+import Session from '../sections/live-poker-hand-recorder/Session.astro';
+import Steps from '../sections/live-poker-hand-recorder/Steps.astro';
+import { recorderFaq } from '../sections/live-poker-hand-recorder/faq';
+import { pages } from '../data/pages';
+
+const page = pages.liveRecorder;
+---
+<SiteLayout page={page}>
+  <Hero />
+  <Steps />
+  <Details />
+  <Session />
+  <Faq heading={recorderFaq.heading} items={recorderFaq.items} index={recorderFaq.index} />
+  <RelatedLinks
+    links={[
+      { label: 'See how a hand is graded', href: '/gto-hand-review' },
+      { label: 'See the concept pricing', href: '/#pricing' },
+    ]}
+  />
+</SiteLayout>

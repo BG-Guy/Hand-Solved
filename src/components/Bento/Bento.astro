@@ -1,0 +1,16 @@
+---
+// Bento.astro: the tile grid of the Highlights section (DESIGN.md 9.3). One column under 768, two from 768, three from 1024 with a tall tile in the third column.
+// Put <BentoTile> children inside. There is no hover spotlight and no script (MOTION.md ruling 4): a tile's edge changes on hover and that is all.
+//
+//   <Bento><BentoTile name="Hall of Fame" icon="tile-fame" description="…"><ol class="tile__rows">…</ol></BentoTile></Bento>
+import './Bento.css';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+<ul class:list={['bento', className]} role="list">
+  <slot />
+</ul>

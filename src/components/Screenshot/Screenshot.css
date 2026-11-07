@@ -1,0 +1,93 @@
+/* Screenshot.css: the capture wrapper, plus the parts every device frame shares (the Sample data chip and the tilt hook). */
+
+/* The wrapper holds the capture's aspect ratio on a solid placeholder, so the loading state is already the right size. */
+.screenshot {
+  position: relative;
+  overflow: clip;
+  background: var(--device-ink);
+}
+
+.screenshot--phone {
+  aspect-ratio: var(--phone-aspect);
+}
+
+.screenshot--desktop {
+  aspect-ratio: var(--laptop-aspect);
+}
+
+.screenshot img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* Image failed: the placeholder stays, and the alt text is printed on it. */
+.screenshot[data-failed] img {
+  visibility: hidden;
+}
+
+.screenshot[data-failed]::after {
+  content: attr(data-alt);
+  position: absolute;
+  inset: 8%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--text-inverse);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+/* Device frames (PhoneFrame, LaptopFrame). Set the size in the section's CSS with --device-w. */
+.device {
+  position: relative;
+  max-inline-size: 100%;
+  /* The motion task sets data-tilt on a fine pointer and moves these two. At rest the frame is flat. */
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+}
+
+.device__body {
+  position: relative;
+}
+
+.device[data-tilt] .device__body {
+  transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+/* The Sample data chip hangs on the top edge, so no ancestor may clip the top of a frame. */
+.device__chip {
+  position: absolute;
+  inset-block-start: calc(var(--space-sm) * -1.5);
+  inset-inline-start: 12%;
+  z-index: 1;
+  min-block-size: var(--space-lg);
+  padding-block: 0;
+  font-size: var(--text-xs);
+}
+
+/* The frame art (an inline SVG from src/assets/svg) fills the body; the screen sits on top of it. */
+.device__frame {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.device__screen {
+  position: absolute;
+  overflow: clip;
+}
+
+.device__screen .screenshot {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .device[data-tilt] .device__body {
+    transform: none;
+  }
+}

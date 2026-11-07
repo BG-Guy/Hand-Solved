@@ -1,0 +1,63 @@
+---
+// EarlyAccessDialog.astro: pop-up 2, #dlg-early, built on the shared Dialog shell. All copy is static HTML, including the three plan chips and the success step (its body sentence is the concept note);
+// EarlyAccessDialog.ts (loaded by Dialog.ts on first intent) only validates and swaps views. The form has no action and nothing here is sent or stored.
+import { cta, pricing } from '../../data/site';
+import Dialog from '../Dialog/Dialog.astro';
+import Icon from '../Icon/Icon.astro';
+import './EarlyAccessDialog.css';
+---
+<Dialog id="dlg-early" size="early">
+  <Fragment slot="header">
+    <h2 class="ea-title" id="dlg-early-title">{cta.early}</h2>
+  </Fragment>
+
+  <div class="dialog__pad ea-body" data-panel>
+    <div class="ea-view" data-view="form">
+      {/* method="dialog": a submit before the script arrives closes the box and never navigates. The script always prevents it. No action, nothing is sent. */}
+      <form class="ea-form" method="dialog" novalidate data-form>
+        <div class="ea-chips">
+          <p class="ea-chip" data-chip="free" hidden>Plan: Free, $0 (concept pricing)</p>
+          <p class="ea-chip" data-chip="pro" hidden>Plan: Pro, ${pricing.proMonthly} a month (concept pricing)</p>
+          <p class="ea-chip" data-chip="pro-yearly" hidden>Plan: Pro, ${pricing.proYearly} a month, billed yearly (concept pricing)</p>
+        </div>
+        <label class="ea-label" for="ea-email">Email</label>
+        <div class="ea-field" data-field data-state="">
+          <input
+            id="ea-email"
+            class="ea-input"
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="name@example.com"
+            aria-describedby="ea-help ea-msg"
+            aria-required="true"
+            autofocus
+            data-input
+          />
+          <Icon name="check" size={20} class="ea-field__ok" />
+          <Icon name="alert" size={20} class="ea-field__bad" />
+        </div>
+        <p class="ea-msg" id="ea-msg" data-msg></p>
+        <p class="ea-help" id="ea-help">This is a concept site. The form checks the address format and sends nothing.</p>
+        <button type="submit" class="ea-btn ea-btn--primary" data-submit>{cta.early}</button>
+      </form>
+    </div>
+
+    <div class="ea-view ea-done" data-view="done" hidden>
+      <svg class="ea-ring" viewBox="0 0 56 56" aria-hidden="true">
+        <circle cx="28" cy="28" r="27" pathLength="1"></circle>
+        <path d="M16 29.5 24.5 38 40 19" pathLength="1"></path>
+      </svg>
+      <h2 class="ea-title" id="ea-done-title" tabindex="-1" data-done-h>Address checked. Nothing was sent.</h2>
+      <p>This is a concept site. Prices are illustrative, and nothing is collected or sent. Your address was checked in this browser tab and is cleared when you close this box.</p>
+      <p class="ea-addr"><span class="ea-addr__v" data-addr></span></p>
+      <div class="ea-actions">
+        <button type="button" class="ea-btn ea-btn--primary" data-dialog-close>Back to the site</button>
+        <button type="button" class="ea-btn ea-btn--link" data-dialog-open="dlg-sample" data-cta="success-demo" aria-haspopup="dialog">Grade another sample hand</button>
+      </div>
+    </div>
+  </div>
+</Dialog>

@@ -1,0 +1,43 @@
+---
+// CompactHero.astro: the product-page hero (DESIGN.md 9.3 "Compact hero", UX.md 5.1 and 5.2). Breadcrumb, the page's one H1, subhead, the demo button, a link down to the first section, and the devices in the slot.
+// Shared by /gto-hand-review (laptop and phone pair) and /live-poker-hand-recorder (phone only).
+// Hooks for motion.css (MOTION.md 3.2, 8): [data-reveal="rise"] on the devices wrapper. The Quiet chart behind the devices is a plain CSS background and never moves.
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.astro';
+import CtaButton from '../CtaButton/CtaButton.astro';
+import Icon from '../Icon/Icon.astro';
+import TextLink from '../TextLink/TextLink.astro';
+import type { PageEntry } from '../../data/pages';
+import './CompactHero.css';
+
+interface Props {
+  page: PageEntry;
+  sub: string;
+  /** The secondary link: a word-for-word label from COPY.md and an anchor on the same page. */
+  link: { label: string; href: string };
+  /** False where the page itself is the no-script target, so the button's "Read a worked example" link would only repeat the secondary link. */
+  fallback?: boolean;
+  /** One plain line under the buttons, for a page whose button promises less than its headline (the recorder page). */
+  note?: string;
+}
+
+const { page, sub, link, fallback = true, note } = Astro.props;
+---
+<section class="chero" aria-labelledby="hero-title">
+  <div class="chero__inner">
+    <div class="chero__copy">
+      <Breadcrumbs trail={page.breadcrumb ?? []} />
+      <h1 class="chero__h1" id="hero-title">{page.h1}</h1>
+      <p class="chero__sub">{sub}</p>
+      <div class="chero__actions">
+        <CtaButton dialog="dlg-sample" cta="hero" size="lg" class="chero__cta" fallback={fallback} />
+        <TextLink href={link.href} arrow={false} class="chero__link">{link.label}<Icon name="arrow-down" size={16} /></TextLink>
+      </div>
+      {note && <p class="chero__note">{note}</p>}
+    </div>
+    <div class="chero__art">
+      <div class="chero__devices" data-reveal="rise">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

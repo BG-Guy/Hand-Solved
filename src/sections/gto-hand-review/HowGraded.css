@@ -1,0 +1,169 @@
+/* HowGraded.css: three steps between hairlines (the Engine counters' look, so the two pages read as one site), the grade legend, and the plain explanation of the grade.
+   Stock ground, no cards. Static: motion.css reveals the head and each step. */
+
+.hg__frame {
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.hg__head {
+  margin-block-end: var(--space-2xl);
+}
+
+.hg__title {
+  max-inline-size: 12em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+/* Steps: stacked with the numeral in its own column under 768, three across between hairlines from 768. */
+.hg__steps {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg__step {
+  display: grid;
+  grid-template-columns: minmax(0, 3.5rem) minmax(0, 1fr);
+  column-gap: var(--space-md);
+  row-gap: var(--space-sm);
+  align-content: start;
+  padding-block: var(--space-lg);
+  border-block-start: var(--border-hair) solid var(--line);
+}
+
+.hg__num {
+  grid-row: 1 / span 2;
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: var(--display-md);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--leading-display);
+}
+
+.hg__h {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.hg__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.hg__step-title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}
+
+.hg__body {
+  grid-column: 2;
+  color: var(--text-muted);
+}
+
+/* The legend: a chip, and what it means under it. */
+.hg__legend {
+  display: grid;
+  gap: var(--space-md);
+  margin: var(--space-2xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg__legend li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.hg__meaning {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-mono);
+}
+
+/* What the grade means */
+.hg__means {
+  display: grid;
+  gap: var(--space-md);
+  margin-block-start: var(--space-2xl);
+  padding-block-start: var(--space-lg);
+  border-block-start: var(--border-hair) solid var(--line);
+}
+
+.hg__means-title {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+.hg__means p {
+  max-inline-size: var(--measure);
+}
+
+@media (min-width: 48rem) {
+  .hg__steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block-start: var(--border-hair) solid var(--line);
+  }
+
+  .hg__step {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: var(--space-lg);
+    border-block-start: 0;
+    border-inline-start: var(--border-hair) solid var(--line);
+  }
+
+  .hg__step:first-child {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .hg__num {
+    grid-row: auto;
+  }
+
+  .hg__body {
+    grid-column: 1;
+  }
+
+  .hg__legend {
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+
+  .hg__legend li {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    gap: var(--space-sm);
+  }
+}
+
+@media (min-width: 64rem) {
+  .hg__legend {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .hg__means {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+  }
+
+  .hg__means-title {
+    grid-column: 1 / span 4;
+  }
+
+  .hg__means p {
+    grid-column: 5 / -1;
+  }
+}

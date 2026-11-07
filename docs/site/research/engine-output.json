@@ -1,0 +1,849 @@
+[
+ {
+  "id": "h1",
+  "title": "Three streets of value with top pair",
+  "body": "Profile | BB | $ | Light mode | v0.5.0 | 1e61f62 | Updated Oct 17, 2026 | Coach | A GTO review of a hand from your Hands. | Coach a new hand | COACH REVIEW | Three streets of value with top pair | Back to hand | Stacks weren't recorded, so the coach assumed You 200 bb, CO 200 bb: 100 big blinds (more when more went in), and exactly all in for shoves. | Players were read from the action log. Anyone who never acted is treated as folded before the action. | Your level | Beginner | Recreational | Regular | Strong regular | Pro | Score saved to this hand: 90%. | 90% | Excellent | HAND ACCURACY | 4 decisions reviewed · 1.59 bb given up to GTO | 3 Good | 1 Inaccuracies | Result | +109 bb | Biggest leak. Preflop: call 3 bb was the GTO play with AKo, not raise to 7.5 bb. | You · BTN | Unknown | A | K | CO | Plays GTO | 1 | Preflop | Inaccuracy | 61 | AKo: a top 3% starting hand | YOU | Raise to 7.5 bb | GTO | Call 3 bb | Pot | 4.5 bb | To call | 3 bb",
+  "decisions": [
+   {
+    "street": "Preflop",
+    "grade": "Inaccuracy 61",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 3 bb GTO",
+      "freq": "0%",
+      "value": "+4.2 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Raise to 7.5 bb You",
+      "freq": "100%",
+      "value": "+3.5 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "1 Preflop Inaccuracy 61 AKo: a top 3% starting hand YOU Raise to 7.5 bb GTO Call 3 bb Pot 4.5 bb To call 3 bb Equity needed 40% Your equity 64% Given up 0.7 bb OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 3 bb GTO 0% +4.2 bb Raise to 7.5 bb You 100% +3.5 bb Preflop GTO solution for 8-handed play at 200 bb. Pot odds: call 3 bb to win 7.5 bb, so you need 40% equity to break even. GTO with AKo here: raise to 7.5 bb 100%. Raise to 7.5 bb is part of the GTO mix (100%): as good as call 3 bb. That gives up about 0.7 bb (10% of the pot) against call 3 bb. GTO charts use standard sizes, so your raise to 10 bb was graded as raise to 7.5 bb. Against their ranges at this point you have about 64% equity. CO · GTO range · about 28% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Good 96",
+    "options": [
+     {
+      "label": "Check",
+      "freq": "2%",
+      "value": "+27.8 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 7.1 bb (33% pot) GTO",
+      "freq": "87%",
+      "value": "+28.4 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Bet 16.1 bb (75% pot)",
+      "freq": "0%",
+      "value": "+26.7 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 11 bb (51% pot) You",
+      "freq": "10%",
+      "value": "+28.3 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "2 Flop K 7 2 Good 96 Pair, near the nuts (beats 97% of possible hands) YOU Bet 11 bb (51% pot) GTO Bet 7.1 bb (33% pot) Pot 21.5 bb Your equity 89% Given up 0 bb OPTION GTO PLAYS IT VALUE Check 2% +27.8 bb Bet 7.1 bb (33% pot) GTO 87% +28.4 bb Bet 16.1 bb (75% pot) 0% +26.7 bb Bet 11 bb (51% pot) You 10% +28.3 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with AKo here: bet 7.1 bb (33% pot) 87%, bet 11 bb (51% pot) 10%, check 2%. Bet 11 bb (51% pot) is a small part of the GTO mix (10%); bet 7.1 bb (33% pot) is the main play. Close spot: bet 11 bb (51% pot) is worth almost the same. Against their ranges at this point you have about 89% equity. CO · GTO range · about 10% of hands"
+   },
+   {
+    "street": "Turn",
+    "grade": "Good 96",
+    "options": [
+     {
+      "label": "Check GTO",
+      "freq": "65%",
+      "value": "+47.9 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Bet 21.8 bb (50% pot)",
+      "freq": "0%",
+      "value": "+47.7 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 43.5 bb (100% pot)",
+      "freq": "30%",
+      "value": "+47.8 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 27.5 bb (63% pot) You",
+      "freq": "5%",
+      "value": "+47.9 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "3 Turn K 7 2 Q Good 96 Pair, very strong (beats 94% of possible hands) YOU Bet 27.5 bb (63% pot) GTO Check Pot 43.5 bb Your equity 87% Given up 0.1 bb OPTION GTO PLAYS IT VALUE Check GTO 65% +47.9 bb Bet 21.8 bb (50% pot) 0% +47.7 bb Bet 43.5 bb (100% pot) 30% +47.8 bb Bet 27.5 bb (63% pot) You 5% +47.9 bb This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with AKo here: check 65%, bet 43.5 bb (100% pot) 30%, bet 27.5 bb (63% pot) 5%. GTO doesn't play bet 27.5 bb (63% pot) with this hand here; check is the play. Close spot: bet 27.5 bb (63% pot) is worth almost the same. Against their ranges at this point you have about 87% equity. CO · GTO range · about 4% of hands"
+   },
+   {
+    "street": "River",
+    "grade": "Good 96",
+    "options": [
+     {
+      "label": "Check",
+      "freq": "0%",
+      "value": "+87.5 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 32.5 bb (33% pot)",
+      "freq": "0%",
+      "value": "+100 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 73.9 bb (75% pot) GTO",
+      "freq": "81%",
+      "value": "+103 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "All in 152 bb",
+      "freq": "15%",
+      "value": "+103 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 60 bb (61% pot) You",
+      "freq": "5%",
+      "value": "+103 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "4 River K 7 2 Q 3 Good 96 Pair, very strong (beats 90% of possible hands) YOU Bet 60 bb (61% pot) GTO Bet 73.9 bb (75% pot) Pot 98.5 bb Your equity 89% Given up 0.8 bb OPTION GTO PLAYS IT VALUE Check 0% +87.5 bb Bet 32.5 bb (33% pot) 0% +100 bb Bet 73.9 bb (75% pot) GTO 81% +103 bb All in 152 bb 15% +103 bb Bet 60 bb (61% pot) You 5% +103 bb This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with AKo here: bet 73.9 bb (75% pot) 81%, all in 152 bb 15%, bet 60 bb (61% pot) 5%. Betting is right: GTO does it 100% of the time with this hand, mostly as bet 73.9 bb (75% pot). Your size is one it rarely uses. That gives up about 0.8 bb (1% of the pot) against bet 73.9 bb (75% pot). Close spot: all in 152 bb is worth almost the same. Against their ranges at this point you have about 89% equity. CO · GTO range · about 3% of hands"
+   }
+  ]
+ },
+ {
+  "id": "h2",
+  "title": "Called a river shove with a set on a four-straight board",
+  "body": "Profile | BB | $ | Light mode | v0.5.0 | 1e61f62 | Updated Oct 17, 2026 | Coach | A GTO review of a hand from your Hands. | Coach a new hand | COACH REVIEW | Called a river shove with a set on a four-straight board | Back to hand | Stacks weren't recorded, so the coach assumed You 250 bb, BTN 160 bb (all in), SB 100 bb: 100 big blinds (more when more went in), and exactly all in for shoves. | Players were read from the action log. Anyone who never acted is treated as folded before the action. | Your level | Beginner | Recreational | Regular | Strong regular | Pro | Score saved to this hand: 27%. | 27% | Rough | HAND ACCURACY | 6 decisions reviewed · 76.61 bb given up to GTO | 1 Best | 1 Good | 2 Inaccuracies | 1 Mistakes | 1 Blunders | Result | -160 bb | Biggest leak. River: fold was the GTO play with 88, not call 65 bb. | You · BB | Unknown | 8 | 8 | BTN | Plays GTO | SB | Plays GTO | 1 | Preflop | Inaccuracy | 60 | 88: a top 5% starting hand | YOU | Call 2 bb | GTO",
+  "decisions": [
+   {
+    "street": "Preflop",
+    "grade": "Inaccuracy 60",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 2 bb You",
+      "freq": "0%",
+      "value": "+1.6 bb",
+      "best": false,
+      "actual": true
+     },
+     {
+      "label": "Raise to 9.4 bb GTO",
+      "freq": "100%",
+      "value": "+2.1 bb",
+      "best": true,
+      "actual": false
+     }
+    ],
+    "text": "1 Preflop Inaccuracy 60 88: a top 5% starting hand YOU Call 2 bb GTO Raise to 9.4 bb Pot 4.5 bb To call 2 bb Equity needed 31% Your equity 58% Given up 0.5 bb OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 2 bb You 0% +1.6 bb Raise to 9.4 bb GTO 100% +2.1 bb Preflop GTO solution for 8-handed play at 150 bb. Pot odds: call 2 bb to win 6.5 bb, so you need 31% equity to break even. GTO with 88 here: raise to 9.4 bb 100%. GTO doesn't play call 2 bb with this hand here; raise to 9.4 bb is the play. That gives up about 0.5 bb (8% of the pot) against raise to 9.4 bb. Against their ranges at this point you have about 58% equity. BTN · GTO range · about 42% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Good 95",
+    "options": [
+     {
+      "label": "Check You",
+      "freq": "7%",
+      "value": "+8.5 bb",
+      "best": false,
+      "actual": true
+     },
+     {
+      "label": "Bet 2.2 bb (33% pot) GTO",
+      "freq": "93%",
+      "value": "+8.5 bb",
+      "best": true,
+      "actual": false
+     }
+    ],
+    "text": "2 Flop 8 J 9 Good 95 Three of a kind, near the nuts (beats 97% of possible hands) YOU Check GTO Bet 2.2 bb (33% pot) Pot 6.5 bb Your equity 83% Given up 0.1 bb OPTION GTO PLAYS IT VALUE Check You 7% +8.5 bb Bet 2.2 bb (33% pot) GTO 93% +8.5 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with 88 here: bet 2.2 bb (33% pot) 93%, check 7%. Check is a small part of the GTO mix (7%); bet 2.2 bb (33% pot) is the main play. That gives up about 0.1 bb (1% of the pot) against bet 2.2 bb (33% pot). Close spot: check is worth almost the same. Against their ranges at this point you have about 83% equity. BTN · GTO range · about 42% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Inaccuracy 57",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 4 bb",
+      "freq": "55%",
+      "value": "+7.9 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Raise to 12 bb GTO",
+      "freq": "43%",
+      "value": "+8.4 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Raise to 14 bb You",
+      "freq": "2%",
+      "value": "+6.9 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "3 Flop 8 J 9 Inaccuracy 57 Three of a kind, near the nuts (beats 97% of possible hands) YOU Raise to 14 bb GTO Raise to 12 bb Pot 10.5 bb To call 4 bb Equity needed 28% Your equity 77% Given up 1.5 bb OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 4 bb 55% +7.9 bb Raise to 12 bb GTO 43% +8.4 bb Raise to 14 bb You 2% +6.9 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 4 bb to win 14.5 bb, so you need 28% equity to break even. GTO with 88 here: call 4 bb 55%, raise to 12 bb 43%, raise to 14 bb 2%. GTO doesn't play raise to 14 bb with this hand here; raise to 12 bb is the play. That gives up about 1.5 bb (10% of the pot) against raise to 12 bb. Against their ranges at this point you have about 77% equity. BTN · GTO range · about 11% of hands"
+   },
+   {
+    "street": "Turn",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Check",
+      "freq": "0%",
+      "value": "+35.3 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 17.3 bb (50% pot)",
+      "freq": "0%",
+      "value": "+39.5 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 22.5 bb (65% pot) GTO You",
+      "freq": "100%",
+      "value": "+40.4 bb",
+      "best": true,
+      "actual": true
+     }
+    ],
+    "text": "4 Turn 8 J 9 2 Best move 100 Three of a kind, near the nuts (beats 96% of possible hands) YOU Bet 22.5 bb (65% pot) GTO Bet 22.5 bb (65% pot) Pot 34.5 bb Your equity 78% OPTION GTO PLAYS IT VALUE Check 0% +35.3 bb Bet 17.3 bb (50% pot) 0% +39.5 bb Bet 22.5 bb (65% pot) GTO You 100% +40.4 bb This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with 88 here: bet 22.5 bb (65% pot) 100%. Bet 22.5 bb (65% pot) is GTO's top choice. Against their ranges at this point you have about 78% equity. BTN · GTO range · about 8% of hands"
+   },
+   {
+    "street": "River",
+    "grade": "Mistake 33",
+    "options": [
+     {
+      "label": "Check GTO",
+      "freq": "100%",
+      "value": "+20.3 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Bet 26.2 bb (33% pot)",
+      "freq": "0%",
+      "value": "+12.2 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 59.6 bb (75% pot)",
+      "freq": "0%",
+      "value": "+7.6 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "All in 211 bb",
+      "freq": "0%",
+      "value": "+10.4 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 55 bb (69% pot) You",
+      "freq": "0%",
+      "value": "+8.4 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "5 River 8 J 9 2 10 Mistake 33 Three of a kind, medium (beats 64% of possible hands) YOU Bet 55 bb (69% pot) GTO Check Pot 79.5 bb Your equity 28% Given up 11.9 bb OPTION GTO PLAYS IT VALUE Check GTO 100% +20.3 bb Bet 26.2 bb (33% pot) 0% +12.2 bb Bet 59.6 bb (75% pot) 0% +7.6 bb All in 211 bb 0% +10.4 bb Bet 55 bb (69% pot) You 0% +8.4 bb This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with 88 here: check 100%. GTO doesn't play bet 55 bb (69% pot) with this hand here; check is the play. That gives up about 11.9 bb (15% of the pot) against check. Against their ranges at this point you have about 28% equity. BTN · GTO range · about 8% of hands"
+   },
+   {
+    "street": "River",
+    "grade": "Blunder 6",
+    "options": [
+     {
+      "label": "Fold GTO",
+      "freq": "96%",
+      "value": "0 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Call 65 bb You",
+      "freq": "4%",
+      "value": "-62.6 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "6 River 8 J 9 2 10 Blunder 6 Three of a kind, medium (beats 64% of possible hands) YOU Call 65 bb GTO Fold Pot 255 bb To call 65 bb Equity needed 20% Your equity 1% Given up 62.6 bb OPTION GTO PLAYS IT VALUE Fold GTO 96% 0 bb Call 65 bb You 4% -62.6 bb This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 65 bb to win 320 bb, so you need 20% equity to break even. GTO with 88 here: fold 96%, call 65 bb 4%. GTO doesn't play call 65 bb with this hand here; fold is the play. That gives up about 62.6 bb (20% of the pot) against fold. Against their ranges at this point you have about 1% equity. BTN · GTO range · about 2% of hands"
+   }
+  ]
+ },
+ {
+  "id": "h3",
+  "title": "Queens run into aces in a 4-bet pot",
+  "body": "Profile | BB | $ | Light mode | v0.5.0 | 1e61f62 | Updated Oct 17, 2026 | Coach | A GTO review of a hand from your Hands. | Coach a new hand | COACH REVIEW | Queens run into aces in a 4-bet pot | Back to hand | Stacks weren't recorded, so the coach assumed You 150 bb, UTG 150 bb: 100 big blinds (more when more went in), and exactly all in for shoves. | Players were read from the action log. Anyone who never acted is treated as folded before the action. | Your level | Beginner | Recreational | Regular | Strong regular | Pro | Score saved to this hand: 91%. | 91% | Excellent | HAND ACCURACY | 5 decisions reviewed · 3.85 bb given up to GTO | 3 Best | 1 Good | 1 Mistakes | Result | -95 bb | Biggest leak. Preflop: call 3 bb was the GTO play with QQ, not raise to 7.5 bb. | You · CO | Unknown | Q | Q | UTG | Plays GTO | 1 | Preflop | Mistake | 49 | QQ: a top 1% starting hand | YOU | Raise to 7.5 bb | GTO | Call 3 bb | Pot | 4.5 bb | To call",
+  "decisions": [
+   {
+    "street": "Preflop",
+    "grade": "Mistake 49",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 3 bb GTO",
+      "freq": "0%",
+      "value": "+4.2 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Raise to 7.5 bb You",
+      "freq": "100%",
+      "value": "+3.2 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "1 Preflop Mistake 49 QQ: a top 1% starting hand YOU Raise to 7.5 bb GTO Call 3 bb Pot 4.5 bb To call 3 bb Equity needed 40% Your equity 67% Given up 1 bb OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 3 bb GTO 0% +4.2 bb Raise to 7.5 bb You 100% +3.2 bb Preflop GTO solution for 8-handed play at 150 bb. Pot odds: call 3 bb to win 7.5 bb, so you need 40% equity to break even. GTO with QQ here: raise to 7.5 bb 100%. Raise to 7.5 bb is part of the GTO mix (100%): as good as call 3 bb. That gives up about 1 bb (13% of the pot) against call 3 bb. GTO charts use standard sizes, so your raise to 11 bb was graded as raise to 7.5 bb. Against their ranges at this point you have about 67% equity. UTG · GTO range · about 12% of hands"
+   },
+   {
+    "street": "Preflop",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 19 bb GTO You",
+      "freq": "100%",
+      "value": "+4.2 bb",
+      "best": true,
+      "actual": true
+     },
+     {
+      "label": "All in 150 bb",
+      "freq": "0%",
+      "value": "-14.5 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "2 Preflop Best move 100 QQ: a top 1% starting hand YOU Call 19 bb GTO Call 19 bb Pot 42.5 bb To call 19 bb Equity needed 31% Your equity 39% OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 19 bb GTO You 100% +4.2 bb All in 150 bb 0% -14.5 bb Preflop GTO solution for 8-handed play at 150 bb. Pot odds: call 19 bb to win 61.5 bb, so you need 31% equity to break even. GTO with QQ here: call 19 bb 100%. Call 19 bb is GTO's top choice. Against their ranges at this point you have about 39% equity. UTG · GTO range · about 2% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 20 bb GTO You",
+      "freq": "100%",
+      "value": "+8.1 bb",
+      "best": true,
+      "actual": true
+     },
+     {
+      "label": "Raise to 60.9 bb",
+      "freq": "0%",
+      "value": "-2.5 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "All in 120 bb",
+      "freq": "0%",
+      "value": "-1.4 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "3 Flop 4 4 9 Best move 100 Two pair, very strong (beats 90% of possible hands) YOU Call 20 bb GTO Call 20 bb Pot 81.5 bb To call 20 bb Equity needed 20% Your equity 41% OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 20 bb GTO You 100% +8.1 bb Raise to 60.9 bb 0% -2.5 bb All in 120 bb 0% -1.4 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 20 bb to win 102 bb, so you need 20% equity to break even. GTO with QQ here: call 20 bb 100%. Call 20 bb is GTO's top choice. Against their ranges at this point you have about 41% equity. UTG · GTO range · about 2% of hands"
+   },
+   {
+    "street": "Turn",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Check GTO You",
+      "freq": "100%",
+      "value": "+2.9 bb",
+      "best": true,
+      "actual": true
+     },
+     {
+      "label": "Bet 50.8 bb (50% pot)",
+      "freq": "0%",
+      "value": "-41.2 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "All in 100 bb",
+      "freq": "0%",
+      "value": "-40.4 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "4 Turn 4 4 9 K Best move 100 Two pair, strong (beats 78% of possible hands) YOU Check GTO Check Pot 102 bb Your equity 11% OPTION GTO PLAYS IT VALUE Check GTO You 100% +2.9 bb Bet 50.8 bb (50% pot) 0% -41.2 bb All in 100 bb 0% -40.4 bb This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with QQ here: check 100%. Check is GTO's top choice. Against their ranges at this point you have about 11% equity. UTG · GTO range · about 2% of hands"
+   },
+   {
+    "street": "River",
+    "grade": "Good 90",
+    "options": [
+     {
+      "label": "Fold GTO",
+      "freq": "91%",
+      "value": "0 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Call 45 bb You",
+      "freq": "8%",
+      "value": "-2.8 bb",
+      "best": false,
+      "actual": true
+     },
+     {
+      "label": "All in 100 bb",
+      "freq": "2%",
+      "value": "-19 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "5 River 4 4 9 K 2 Good 90 Two pair, strong (beats 78% of possible hands) YOU Call 45 bb GTO Fold Pot 147 bb To call 45 bb Equity needed 23% Your equity 21% Given up 2.8 bb OPTION GTO PLAYS IT VALUE Fold GTO 91% 0 bb Call 45 bb You 8% -2.8 bb All in 100 bb 2% -19 bb This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 45 bb to win 192 bb, so you need 23% equity to break even. GTO with QQ here: fold 91%, call 45 bb 8%. Call 45 bb is a small part of the GTO mix (8%); fold is the main play. That gives up about 2.8 bb (1% of the pot) against fold. Close spot: call 45 bb is worth almost the same. Against their ranges at this point you have about 21% equity. UTG · GTO range · about 1% of hands"
+   }
+  ]
+ },
+ {
+  "id": "h4",
+  "title": "Turned straight against a check-raise",
+  "body": "Profile | BB | $ | Light mode | v0.5.0 | 1e61f62 | Updated Oct 17, 2026 | Coach | A GTO review of a hand from your Hands. | Coach a new hand | COACH REVIEW | Turned straight against a check-raise | Back to hand | Stacks weren't recorded, so the coach assumed You 99 bb (all in), BB 100 bb: 100 big blinds (more when more went in), and exactly all in for shoves. | Players were read from the action log. Anyone who never acted is treated as folded before the action. | Your level | Beginner | Recreational | Regular | Strong regular | Pro | Score saved to this hand: 78%. | 78% | Decent | HAND ACCURACY | 4 decisions reviewed · 2.68 bb given up to GTO | 1 Best | 3 Inaccuracies | Result | +26 bb | Biggest leak. Preflop: fold was the GTO play with 76s, not raise to 3 bb. | You · SB | Unknown | 7 | 6 | BB | Plays GTO | 1 | Preflop | Inaccuracy | 60 | 76s: a top 36% starting hand | YOU | Raise to 3 bb | GTO | Fold | Pot | 1.5 bb | To call | 0.5 bb",
+  "decisions": [
+   {
+    "street": "Preflop",
+    "grade": "Inaccuracy 60",
+    "options": [
+     {
+      "label": "Fold GTO",
+      "freq": "82%",
+      "value": "0 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Complete 0.5 bb",
+      "freq": "18%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Raise to 3 bb You",
+      "freq": "0%",
+      "value": "-0.1 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "1 Preflop Inaccuracy 60 76s: a top 36% starting hand YOU Raise to 3 bb GTO Fold Pot 1.5 bb To call 0.5 bb Your equity 45% Given up 0.1 bb OPTION GTO PLAYS IT VALUE Fold GTO 82% 0 bb Complete 0.5 bb 18% 0 bb Raise to 3 bb You 0% -0.1 bb Preflop GTO solution for 8-handed play at 100 bb. GTO with 76s here: fold 82%, complete 0.5 bb 18%. GTO doesn't play raise to 3 bb with this hand here; fold is the play. That gives up about 0.1 bb (3% of the pot) against fold. Close spot: complete 0.5 bb is worth almost the same. Against their ranges at this point you have about 45% equity. BB · GTO range · about 100% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Check",
+      "freq": "0%",
+      "value": "+4.7 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 2 bb (33% pot) GTO You",
+      "freq": "100%",
+      "value": "+5.7 bb",
+      "best": true,
+      "actual": true
+     }
+    ],
+    "text": "2 Flop 5 8 K Best move 100 High card, very weak (beats 12% of possible hands) YOU Bet 2 bb (33% pot) GTO Bet 2 bb (33% pot) Pot 6 bb Your equity 44% OPTION GTO PLAYS IT VALUE Check 0% +4.7 bb Bet 2 bb (33% pot) GTO You 100% +5.7 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with 76s here: bet 2 bb (33% pot) 100%. Bet 2 bb (33% pot) is GTO's top choice. Against their ranges at this point you have about 44% equity. BB · GTO range · about 47% of hands"
+   },
+   {
+    "street": "Turn",
+    "grade": "Inaccuracy 79",
+    "options": [
+     {
+      "label": "Check GTO",
+      "freq": "93%",
+      "value": "+21.9 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Bet 5 bb (50% pot)",
+      "freq": "2%",
+      "value": "+21.5 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 7 bb (70% pot) You",
+      "freq": "5%",
+      "value": "+21.5 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "3 Turn 5 8 K 4 Inaccuracy 79 Straight, near the nuts (beats 100% of possible hands) YOU Bet 7 bb (70% pot) GTO Check Pot 10 bb Your equity 97% Given up 0.3 bb OPTION GTO PLAYS IT VALUE Check GTO 93% +21.9 bb Bet 5 bb (50% pot) 2% +21.5 bb Bet 7 bb (70% pot) You 5% +21.5 bb This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with 76s here: check 93%, bet 7 bb (70% pot) 5%, bet 5 bb (50% pot) 2%. GTO doesn't play bet 7 bb (70% pot) with this hand here; check is the play. That gives up about 0.3 bb (3% of the pot) against check. Against their ranges at this point you have about 97% equity. BB · GTO range · about 19% of hands"
+   },
+   {
+    "street": "Turn",
+    "grade": "Inaccuracy 77",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 14 bb",
+      "freq": "45%",
+      "value": "+51.2 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Raise to 49 bb GTO",
+      "freq": "54%",
+      "value": "+52.7 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "All in 94 bb You",
+      "freq": "0%",
+      "value": "+50.4 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "4 Turn 5 8 K 4 Inaccuracy 77 Straight, near the nuts (beats 100% of possible hands) YOU All in 94 bb GTO Raise to 49 bb Pot 38 bb To call 14 bb Equity needed 27% Your equity 91% Given up 2.3 bb OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 14 bb 45% +51.2 bb Raise to 49 bb GTO 54% +52.7 bb All in 94 bb You 0% +50.4 bb This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 14 bb to win 52 bb, so you need 27% equity to break even. GTO with 76s here: raise to 49 bb 54%, call 14 bb 45%. Raising is right: GTO does it 55% of the time with this hand, mostly as raise to 49 bb. Your size is one it rarely uses. That gives up about 2.3 bb (4% of the pot) against raise to 49 bb. Against their ranges at this point you have about 91% equity. BB · GTO range · about 5% of hands"
+   }
+  ]
+ },
+ {
+  "id": "h5",
+  "title": "Opened K9 offsuit under the gun",
+  "body": "Profile | BB | $ | Light mode | v0.5.0 | 1e61f62 | Updated Oct 17, 2026 | Coach | A GTO review of a hand from your Hands. | Coach a new hand | COACH REVIEW | Opened K9 offsuit under the gun | Back to hand | Stacks weren't recorded, so the coach assumed You 100 bb, BTN 100 bb: 100 big blinds (more when more went in), and exactly all in for shoves. | Players were read from the action log. Anyone who never acted is treated as folded before the action. | Your level | Beginner | Recreational | Regular | Strong regular | Pro | Score saved to this hand: 73%. | 73% | Decent | HAND ACCURACY | 4 decisions reviewed · 3.15 bb given up to GTO | 2 Best | 1 Inaccuracies | 1 Mistakes | Result | -10 bb | Biggest leak. Preflop: fold was the GTO play with K9o, not call 7 bb. | You · UTG | Unknown | K | 9 | BTN | Plays GTO | 1 | Preflop | Inaccuracy | 60 | K9o: a top 33% starting hand | YOU | Raise to 2.5 bb | GTO | Fold | Pot | 1.5 bb | To call",
+  "decisions": [
+   {
+    "street": "Preflop",
+    "grade": "Inaccuracy 60",
+    "options": [
+     {
+      "label": "Fold GTO",
+      "freq": "100%",
+      "value": "0 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Raise to 2.5 bb You",
+      "freq": "0%",
+      "value": "-0.2 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "1 Preflop Inaccuracy 60 K9o: a top 33% starting hand YOU Raise to 2.5 bb GTO Fold Pot 1.5 bb To call 1 bb Your equity 57% Given up 0.2 bb OPTION GTO PLAYS IT VALUE Fold GTO 100% 0 bb Raise to 2.5 bb You 0% -0.2 bb Preflop GTO solution for 8-handed play at 100 bb. GTO with K9o here: fold 100%. GTO doesn't play raise to 2.5 bb with this hand here; fold is the play. That gives up about 0.2 bb (8% of the pot) against fold. GTO charts use standard sizes, so your raise to 3 bb was graded as raise to 2.5 bb. Against their ranges at this point you have about 57% equity. BTN · GTO range · about 100% of hands"
+   },
+   {
+    "street": "Preflop",
+    "grade": "Mistake 46",
+    "options": [
+     {
+      "label": "Fold GTO",
+      "freq": "98%",
+      "value": "0 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Call 7 bb You",
+      "freq": "0%",
+      "value": "-3 bb",
+      "best": false,
+      "actual": true
+     },
+     {
+      "label": "Raise to 17.3 bb",
+      "freq": "2%",
+      "value": "-3 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "2 Preflop Mistake 46 K9o: a top 33% starting hand YOU Call 7 bb GTO Fold Pot 14.5 bb To call 7 bb Equity needed 33% Your equity 29% Given up 3 bb OPTION GTO PLAYS IT VALUE Fold GTO 98% 0 bb Call 7 bb You 0% -3 bb Raise to 17.3 bb 2% -3 bb Preflop GTO solution for 8-handed play at 100 bb. Pot odds: call 7 bb to win 21.5 bb, so you need 33% equity to break even. GTO with K9o here: fold 98%. GTO doesn't play call 7 bb with this hand here; fold is the play. That gives up about 3 bb (14% of the pot) against fold. Against their ranges at this point you have about 29% equity. BTN · GTO range · about 6% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Check GTO You",
+      "freq": "100%",
+      "value": "+1 bb",
+      "best": true,
+      "actual": true
+     },
+     {
+      "label": "Bet 7.1 bb (33% pot)",
+      "freq": "0%",
+      "value": "+0.4 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "3 Flop A 7 3 Best move 100 High card, medium (beats 56% of possible hands) YOU Check GTO Check Pot 21.5 bb Your equity 8% OPTION GTO PLAYS IT VALUE Check GTO You 100% +1 bb Bet 7.1 bb (33% pot) 0% +0.4 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with K9o here: check 100%. Check is GTO's top choice. Against their ranges at this point you have about 8% equity. BTN · GTO range · about 6% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Fold GTO You",
+      "freq": "100%",
+      "value": "0 bb",
+      "best": true,
+      "actual": true
+     },
+     {
+      "label": "Call 7 bb",
+      "freq": "0%",
+      "value": "-14.2 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Raise to 21.3 bb",
+      "freq": "0%",
+      "value": "-6 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "4 Flop A 7 3 Best move 100 High card, medium (beats 56% of possible hands) YOU Fold GTO Fold Pot 28.5 bb To call 7 bb Equity needed 20% Your equity 6% OPTION GTO PLAYS IT VALUE Fold GTO You 100% 0 bb Call 7 bb 0% -14.2 bb Raise to 21.3 bb 0% -6 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 7 bb to win 35.5 bb, so you need 20% equity to break even. GTO with K9o here: fold 100%. Fold is GTO's top choice. Against their ranges at this point you have about 6% equity. BTN · GTO range · about 3% of hands"
+   }
+  ]
+ },
+ {
+  "id": "h7",
+  "title": "Missed-draw bluff on the river",
+  "body": "Profile | BB | $ | Light mode | v0.5.0 | 1e61f62 | Updated Oct 17, 2026 | Coach | A GTO review of a hand from your Hands. | Coach a new hand | COACH REVIEW | Missed-draw bluff on the river | Back to hand | Stacks weren't recorded, so the coach assumed You 100 bb, CO 100 bb: 100 big blinds (more when more went in), and exactly all in for shoves. | Players were read from the action log. Anyone who never acted is treated as folded before the action. | Your level | Beginner | Recreational | Regular | Strong regular | Pro | Score saved to this hand: 92%. | 92% | Excellent | HAND ACCURACY | 4 decisions reviewed · 0.54 bb given up to GTO | 2 Best | 1 Good | 1 Inaccuracies | Result | -19.5 bb | Biggest leak. Flop: fold was the GTO play with JTs, not call 4 bb. | You · BTN | Unknown | J | 10 | CO | Plays GTO | 1 | Preflop | Best move | 100 | JTs: a top 16% starting hand | YOU | Call 3 bb | GTO | Call 3 bb | Pot | 4.5 bb | To call",
+  "decisions": [
+   {
+    "street": "Preflop",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Fold",
+      "freq": "0%",
+      "value": "0 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Call 3 bb GTO You",
+      "freq": "100%",
+      "value": "+0.5 bb",
+      "best": true,
+      "actual": true
+     },
+     {
+      "label": "Raise to 7.5 bb",
+      "freq": "0%",
+      "value": "+0.3 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "1 Preflop Best move 100 JTs: a top 16% starting hand YOU Call 3 bb GTO Call 3 bb Pot 4.5 bb To call 3 bb Equity needed 40% Your equity 44% OPTION GTO PLAYS IT VALUE Fold 0% 0 bb Call 3 bb GTO You 100% +0.5 bb Raise to 7.5 bb 0% +0.3 bb Preflop GTO solution for 8-handed play at 100 bb. Pot odds: call 3 bb to win 7.5 bb, so you need 40% equity to break even. GTO with JTs here: call 3 bb 100%. Call 3 bb is GTO's top choice. Against their ranges at this point you have about 44% equity. CO · GTO range · about 28% of hands"
+   },
+   {
+    "street": "Flop",
+    "grade": "Inaccuracy 79",
+    "options": [
+     {
+      "label": "Fold GTO",
+      "freq": "99%",
+      "value": "0 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Call 4 bb You",
+      "freq": "1%",
+      "value": "-0.3 bb",
+      "best": false,
+      "actual": true
+     },
+     {
+      "label": "Raise to 12 bb",
+      "freq": "1%",
+      "value": "-0.9 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "2 Flop A 8 4 Inaccuracy 79 High card, weak (beats 36% of possible hands) YOU Call 4 bb GTO Fold Pot 11.5 bb To call 4 bb Equity needed 26% Your equity 22% Given up 0.3 bb OPTION GTO PLAYS IT VALUE Fold GTO 99% 0 bb Call 4 bb You 1% -0.3 bb Raise to 12 bb 1% -0.9 bb This flop was solved heads-up from the ranges everyone arrived with, including the real bet sizes. Pot odds: call 4 bb to win 15.5 bb, so you need 26% equity to break even. GTO with JTs here: fold 99%. GTO doesn't play call 4 bb with this hand here; fold is the play. That gives up about 0.3 bb (2% of the pot) against fold. Against their ranges at this point you have about 22% equity. CO · GTO range · about 8% of hands"
+   },
+   {
+    "street": "Turn",
+    "grade": "Good 96",
+    "options": [
+     {
+      "label": "Check You",
+      "freq": "6%",
+      "value": "+6.9 bb",
+      "best": false,
+      "actual": true
+     },
+     {
+      "label": "Bet 7.8 bb (50% pot) GTO",
+      "freq": "94%",
+      "value": "+7.1 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Bet 15.5 bb (100% pot)",
+      "freq": "0%",
+      "value": "+6.6 bb",
+      "best": false,
+      "actual": false
+     }
+    ],
+    "text": "3 Turn A 8 4 2 Good 96 High card, very weak (beats 26% of possible hands) YOU Check GTO Bet 7.8 bb (50% pot) Pot 15.5 bb Your equity 12% Given up 0.2 bb OPTION GTO PLAYS IT VALUE Check You 6% +6.9 bb Bet 7.8 bb (50% pot) GTO 94% +7.1 bb Bet 15.5 bb (100% pot) 0% +6.6 bb This turn was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with JTs here: bet 7.8 bb (50% pot) 94%, check 6%. Check is a small part of the GTO mix (6%); bet 7.8 bb (50% pot) is the main play. That gives up about 0.2 bb (1% of the pot) against bet 7.8 bb (50% pot). Close spot: check is worth almost the same. Against their ranges at this point you have about 12% equity. CO · GTO range · about 6% of hands"
+   },
+   {
+    "street": "River",
+    "grade": "Best move 100",
+    "options": [
+     {
+      "label": "Check",
+      "freq": "0%",
+      "value": "+0.8 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 5.1 bb (33% pot)",
+      "freq": "7%",
+      "value": "+11.5 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 11.6 bb (75% pot) GTO",
+      "freq": "28%",
+      "value": "+11.5 bb",
+      "best": true,
+      "actual": false
+     },
+     {
+      "label": "Bet 19.4 bb (125% pot)",
+      "freq": "42%",
+      "value": "+11.4 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "All in 93 bb",
+      "freq": "0%",
+      "value": "+9.4 bb",
+      "best": false,
+      "actual": false
+     },
+     {
+      "label": "Bet 12.5 bb (81% pot) You",
+      "freq": "23%",
+      "value": "+11.5 bb",
+      "best": false,
+      "actual": true
+     }
+    ],
+    "text": "4 River A 8 4 2 6 Best move 100 High card, very weak (beats 17% of possible hands) YOU Bet 12.5 bb (81% pot) GTO Bet 11.6 bb (75% pot) Pot 15.5 bb Your equity 5% Given up 0 bb OPTION GTO PLAYS IT VALUE Check 0% +0.8 bb Bet 5.1 bb (33% pot) 7% +11.5 bb Bet 11.6 bb (75% pot) GTO 28% +11.5 bb Bet 19.4 bb (125% pot) 42% +11.4 bb All in 93 bb 0% +9.4 bb Bet 12.5 bb (81% pot) You 23% +11.5 bb This river was solved heads-up from the ranges everyone arrived with, including the real bet sizes. GTO with JTs here: bet 19.4 bb (125% pot) 42%, bet 11.6 bb (75% pot) 28%, bet 12.5 bb (81% pot) 23%, bet 5.1 bb (33% pot) 7%. Bet 12.5 bb (81% pot) is part of the GTO mix (23%): as good as bet 11.6 bb (75% pot). Against their ranges at this point you have about 5% equity. CO · GTO range · about 5% of hands"
+   }
+  ]
+ }
+]

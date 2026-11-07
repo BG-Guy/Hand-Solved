@@ -1,0 +1,85 @@
+---
+// WorkedExample.astro: #worked-example, the first sample hand from the pop-up written out in plain HTML (UX.md 5.1 block 2, COPY.md "2. Worked example").
+// It is the no-script target of every demo button, so everything here is static: the setup line, the situation, the table scene, a real <table> of every option with how often GTO plays it,
+// what it is worth and its grade, and the grade sentence. All figures come from src/data/demo-spots.json through worked-example.ts, in big blinds, pots in whole big blinds.
+// Hooks for motion.css (MOTION.md 3.2, 8): [data-reveal="up"] on the head, [data-reveal="rise"] on the phone. The options table is static and never animates.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import CardChip from './CardChip.astro';
+import GradeChip from '../../components/GradeChip/GradeChip.astro';
+import { example } from './worked-example';
+import './WorkedExample.css';
+
+const { setup, options } = example;
+---
+<section class="wx" id="worked-example" aria-labelledby="wx-title">
+  <div class="wx__frame">
+    <CornerIndex rank="A" suit="spade" />
+
+    <header class="wx__head" data-reveal="up">
+      <h2 class="wx__title" id="wx-title">A worked example, start to finish</h2>
+      <p class="wx__lead">This is the first sample hand from the pop-up, written out so you can read it at your own pace.</p>
+    </header>
+
+    <div class="wx__grid">
+      <div class="wx__text">
+        <p class="wx__setup">
+          {setup.street}, {setup.stakes}. You are in {setup.seat} with {setup.hero.map((card, i) => <>{i > 0 && ' '}<CardChip card={card} /></>)}.
+          Board {setup.board.map((card, i) => <>{i > 0 && ' '}<CardChip card={card} /></>)}. Pot {setup.pot}, {setup.toCall} to call.
+        </p>
+        <p class="wx__situation">{example.situation}</p>
+      </div>
+
+      <div class="wx__scene" set:html={example.scene} />
+
+      <div class="wx__exhibit">
+        <div class="wx__sheet on-paper">
+          <table class="wx__table">
+            <caption>What GTO does with these cards</caption>
+            <thead>
+              <tr>
+                <th scope="col">Option</th>
+                <th scope="col">GTO plays it</th>
+                <th scope="col">Worth</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                options.map((option) => (
+                  <tr class:list={[option.best && 'is-gto']}>
+                    <th scope="row" class="wx__option">
+                      <span class="wx__name">{option.label}</span>
+                      <span class="wx__marks">
+                        {option.best && <span class="wx__tag wx__tag--gto">GTO</span>}
+                        {option.you && <span class="wx__tag wx__tag--you">You</span>}
+                        <GradeChip grade={option.slug}>{`${option.grade} ${option.score}`}</GradeChip>
+                      </span>
+                    </th>
+                    <td class="wx__freq">
+                      <span class="wx__pct">{option.freq}</span>
+                      <svg class:list={['wx__bar', option.best && 'wx__bar--gto']} viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                        <rect class="wx__bar-track" width="100" height="6" />
+                        <rect class="wx__bar-fill" width={option.freqPercent} height="6" />
+                      </svg>
+                    </td>
+                    <td class:list={['wx__worth', option.negative && 'is-neg']}>{option.worth}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <p class="wx__sentence">{example.sentence}</p>
+        <p class="wx__note">Saved sample run from the real engine. Live solves can differ slightly. Amounts in big blinds.</p>
+        <div class="wx__actions">
+          <CtaButton dialog="dlg-sample" cta="review-example" size="lg" fallback={false} class="wx__cta" />
+        </div>
+      </div>
+
+      <div class="wx__aside" data-reveal="rise">
+        <PhoneFrame screen="phone-coach-decision" sizes="(min-width: 1024px) 301px, (min-width: 768px) 28vw, 245px" class="wx__phone" />
+      </div>
+    </div>
+  </div>
+</section>

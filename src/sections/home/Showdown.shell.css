@@ -1,0 +1,92 @@
+/* Showdown.shell.css: the only part of #showdown the home page loads up front. The box and its size, at every screen size, so nothing moves when the rest arrives.
+   The look (Showdown.css) and the choreography (Showdown.deal.css) are 13 KB gz, so they load with the section's script, two screens before it (the loader in Showdown.astro).
+   Until both are in, the table is drawn but not shown. Without script, a <noscript> link loads Showdown.css, which lays the section out as a plain list. */
+
+/* Registered, so --u is worked out once, on the canvas, as a length. Unregistered, 100cqi would be measured again inside every container below it. */
+@property --u {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 1px;
+}
+
+.sd {
+  /* Room kept for the floating navbar where it cannot step away (below, and Showdown.deal.css, let it where scroll timelines exist). */
+  --sd-top: calc(var(--nav-h-scrolled) + var(--nav-inset) + var(--space-sm));
+  --sd-bot: var(--space-sm);
+
+  position: relative;
+  z-index: 1;
+  min-block-size: 100svh;
+  background: var(--surface-ink);
+  color: var(--text-main);
+  /* The whole screen, not the navbar's offset: an anchor jump or the first deal lands the table exactly in frame. No scroll snap: Chrome pulls back anything inside a third of the screen, which traps a slow wheel. */
+  scroll-margin-block-start: calc(-1 * var(--scroll-pad));
+}
+
+/* The navbar steps away as the table arrives (Showdown.deal.css), so the table can use that room. Here, so the size is right before the choreography loads. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .sd {
+      --sd-top: var(--space-sm);
+    }
+  }
+}
+
+.sd__room {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: 100svh;
+  padding-block: var(--sd-top) var(--sd-bot);
+  overflow: clip;
+  container-type: inline-size;
+}
+
+/* With script, nothing shows until the look and the choreography are both in and the script has started (data-ready). Opacity, not visibility: a visibility
+   that changes by inheritance would set off the delayed visibility transitions of the cards. The loader keeps a press made before then. */
+html[data-js] .sd:not([data-ready], [data-static]) .sd__room {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The canvas: phone is the base. Every other coordinate is in Showdown.css; only what sets the size is here. */
+.sd__canvas {
+  --cv-w: 390;
+  --cv-h: 828;
+  --u: min(100cqi / var(--cv-w), max((100svh - var(--sd-top) - var(--sd-bot)) / var(--cv-h), 0.72px));
+
+  position: relative;
+  inline-size: calc(var(--cv-w) * var(--u));
+  block-size: calc(var(--cv-h) * var(--u));
+}
+
+/* Tablet portrait */
+@media (min-width: 40rem) and (max-aspect-ratio: 5 / 4) {
+  .sd__canvas {
+    --cv-w: 768;
+    --cv-h: 992;
+  }
+}
+
+/* Landscape */
+@media (min-width: 40rem) and (min-aspect-ratio: 5 / 4) {
+  .sd__canvas {
+    --cv-w: 1280;
+    --cv-h: 760;
+  }
+}
+
+/* A short phone */
+@media (max-width: 39.99rem) and (max-height: 46rem) {
+  .sd__canvas {
+    --cv-h: 690;
+  }
+}
+
+/* The narrowest phones: too narrow to fit one screen with type this size, so the table takes its width and the section grows a little past the screen. Never sideways. */
+@media (max-width: 21.24rem) {
+  .sd__canvas {
+    --cv-h: 722;
+    --u: calc(100cqi / var(--cv-w));
+  }
+}

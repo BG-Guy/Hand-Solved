@@ -1,0 +1,28 @@
+{
+  "name": "handsolved-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "HandSolved concept site: static Astro build, plain HTML and CSS, small vanilla TypeScript modules.",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "verify": "astro check && astro build && node scripts/check-dist.mjs",
+    "svg": "svgo --multipass -f src/assets/svg",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "astro": "7.4.0",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@playwright/test": "1.64.1",
+    "svgo": "4.1.0",
+    "typescript": "6.0.3"
+  }
+}

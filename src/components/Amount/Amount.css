@@ -1,0 +1,5 @@
+/* Amount.css: a live number (Amount.astro). The roll between units is the motion task's: it hooks .is-roll, .num__v and data-prev (MOTION.md E25). */
+.num {
+  display: inline-block;
+  position: relative;
+}

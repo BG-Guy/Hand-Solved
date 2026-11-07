@@ -1,0 +1,24 @@
+---
+// Limits.astro: "Limits, stated plainly" (UX.md 5.1 block 5, COPY.md "5. Limits"): four chips and one short paragraph. The words are COPY.md's.
+// Hooks for motion.css (MOTION.md 8): [data-reveal="up"] on the head. Chips are static.
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import './Limits.css';
+
+const chips = ['Texas Hold’em only', 'Heads-up or 3-way postflop', 'You enter the hands', 'Bigger pots marked not graded'];
+---
+<section class="lim" id="limits" aria-labelledby="lim-title">
+  <div class="lim__frame">
+    <CornerIndex rank="J" suit="diamond" />
+
+    <header class="lim__head" data-reveal="up">
+      <h2 class="lim__title" id="lim-title">Limits, stated plainly</h2>
+    </header>
+
+    <div class="lim__body">
+      <ul class="lim__chips" role="list">
+        {chips.map((chip) => <li class="slip">{chip}</li>)}
+      </ul>
+      <p class="lim__text">The coach covers Texas Hold’em. After the flop it solves pots with two or three players, and larger pots are marked not graded. It assumes everyone plays GTO, counts chips as chips (no rake, no tournament payouts) and gives values as estimates. When stacks were not recorded, the review lists what it assumed.</p>
+    </div>
+  </div>
+</section>

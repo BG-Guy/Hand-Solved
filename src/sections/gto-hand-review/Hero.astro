@@ -1,0 +1,38 @@
+---
+// Hero.astro: /gto-hand-review hero (UX.md 5.1 block 1, COPY.md "GTO hand review, 1. Compact hero"). The H1 is the page entry's own text. The laptop and phone show the same sample hand.
+// Under 768 only the phone shows, cropped at the bottom; the desktop capture is hidden there and never fetched (DESIGN.md 8, UX.md 8).
+import LaptopFrame from '../../components/LaptopFrame/LaptopFrame.astro';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import { pages } from '../../data/pages';
+import CompactHero from '../../components/CompactHero/CompactHero.astro';
+
+// Rendered widths of the capture inside each frame (screen = 0.94 of a phone frame; in a pair the laptop screen is 0.765 of the pair and the phone screen 0.194).
+const phoneNarrow = '(min-width: 768px) 1px, 245px';
+const laptopSizes = '(min-width: 1200px) 500px, (min-width: 1024px) 42vw, (min-width: 768px) 560px, 1px';
+const pairPhoneSizes = '(min-width: 1200px) 127px, (min-width: 1024px) 10.5vw, (min-width: 768px) 143px, 1px';
+// The narrow phone is the LCP image on phones, so it is eager with high priority (ARCHITECTURE.md section 5). Lazy, its request waited for CSS and layout and started at about 560 ms instead of 190 ms.
+// The laptop stays lazy: eager would fetch it on phones, where it is hidden. From 768 the narrow phone's 1px size picks the 300 px file the pair's phone also uses, so no extra bytes;
+// the request only starts earlier (docs/site/qa/performance.md measured about 55 to 75 ms on desktop LCP at 1.6 Mbps, against 400 to 700 ms saved on phones).
+---
+<CompactHero
+  page={pages.gtoHandReview}
+  sub="Rebuild a hand on a table and see each decision graded against GTO, the strategy a poker solver computes. See how often GTO plays every option."
+  link={{ label: 'See a worked example', href: '#worked-example' }}
+  fallback={false}
+>
+  <div class="chero__narrow">
+    <div class="chero__crop">
+      <PhoneFrame screen="phone-coach-score" eager sizes={phoneNarrow} class="chero__phone" />
+    </div>
+  </div>
+  <div class="chero__wide">
+    <LaptopFrame screen="desk-coach-top" sizes={laptopSizes} class="chero__pair">
+      <PhoneFrame
+        slot="pair"
+        screen="phone-coach-score"
+        alt="The same coach report on a phone, with a result of minus 160 big blinds over 6 decisions. Sample data."
+        sizes={pairPhoneSizes}
+      />
+    </LaptopFrame>
+  </div>
+</CompactHero>

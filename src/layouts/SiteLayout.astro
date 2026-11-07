@@ -1,0 +1,93 @@
+---
+// SiteLayout.astro: the html shell every page uses: head and fonts, skip link, navbar, main (the sheet), the card-back footer, the mobile bar and the two closed pop-ups.
+// CSS order is the cascade order: tokens, reset and base type, this shell, shared component styles, then motion last.
+// A page only passes its `page` entry and its content. The navbar and the footer are printed here, so pages do not place them; the slots are an escape hatch.
+import { Font } from 'astro:assets';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import './SiteLayout.css';
+import '../components/Icon/Icon.css';
+import '../components/Slip/Slip.css';
+import '../components/Pen/Pen.css';
+import '../components/CtaButton/CtaButton.css';
+import '../components/TextLink/TextLink.css';
+import '../components/SiteFooter/SiteFooter.css';
+import EarlyAccessDialog from '../components/EarlyAccessDialog/EarlyAccessDialog.astro';
+import MobileCtaBar from '../components/MobileCtaBar/MobileCtaBar.astro';
+import Navbar from '../components/Navbar/Navbar.astro';
+import SampleHandDialog from '../components/SampleHandDialog/SampleHandDialog.astro';
+import SeoHead from '../components/SeoHead/SeoHead.astro';
+import SiteFooter from '../components/SiteFooter/SiteFooter.astro';
+import { svgFile } from '../components/Icon/svg-files';
+import type { PageEntry } from '../data/pages';
+import { skipLinkText } from '../data/site';
+import guardSource from '../scripts/head-guard.js?raw';
+import '../styles/motion.css';
+
+interface Props {
+  page: PageEntry;
+  /** A bare page has no closing band and no mobile bar. Default: true for privacy, terms and the 404, false for every other page. */
+  bare?: boolean;
+}
+
+const { page } = Astro.props;
+const bare = Astro.props.bare ?? ['/privacy', '/terms', '/404'].includes(page.path);
+const home = page.path === '/';
+const VeilMark = svgFile('logo-mark-grid');
+// Pages whose hero has a demo button (data-cta="hero"): the header button starts as secondary there.
+const heroCta = ['/', '/gto-hand-review', '/live-poker-hand-recorder'].includes(page.path);
+
+// The one inline script. Astro does not hash is:inline scripts itself, so its SHA-256 is added to the CSP here.
+// The text printed below and the text hashed here must be the same string. Web Crypto avoids needing @types/node.
+const guard = guardSource.trim();
+const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(guard));
+Astro.csp?.insertScriptHash(`sha256-${btoa(String.fromCharCode(...new Uint8Array(digest)))}`);
+
+// The page-to-page transition's opt-in (MOTION.md E02) is inline on purpose, and is the only inline style. Chrome decides on the new page before its external
+// stylesheets have applied: from motion.css 1 navigation in 8 transitioned, inline 8 in 8. Under a hash, so the CSP allows it.
+const viewTransitionRule = '@media screen and (prefers-reduced-motion:no-preference){@view-transition{navigation:auto}}';
+const ruleDigest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(viewTransitionRule));
+Astro.csp?.insertStyleHash(`sha256-${btoa(String.fromCharCode(...new Uint8Array(ruleDigest)))}`);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+    <SeoHead page={page} />
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    {/* Only the display face is preloaded: it sets the LCP text. The body and mono faces load when the text that uses them is painted. */}
+    <Font cssVariable="--face-display" preload />
+    <Font cssVariable="--face-body" />
+    <Font cssVariable="--face-mono" />
+    <script is:inline set:html={guard}></script>
+    <style is:inline set:html={viewTransitionRule}></style>
+  </head>
+  <body>
+    {/* The load veil (MOTION.md E01), home only. Displayed and removed by motion.css alone; it never takes focus or pointer events. */}
+    {home && (
+      <div class="veil" aria-hidden="true" inert>
+        <div class="veil__door veil__door--l"><VeilMark class="veil__mark" width="104" height="104" focusable="false" /></div>
+        <div class="veil__door veil__door--r"><VeilMark class="veil__mark" width="104" height="104" focusable="false" /></div>
+      </div>
+    )}
+    <a class="skip-link" href="#main">{skipLinkText}</a>
+    <slot name="navbar"><Navbar path={page.path} heroCta={heroCta} /></slot>
+    {/* The reveal: the page is the sheet, and the footer waits under it as the wrapper's last child (SiteFooter.css, SiteFooter.ts). */}
+    <div class="reveal-footer" data-reveal-footer>
+      <div class="reveal-footer__sheet">
+        <main id="main">
+          <slot />
+        </main>
+      </div>
+      <slot name="footer"><SiteFooter closingBand={!bare} home={home} /></slot>
+    </div>
+    {!bare && <MobileCtaBar />}
+    {/* Both pop-ups are mounted once, closed (ids dlg-sample and dlg-early). They are built on components/Dialog/Dialog.astro. */}
+    <SampleHandDialog />
+    <EarlyAccessDialog />
+    {/* The one delegated dialog listener. It is loaded here too, so every CtaButton works even if a pop-up component prints no dialog yet. */}
+    <script src="../components/Dialog/Dialog.ts"></script>
+    <script src="../scripts/reveal-loader.ts"></script>
+  </body>
+</html>

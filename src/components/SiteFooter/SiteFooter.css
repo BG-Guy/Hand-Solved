@@ -1,0 +1,224 @@
+/* SiteFooter.css: the card-back reveal footer (DESIGN.md 7.3). The page (the "sheet") lifts away to uncover a footer that waits underneath it.
+   Class names follow the library and MOTION.md: .reveal-footer, __sheet, __footer, .cardback__stage, .cardback__dim, .medallion.
+   Layers: stock border > red card with lattice > printed frame (1 px Face White line) > content > plain red legal row.
+   Reveal progress is --reveal-footer-p on .reveal-footer: 0 while the sheet covers the footer, 1 once it is clear. With no script, or in flow mode, it is 1.
+   Text on the lattice is Face White at 16 px or more; anything smaller sits on a plain red strip (the group headings and the legal row). */
+
+/* The wrapper holds the sheet and the footer. isolation keeps the z-indexes local. */
+.reveal-footer {
+  --reveal-footer-radius: var(--cardback-radius);
+  position: relative;
+  isolation: isolate;
+  background: var(--surface-page);
+}
+
+/* The sheet is the page: it needs an opaque ground, and it clips to its rounded bottom corners. overflow: clip keeps sticky inside it working. */
+.reveal-footer__sheet {
+  position: relative;
+  z-index: 1;
+  overflow: clip;
+  border-radius: 0 0 var(--reveal-footer-radius) var(--reveal-footer-radius);
+  background: var(--surface-page);
+  color: var(--text-main);
+  /* A hairline ring, not a shadow: depth here is a step in surface plus a line. */
+  box-shadow: var(--shadow-lg);
+}
+
+/* SiteFooter.ts watches this marker, at the sheet's end, to know when the lift is near. */
+.reveal-footer__end {
+  position: absolute;
+  inset-block-end: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  pointer-events: none;
+}
+
+/* The footer: the card's stock border. In flow here; motion.css sticks it under the sheet when the script has measured that it fits (MOTION.md E32). */
+.site-footer {
+  position: relative;
+  z-index: 0;
+  padding: var(--cardback-border);
+  background: var(--surface-page);
+  overflow: clip;
+}
+
+/* Focus is never hidden under the sheet: the footer comes forward while it holds focus. */
+.reveal-footer:not(.reveal-footer--flow) .site-footer:focus-within {
+  z-index: 2;
+}
+
+/* A flat Key Black layer over the footer, thickest while the sheet still covers it. Without it the stock sheet and the stock border would have no visible edge. No gradient. */
+.cardback__dim {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-ink);
+  opacity: calc((1 - var(--reveal-footer-p, 1)) * 0.5);
+  pointer-events: none;
+}
+
+/* The card: Pip Red with the lattice file on top. The ground scope (.on-red) turns every token inside it. */
+.site-footer__card {
+  position: relative;
+  overflow: clip;
+  border-radius: var(--cardback-radius);
+  background-color: var(--surface-red);
+  background-image: url('../../assets/svg/bg-lattice-red.svg');
+  background-size: var(--lattice-size) var(--lattice-size);
+  color: var(--text-main);
+}
+
+/* The printed frame: a 1 px Face White line inset from the edge, at the card's radius minus the inset. It sits above the content and takes no clicks. */
+.site-footer__card::before {
+  content: '';
+  position: absolute;
+  inset: var(--cardback-keyline-inset);
+  z-index: 1;
+  border: var(--border-hair) solid var(--text-inverse);
+  border-radius: calc(var(--cardback-radius) - var(--cardback-keyline-inset));
+  pointer-events: none;
+}
+
+.site-footer__inner {
+  --cardback-pad: clamp(var(--space-xl), 5vw, 5rem);
+  position: relative;
+  display: grid;
+  gap: var(--space-2xl);
+  /* Padding inside the frame, growing past the container width so the content stays 1200 px wide on big screens. */
+  padding: var(--cardback-pad) max(var(--cardback-pad), calc((100% - var(--container-max)) / 2));
+}
+
+/* Link groups: headings are 13 px, under the 16 px minimum for lattice text, so each sits on a plain red label. */
+.site-footer__nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: var(--space-lg) var(--space-md);
+  align-content: start;
+}
+
+.site-footer__heading {
+  display: inline-block;
+  margin-block-end: var(--space-xs);
+  margin-inline-start: calc(var(--space-xs) * -1);
+  padding-inline: var(--space-xs);
+  background: var(--surface-red);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.site-footer__nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__nav a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--control-h-sm);
+  color: var(--text-main);
+  font-size: var(--text-base);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+.site-footer__nav a:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+  text-decoration-thickness: calc(var(--border-hair) * 2);
+}
+
+.site-footer__nav a:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+/* The medallion is art-medallion.svg: a Face White square already turned 45 degrees, with the mark upright inside it. It is 1.414 times the square's side wide. */
+.medallion {
+  justify-self: center;
+  inline-size: calc(var(--medallion) * 1.414);
+  block-size: auto;
+  /* 0.92 to 1 as the footer is revealed. Reduced motion shows the end state (below). */
+  transform: scale(calc(0.92 + var(--reveal-footer-p, 1) * 0.08));
+}
+
+/* Legal row: a plain red strip inside the frame at its bottom, matching the frame's corners, with a hairline on top. */
+.site-footer__legal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs) var(--space-lg);
+  margin: 0 var(--cardback-keyline-inset) var(--cardback-keyline-inset);
+  padding: var(--space-md) var(--space-lg);
+  border-block-start: var(--border-hair) solid var(--line);
+  border-radius: 0 0 calc(var(--cardback-radius) - var(--cardback-keyline-inset)) calc(var(--cardback-radius) - var(--cardback-keyline-inset));
+  background: var(--surface-red);
+  color: var(--text-main);
+  font-size: var(--text-sm);
+}
+
+.site-footer__legal .concept-note {
+  color: var(--text-main);
+}
+
+@media (min-width: 48rem) {
+  .site-footer__legal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* 1024 and up: the band on the left, the medallion in the middle of the card, the link groups on the right. */
+@media (min-width: 64rem) {
+  .site-footer__inner {
+    /* The band is a little wider than the link groups, so "Pick a move." and "See the grade." can each stay on one line. */
+    grid-template-columns: minmax(0, 1.2fr) auto minmax(0, 0.8fr);
+    align-items: center;
+    gap: var(--space-xl);
+  }
+
+  .site-footer__inner > .closing-band {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .medallion {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .site-footer__nav {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  /* Privacy, terms and the 404 have no band: link groups across the card, the medallion beneath. */
+  .site-footer__inner--bare {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2xl);
+  }
+
+  .site-footer__inner--bare .site-footer__nav,
+  .site-footer__inner--bare .medallion {
+    grid-column: 1;
+  }
+
+  .site-footer__inner--bare .site-footer__nav {
+    grid-row: 1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-footer__inner--bare .medallion {
+    grid-row: 2;
+  }
+}
+
+/* Reduced motion: no scale, and the end state is what shows. The scrim still fades with the lift. */
+@media (prefers-reduced-motion: reduce) {
+  .medallion {
+    transform: none;
+  }
+}

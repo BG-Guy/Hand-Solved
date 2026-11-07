@@ -1,0 +1,130 @@
+---
+// Pricing.astro: #pricing, "Free to log. Pro to coach." Two plan cards, Free and Pro (featured), and a Monthly / Yearly switch (COPY.md 4.8, DESIGN.md 9.5 and 9.7).
+// The prices are illustrative and always dollars: the BB/$ switch never touches them. No Offer or Product markup, no competitor, no comparison.
+//
+// The switch is two radio inputs and CSS :has() (Pricing.css), so it works with no script. Both prices of the Pro card are in the HTML, stacked in one cell.
+// Both buttons open the early-access pop-up through CtaButton. EarlyAccessDialog.ts reads data-plan, and reads the yearly radio (value="yearly") for the Pro chip.
+//
+// Hooks (MOTION.md 3.2): .price__m and .price__y, .switch__thumb, .rim, and data-reveal="up" on both cards under data-reveal-stagger (E37).
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import TextLink from '../../components/TextLink/TextLink.astro';
+import { pricing } from '../../data/site';
+import './Pricing.css';
+
+const freeBullets = [
+  'Live session log',
+  'Hands rebuilt on a poker table',
+  'Session history, graded A to F',
+  'Insights, goals and highlights',
+  'Bankroll chart in bb or dollars',
+  'Backup and CSV export',
+];
+
+const proBullets = [
+  'Everything in Free',
+  'Every decision graded against GTO',
+  'Worth of each option in big blinds',
+  'Pot odds and equity, explained',
+  'Practice against GTO opponents',
+  'Replay from flop, turn or river',
+  'Coach score saved on each hand',
+];
+---
+<section class="pricing" id="pricing" aria-labelledby="pricing-title">
+  {/* Rail line along the top of the section (DESIGN.md section 6): a CSS background, decorative. */}
+  <div class="pricing__edge" aria-hidden="true"></div>
+  <div class="pricing__wrap">
+    {/* Card index 7 of diamonds (DESIGN.md section 6): top left, and the same turned 180 degrees at the bottom right. Decorative. */}
+    <CornerIndex rank="7" suit="diamond" />
+
+    <header class="pricing__head">
+      <p class="slip pricing__label">Concept pricing</p>
+      <h2 class="pricing__title" id="pricing-title"><span class="pricing__line">Free to log.</span> <span class="pricing__line">Pro to coach.</span></h2>
+      <p class="pricing__lead">Log your sessions for free. Add the coach and practice for ${pricing.proMonthly} a month, or ${pricing.proYearly} a month billed yearly.</p>
+    </header>
+
+    <div class="pricing__controls">
+      <fieldset class="billing">
+        <legend class="visually-hidden">Billing</legend>
+        <span class="billing__thumb switch__thumb" aria-hidden="true"></span>
+        <label class="billing__opt"><input class="billing__input" type="radio" name="billing" value="monthly" checked /><span>Monthly</span></label>
+        <label class="billing__opt"><input class="billing__input" type="radio" name="billing" value="yearly" /><span>Yearly</span></label>
+      </fieldset>
+      <p class="slip pricing__save">Save ${pricing.proYearlySaving} a year</p>
+    </div>
+
+    <ul class="pricing__plans" role="list" data-reveal-stagger>
+      <li class="plan plan--free" data-reveal="up">
+        <div class="plan__head">
+          <h3 class="plan__name">Free</h3>
+        </div>
+        <p class="plan__price">
+          <span class="price__fig">$0</span>
+          <span class="price__unit" aria-hidden="true">/mo</span><span class="visually-hidden"> a month</span>
+        </p>
+        <p class="plan__bill">Nothing to pay</p>
+        <p class="plan__who">For players who log their live sessions</p>
+        <ul class="plan__list" role="list">
+          {
+            freeBullets.map((bullet) => (
+              <li>
+                <Icon name="check" size={16} class="plan__tick" />
+                <span>{bullet}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="plan__cta">
+          <CtaButton dialog="dlg-early" cta="pricing-free" plan="free" variant="secondary" full />
+        </div>
+      </li>
+
+      <li class="plan plan--pro on-ink" data-reveal="up">
+        {/* The rim that draws around the card on hover (MOTION.md E30). Decorative, drawn by Pricing.css. */}
+        <svg class="rim" aria-hidden="true"><rect pathLength="1"></rect></svg>
+        <div class="plan__head">
+          <h3 class="plan__name">Pro</h3>
+          <p class="plan__tag">Recommended</p>
+        </div>
+        <p class="plan__price">
+          <span class="price__fig">
+            <span class="price__m">${pricing.proMonthly}</span>
+            <span class="price__y">${pricing.proYearly}</span>
+          </span>
+          <span class="price__unit" aria-hidden="true">/mo</span><span class="visually-hidden"> a month</span>
+        </p>
+        <p class="plan__bill plan__bill--swap">
+          <span class="bill__m">Billed monthly</span>
+          <span class="bill__y">Billed yearly at ${pricing.proYearlyTotal}</span>
+        </p>
+        <p class="plan__who">For players who want every hand graded</p>
+        <ul class="plan__list" role="list">
+          {
+            proBullets.map((bullet) => (
+              <li>
+                <Icon name="check" size={16} class="plan__tick" />
+                <span>{bullet}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="plan__cta">
+          <CtaButton dialog="dlg-early" cta="pricing-pro" plan="pro" full />
+        </div>
+      </li>
+    </ul>
+
+    {/* Shown only when scripts are off (Pricing.css): the buttons step aside then, because they open a pop-up. COPY.md, No-script lines. */}
+    <div class="pricing__nojs">
+      <p>Pro is ${pricing.proMonthly}/mo, or ${pricing.proYearly}/mo billed yearly. Free is $0.</p>
+      <p>The early-access form needs scripts. This concept site collects nothing either way.</p>
+    </div>
+
+    <p class="pricing__note">
+      <span>Concept pricing. This is a concept site, so nothing is charged and nothing is collected.</span>
+      <TextLink href="#faq">Read the FAQ</TextLink>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,321 @@
+/* Navbar.css: the floating header (DESIGN.md 9.2). Over the page it prints straight on the stock at container width; once the page scrolls past 16 px
+   (Navbar.ts sets data-scrolled) it narrows to --nav-w-scrolled and takes an opaque Face White ground with a hairline. No glass, no blur, no shadow.
+   Widths: brand and burger under 768, plus the button from 768, plus the four links from 1024 (where the burger goes). */
+
+.nav {
+  position: fixed;
+  inset-block-start: var(--nav-inset);
+  inset-inline: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--gutter);
+  /* Only the bar catches pointer events, so the empty strip beside it never blocks the page. */
+  pointer-events: none;
+}
+
+.nav__bar {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  /* Over the page the bar is as wide as the content (the container minus its two gutters), so the brand and the button line up with it. */
+  inline-size: min(100%, calc(var(--container-max) - 2 * var(--gutter)));
+  block-size: var(--nav-h-top);
+  padding-inline: 0;
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-xl);
+  background: transparent;
+  /* The width and height change, so keep the effect of that inside the bar. */
+  contain: layout style;
+  transition:
+    inline-size var(--dur-3) var(--ease-out),
+    block-size var(--dur-3) var(--ease-out),
+    padding-inline var(--dur-3) var(--ease-out),
+    background-color var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out);
+}
+
+/* Scrolled: narrower, shorter, on an opaque Face White ground. It stays Face White over red and ink sections too. */
+.nav[data-scrolled] .nav__bar {
+  inline-size: min(100%, var(--nav-w-scrolled));
+  block-size: var(--nav-h-scrolled);
+  padding-inline: var(--space-md);
+  background: var(--surface-raised);
+  border-color: var(--line-strong);
+}
+
+/* Brand */
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-block-size: var(--control-h-sm);
+  margin-inline-end: auto;
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.nav__lockup {
+  /* 26 px high, 136 px wide (logo-lockup.svg is 136 x 26). Never smaller. */
+  block-size: var(--nav-mark);
+  inline-size: auto;
+}
+
+/* Links and the gliding slip. The slip is moved by Navbar.ts with --x and --w. */
+.nav__links {
+  position: relative;
+  display: none;
+}
+
+.nav__links ul {
+  display: flex;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__links a {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--control-h-sm);
+  padding-inline: calc(var(--space-sm) + var(--space-xs));
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+/* The slip carries the hover. The text stays Key Black. */
+.nav__links a:hover {
+  color: var(--text-main);
+}
+
+.nav__pill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: var(--w, 0);
+  transform: translateX(var(--x, 0));
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  opacity: 0;
+  transition:
+    transform var(--dur-3) var(--ease-spring),
+    inline-size var(--dur-3) var(--ease-spring),
+    opacity var(--dur-1);
+}
+
+/* Header button: it only shows from 768 px. Under that the menu panel and the mobile bar carry it. */
+.nav__cta {
+  display: none;
+}
+
+/* Burger and the panel's close button: 44 px tall, the icon with "Menu" in the mono face beside it. */
+.nav__toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-sm);
+  min-inline-size: var(--control-h-sm);
+  min-block-size: var(--control-h-sm);
+  padding-inline: var(--space-sm);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  cursor: pointer;
+  transition: background-color var(--dur-2);
+}
+
+@media (hover: hover) {
+  .nav__toggle:hover {
+    background: var(--surface-muted);
+  }
+}
+
+.nav__toggle:active {
+  transform: scale(0.98);
+}
+
+/* With script, the burger replaces the links below 1024. Without script nothing hides: the links wrap under the brand. */
+html[data-js] .nav__toggle {
+  display: inline-flex;
+}
+
+/* No script, under 1024 px: the header sits in the flow (so the wrapped links never lie on top of the page) and the links wrap under the brand. */
+@media (max-width: 63.99rem) {
+  html:not([data-js]) .nav {
+    position: static;
+    padding-block: var(--nav-inset);
+  }
+
+  html:not([data-js]) .nav__bar {
+    flex-wrap: wrap;
+    block-size: auto;
+    padding-block: var(--space-sm);
+  }
+
+  html:not([data-js]) .nav__links {
+    display: block;
+    order: 3;
+    inline-size: 100%;
+    overflow-x: auto;
+  }
+}
+
+html:not([data-js]) .nav__links a:hover {
+  background: var(--surface-muted);
+}
+
+/* The menu panel: a modal <dialog> on ink, revealed in a circle from the burger (--mx, --my). Rows are 56 px, the button sits at the bottom. */
+.nav__menu {
+  /* .nav ignores the pointer so the strip beside the bar never blocks the page; pointer-events is inherited, so the panel switches it back on. */
+  pointer-events: auto;
+  position: fixed;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow-y: auto;
+  background: var(--surface-ink);
+  color: var(--text-main);
+  clip-path: circle(0 at var(--mx, 100%) var(--my, 0));
+  transition: clip-path var(--dur-4) var(--ease-in-out);
+}
+
+.nav__menu[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav__menu[data-state='open'] {
+  clip-path: circle(150vmax at var(--mx, 100%) var(--my, 0));
+}
+
+.nav__menu::backdrop {
+  background: transparent;
+}
+
+.nav__menu-top {
+  display: flex;
+  align-items: center;
+  flex: none;
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
+  block-size: calc(var(--nav-h-top) + var(--nav-inset));
+  margin-inline: auto;
+  padding: var(--nav-inset) var(--gutter) 0;
+}
+
+.nav__menu-close {
+  display: inline-flex;
+}
+
+.nav__menu-nav {
+  flex: none;
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.nav__menu-nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__menu-nav li {
+  border-block-end: var(--border-hair) solid var(--border-inverse);
+}
+
+.nav__menu-nav li:first-child {
+  border-block-start: var(--border-hair) solid var(--border-inverse);
+}
+
+.nav__menu-nav a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--control-h-lg);
+  padding-inline: var(--space-sm);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .nav__menu-nav a:hover {
+    background: var(--surface-muted);
+    color: var(--text-main);
+  }
+}
+
+.nav__menu-foot {
+  display: grid;
+  gap: var(--space-md);
+  inline-size: 100%;
+  max-inline-size: var(--container-max);
+  margin: auto auto 0;
+  padding: var(--space-xl) var(--gutter) calc(var(--space-xl) + env(safe-area-inset-bottom));
+}
+
+/* Links and button rise in turn as the panel opens. Opacity and transform only. */
+.nav__menu-nav li,
+.nav__menu-foot {
+  opacity: 0;
+  transform: translateY(var(--space-lg));
+  transition:
+    opacity var(--dur-4) var(--ease-out),
+    transform var(--dur-4) var(--ease-out);
+}
+
+.nav__menu[data-state='open'] :is(.nav__menu-nav li, .nav__menu-foot) {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--stagger) * var(--i, 0) + var(--dur-2));
+}
+
+.nav__menu-nav li:nth-child(2) { --i: 1; }
+.nav__menu-nav li:nth-child(3) { --i: 2; }
+.nav__menu-nav li:nth-child(4) { --i: 3; }
+.nav__menu-foot { --i: 4; }
+
+@media (min-width: 48rem) {
+  .nav__cta {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 64rem) {
+  .nav__links,
+  html[data-js] .nav__links {
+    display: block;
+  }
+
+  html[data-js] .nav__toggle {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__menu-nav li,
+  .nav__menu-foot {
+    transform: none;
+  }
+}

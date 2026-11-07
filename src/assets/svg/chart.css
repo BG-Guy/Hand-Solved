@@ -1,0 +1,79 @@
+/* chart.css: the only CSS the inline chart SVGs need (label type size by rendered width, forced colors). Tokens only, no hex. Rules: DESIGN.md 7.1, usage: docs/site/SVG-USAGE.md. */
+
+/* The wrapper around an inline chart is the size container. Give it a width from layout, never from its content. */
+.chart {
+  container-type: inline-size;
+}
+
+.hc {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* The Full figure's meaning is its inks, so forced colors must not repaint them. */
+.hc-full {
+  forced-color-adjust: none;
+}
+
+/* Labels are hidden until the chart is wide enough for a 12 px letter. font-size is in user units: units x width / 1300 = rendered px. */
+.hc-labels {
+  display: none;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-mono);
+}
+
+/* Full: every cell from 416 px, pairs only from 256 px (the diagonal doubles as the axis). */
+@container (min-width: 256px) {
+  .hc-full .hc-labels {
+    display: inline;
+    font-size: 61px;
+  }
+  .hc-full .hc-rest {
+    display: none;
+  }
+}
+@container (min-width: 320px) {
+  .hc-full .hc-labels {
+    font-size: 48.75px;
+  }
+}
+@container (min-width: 416px) {
+  .hc-full .hc-labels {
+    font-size: 37.5px;
+  }
+  .hc-full .hc-rest {
+    display: inline;
+  }
+}
+@container (min-width: 520px) {
+  .hc-full .hc-labels {
+    font-size: 30px;
+  }
+}
+
+/* Screened (hero plates): pairs only from 320 px, every cell from 520 px. Under 320 px there are no labels. */
+@container (min-width: 320px) {
+  .hc-screened .hc-labels {
+    display: inline;
+    font-size: 48.75px;
+  }
+}
+@container (min-width: 416px) {
+  .hc-screened .hc-labels {
+    font-size: 37.5px;
+  }
+}
+@container (min-width: 520px) {
+  .hc-screened .hc-labels {
+    font-size: 30px;
+  }
+  .hc-screened .hc-rest {
+    display: inline;
+  }
+}
+@container (max-width: 519.98px) {
+  .hc-screened .hc-rest {
+    display: none;
+  }
+}

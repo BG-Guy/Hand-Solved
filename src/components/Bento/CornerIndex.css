@@ -1,0 +1,43 @@
+/* CornerIndex.css: the numbered card corner of a home section (DESIGN.md 7.5). The index plus its inset stays inside the section padding, so it never reaches content. */
+
+/* --corner-inline is the one thing a section may set: the inline inset, where the index lines up with the section's text column (var(--gutter)) and not with the container's edge. */
+.corner {
+  position: absolute;
+  inset-block-start: var(--index-inset);
+  inset-inline-start: var(--corner-inline, var(--index-inset));
+  display: grid;
+  justify-items: start;
+  row-gap: 2px;
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: var(--index-rank);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-display);
+  pointer-events: none;
+  user-select: none;
+}
+
+.corner--end {
+  inset: auto var(--corner-inline, var(--index-inset)) var(--index-inset) auto;
+  transform: rotate(180deg);
+}
+
+.corner__rank {
+  /* "10" keeps its two digits close. */
+  letter-spacing: -0.02em;
+}
+
+.corner__suit {
+  inline-size: auto;
+  block-size: var(--index-suit);
+}
+
+.corner__suit--red {
+  color: var(--primary);
+}
+
+/* On ink and on red every suit is Face White (the suit's own colour would otherwise stay red). */
+.on-ink .corner__suit--red,
+.on-red .corner__suit--red {
+  color: var(--text-main);
+}

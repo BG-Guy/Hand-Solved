@@ -1,0 +1,53 @@
+/* RangeChartList.css: the "View the chart as a list" disclosure under a preflop chart (RangeChartList.astro). Same look as the bankroll chart's "View data as a table" (Numbers.css). */
+
+.rcl {
+  grid-column: 1 / -1;
+  margin-block-start: var(--space-xs);
+}
+
+.rcl__summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.rcl__summary::-webkit-details-marker {
+  display: none;
+}
+
+.rcl__chevron {
+  transition: transform var(--dur-2);
+}
+
+.rcl[open] .rcl__chevron {
+  transform: rotate(180deg);
+}
+
+.rcl__groups {
+  display: grid;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-mono);
+}
+
+.rcl__groups > div {
+  display: grid;
+  gap: var(--space-xs);
+  padding-block-end: var(--space-sm);
+  border-block-end: var(--border-hair) solid var(--line);
+}
+
+.rcl__groups dt {
+  font-weight: var(--weight-semibold);
+}
+
+.rcl__groups dd {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.rcl__groups ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

@@ -1,0 +1,46 @@
+---
+// Dialog.astro: the shared pop-up shell: a native <dialog> with a handle, a header row, a scrolling body, an optional footnote and a close button.
+// Pop-up 1 and pop-up 2 fill its slots. Opening, closing, focus return, Esc, backdrop click and the phone-width drag all live in Dialog.ts: one listener
+// for the page, which SiteLayout loads, so this component carries no script of its own.
+//
+//   <Dialog id="dlg-early" size="early" labelledby="dlg-early-title">
+//     <Fragment slot="header"><h2 id="dlg-early-title" tabindex="-1" autofocus>Get early access</h2></Fragment>
+//     ...body...
+//     <Fragment slot="footer">Footnote text</Fragment>
+//   </Dialog>
+import Icon from '../Icon/Icon.astro';
+import { labels } from '../../data/site';
+import './Dialog.css';
+
+interface Props {
+  /** Element id. Triggers point at it with data-dialog-open. SiteLayout mounts "dlg-sample" and "dlg-early". */
+  id: string;
+  /** Width at 768 px and up: "sample" is 880 px (pop-up 1), "early" is 440 px (pop-up 2). */
+  size: 'sample' | 'early';
+  /** Id of the heading inside the slots that names the dialog. Default: `${id}-title`. */
+  labelledby?: string;
+  /** Height of the bottom sheet under 768 px: "full" is the screen minus a small gap, "content" follows its content. Default: full for "sample", content for "early". */
+  sheet?: 'full' | 'content';
+  /** Print the 44 px close button. Default true. Set false only if the content has its own button with data-dialog-close. */
+  closeButton?: boolean;
+}
+
+const { id, size, labelledby = `${id}-title`, sheet = size === 'sample' ? 'full' : 'content', closeButton = true } = Astro.props;
+const hasFooter = Astro.slots.has('footer');
+---
+<dialog id={id} class:list={['dialog', `dialog--${size}`, `dialog--sheet-${sheet}`]} aria-labelledby={labelledby} data-dialog>
+  <div class="dialog__panel">
+    <span class="dialog__handle" aria-hidden="true"></span>
+    <header class="dialog__head"><slot name="header" /></header>
+    <div class="dialog__body"><slot /></div>
+    {hasFooter && <footer class="dialog__foot"><slot name="footer" /></footer>}
+    {/* Last in the DOM so Tab reaches it after the content, and drawn at the top right by CSS. */}
+    {
+      closeButton && (
+        <button class="dialog__close" type="button" data-dialog-close aria-label={labels.close}>
+          <Icon name="close" size={24} />
+        </button>
+      )
+    }
+  </div>
+</dialog>

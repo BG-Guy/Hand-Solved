@@ -1,0 +1,21 @@
+---
+// Hero.astro: /live-poker-hand-recorder hero (UX.md 5.2 block 1, COPY.md "Live poker hand recorder, 1. Compact hero"). Phone only, on the Quiet chart (DESIGN.md 9.3). The H1 is the page entry's own text.
+// The phone is cropped at the bottom under 768 and whole from 768. CompactHero is the shared shell in components/.
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame.astro';
+import { pages } from '../../data/pages';
+import CompactHero from '../../components/CompactHero/CompactHero.astro';
+
+// The capture's rendered width: a 0.94 screen inside a frame of --phone-w-panel (260 to 320).
+const phoneSizes = '(min-width: 1024px) 301px, (min-width: 768px) 280px, 245px';
+// The phone is the LCP image on phones, so it is eager with high priority (ARCHITECTURE.md section 5). Lazy, its request waited for CSS and layout and started at about 560 ms instead of 180 ms.
+---
+<CompactHero
+  page={pages.liveRecorder}
+  sub="Seat the players, set the stacks, pick the cards you know, then answer each action street by street. All-ins and side pots are handled for you."
+  link={{ label: 'See the three steps', href: '#steps' }}
+  note="Recording happens in the app. This sample shows what you get back, the grade."
+>
+  <div class="chero__crop">
+    <PhoneFrame screen="phone-recorder" eager sizes={phoneSizes} class="chero__phone" />
+  </div>
+</CompactHero>

@@ -1,0 +1,31 @@
+/* Steps.css: #steps on stock. The head, then the shared pinned story (components/Story/Story.css owns the layout, the pin and the stacked fallback).
+   This file only places the callouts beside the part of each capture they name, with the same --at the home story uses. */
+
+.steps__frame {
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.steps__head {
+  margin-block-end: var(--space-3xl);
+}
+
+.steps__title {
+  max-inline-size: 12em;
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+/* Pinned on a phone the stage's top padding already sets the gap under the head (as on the home story). */
+@media screen and (prefers-reduced-motion: no-preference) and (min-height: 37.5rem) and (max-width: 47.99rem) {
+  html[data-js] .steps__head {
+    margin-block-end: 0;
+  }
+}
+
+/* Callout heights: each one sits beside the part of the capture it names. Record: the dealer button, then the setup below the felt. Review: the Coach review button. */
+.steps__story .story__scene:nth-of-type(1) .story__chip:nth-child(1) { --at: 38%; }
+.steps__story .story__scene:nth-of-type(1) .story__chip:nth-child(2) { --at: 66%; }
+.steps__story .story__scene:nth-of-type(2) .story__chip:nth-child(1) { --at: 27%; }

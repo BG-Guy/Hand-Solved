@@ -1,0 +1,30 @@
+---
+// index.astro: route "/", the home page. Thin on purpose: section order only, each section owns its content (UX.md 4). Hero owns the H1.
+// ClosingBand (#start) comes last on the page, but SiteLayout prints it inside SiteFooter's card back, so it is not placed here: a second one would repeat the id and the H2.
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Hero from '../sections/home/Hero.astro';
+import HowItWorks from '../sections/home/HowItWorks.astro';
+import Engine from '../sections/home/Engine.astro';
+import Highlights from '../sections/home/Highlights.astro';
+import Numbers from '../sections/home/Numbers.astro';
+import Toolbox from '../sections/home/Toolbox.astro';
+import YourData from '../sections/home/YourData.astro';
+import Showdown from '../sections/home/Showdown.astro';
+import Pricing from '../sections/home/Pricing.astro';
+import Faq from '../components/Faq/Faq.astro';
+import { pages } from '../data/pages';
+
+const page = pages.home;
+---
+<SiteLayout page={page}>
+  <Hero />
+  <Showdown />
+  <HowItWorks />
+  <Engine />
+  <Highlights />
+  <Numbers />
+  <Toolbox />
+  <YourData />
+  <Pricing />
+  <Faq />
+</SiteLayout>

@@ -1,0 +1,170 @@
+/* Faq.css: the FAQ section (DESIGN.md 9.6, UX.md 4.9). Complete with no script and no motion.css: native <details>, every answer shown when its item is open.
+   The height animation (MOTION.md E31) is the one block at the bottom. It starts only when Faq.ts sets data-state, so no script leaves a plain accordion.
+   No cards: a hairline above each question, and one under the list. */
+
+.faq {
+  position: relative;
+}
+
+/* The container is the box the corner index is placed in, so the section padding is on it and the index sits in that padding. */
+.faq__wrap {
+  position: relative;
+  display: grid;
+  gap: var(--space-2xl);
+  inline-size: min(100%, var(--container-max));
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+/* Head: above the list under 1024. From 1024 it takes the left 5 columns and stays below the floating navbar while the list scrolls. */
+.faq__head {
+  display: grid;
+  align-content: start;
+  gap: var(--space-lg);
+}
+
+.faq__title {
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.faq__lead {
+  max-inline-size: var(--measure-lead);
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+@media (min-width: 1024px) {
+  .faq__wrap {
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+  }
+
+  .faq__head {
+    grid-column: 1 / span 5;
+    position: sticky;
+    inset-block-start: var(--scroll-pad);
+  }
+
+  .faq__list {
+    grid-column: 6 / -1;
+  }
+}
+
+/* List and rows */
+.faq__list {
+  border-block-end: var(--border-hair) solid var(--line);
+}
+
+.faq__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  min-block-size: var(--control-h-lg);
+  padding-block: var(--space-md);
+  border-block-start: var(--border-hair) solid var(--line);
+  color: var(--text-main);
+  cursor: pointer;
+  list-style: none;
+  transition: border-color var(--dur-1);
+}
+
+.faq__summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq__summary:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+.faq__q {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-wrap: pretty;
+}
+
+/* Plus and minus sit in one cell and cross-fade; the plus turns a quarter as it leaves. */
+.faq__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: calc(var(--space-md) + var(--space-xs));
+  block-size: calc(var(--space-md) + var(--space-xs));
+  color: var(--text-main);
+  transition: color var(--dur-1);
+}
+
+.faq__icon > * {
+  grid-area: 1 / 1;
+  transition:
+    opacity var(--dur-3) var(--ease-spring),
+    transform var(--dur-3) var(--ease-spring);
+}
+
+.faq__minus {
+  opacity: 0;
+}
+
+/* Expanded: open, except while it is closing (Faq.ts sets data-state="closing", so the icon starts to turn back at once). */
+.faq__item[open]:not([data-state='closing']) .faq__plus {
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
+.faq__item[open]:not([data-state='closing']) .faq__minus {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .faq__summary:hover {
+    border-color: var(--line-control);
+  }
+
+  .faq__summary:hover .faq__icon {
+    color: var(--text-red);
+  }
+}
+
+/* The answer. A one-row grid, so its height can be animated from 0fr to 1fr without measuring. */
+.faq__panel {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.faq__inner {
+  min-block-size: 0;
+  overflow: clip;
+}
+
+.faq__body {
+  max-inline-size: var(--measure);
+  padding-block: var(--space-xs) var(--space-lg);
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+
+/* A link inside an answer: ink on the muted text, underlined, like the text links elsewhere (SEO.md section 6). */
+.faq__body a {
+  color: var(--link-fg);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-decoration-thickness: var(--border-hair);
+  text-underline-offset: 0.2em;
+}
+
+@media (hover: hover) {
+  .faq__body a:hover {
+    color: var(--link-fg-hover);
+    text-decoration-thickness: calc(var(--border-hair) * 2);
+  }
+}
+
+.faq__body a:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+/* The height animation is in motion.css (MOTION.md E31). Under reduced motion the item opens and closes natively and at once. */

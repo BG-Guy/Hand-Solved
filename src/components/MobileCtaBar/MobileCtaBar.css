@@ -1,0 +1,69 @@
+/* MobileCtaBar.css: Face White bar with a hairline on top, one 56 px primary button, padded for the home indicator (DESIGN.md 9.2).
+   Hidden means moved off the bottom edge, not faded. Slim (data-slim, set while a pinned story is on screen) is a 44 px button between 6 px of padding. */
+
+/* The bar's height is defined once, here. While the bar shows, the page pads the bottom of its scrollport by that much (below), so a control focused under the bar
+   is scrolled clear of it instead of being hidden (WCAG 2.4.11). */
+:root {
+  --bar-pad-y: calc(var(--space-sm) + var(--space-xs)); /* 12 px */
+  --bar-pad-y-slim: calc(var(--space-xs) * 1.5); /* 6 px */
+  --mobile-bar-h: calc(var(--control-h-lg) + var(--bar-pad-y) + max(var(--bar-pad-y), env(safe-area-inset-bottom)) + var(--border-hair));
+  --mobile-bar-h-slim: calc(var(--control-h-sm) + var(--bar-pad-y-slim) + max(var(--bar-pad-y-slim), env(safe-area-inset-bottom)) + var(--border-hair));
+}
+
+.mobile-bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--z-overlay);
+  padding: var(--bar-pad-y) var(--space-md) max(var(--bar-pad-y), env(safe-area-inset-bottom));
+  border-block-start: var(--border-hair) solid var(--line-strong);
+  background: var(--surface-raised);
+  transform: translateY(100%);
+  transition:
+    transform var(--dur-3) var(--ease-out),
+    padding var(--dur-3) var(--ease-out);
+}
+
+.mobile-bar[data-visible] {
+  transform: none;
+}
+
+.mobile-bar[data-slim] {
+  padding: var(--bar-pad-y-slim) var(--space-md) max(var(--bar-pad-y-slim), env(safe-area-inset-bottom));
+}
+
+.mobile-bar .btn {
+  transition:
+    background-color var(--dur-2),
+    border-color var(--dur-2),
+    color var(--dur-2),
+    transform var(--dur-1),
+    min-block-size var(--dur-3) var(--ease-out);
+}
+
+.mobile-bar[data-slim] .btn {
+  min-block-size: var(--control-h-sm);
+}
+
+/* A dialog or the menu is open: the bar goes down with the page behind it. */
+html:has(dialog[open]) .mobile-bar {
+  transform: translateY(100%);
+}
+
+/* Phones only: a bar is on screen, so the scroll port is shorter by its height plus a little air. */
+@media (max-width: 47.99rem) {
+  html:has(.mobile-bar[data-visible]) {
+    scroll-padding-bottom: calc(var(--mobile-bar-h) + var(--space-sm));
+  }
+
+  html:has(.mobile-bar[data-visible][data-slim]) {
+    scroll-padding-bottom: calc(var(--mobile-bar-h-slim) + var(--space-sm));
+  }
+}
+
+/* No bar from 768 px: the header button is always reachable. */
+@media (min-width: 48rem) {
+  .mobile-bar {
+    display: none;
+  }
+}

@@ -1,0 +1,328 @@
+---
+// Showdown.astro: the flop, turn and river section, "The Table" (docs/site/SHOWDOWN.md). A dark table seen from above: the visitor presses the dealer button three times and each street deals real cards.
+// All words, cards and numbers come from src/data/showdown.ts. Everything is in the HTML, so the script only moves state: data-street, data-busy, data-sel, .is-up, aria-pressed.
+// The choreography is CSS (Showdown.deal.css), started by one attribute. Without script the same markup reads as a static list (end of Showdown.css).
+// Only Showdown.shell.css loads with the page. The look and the choreography load with the script, two screens before the table (the loader below), or by <noscript>.
+//
+// Each card is one stack of wrappers, so each axis has its own timing: .sd-c moves X, .c__y moves Y, .c__pose turns and scales, .c__lift lifts for the flip, .pc flips (DECK.md).
+// data-cta="story" on the room is MobileCtaBar's own rule for a section with its own button: the bottom bar steps away while the table is on screen.
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import { cardArt } from '../../components/Deck/card-art';
+import PlayingCard from '../../components/Deck/PlayingCard.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import Medallion from '../../assets/svg/art-medallion.svg';
+import { copy, hand, reasons, streets, type CardCode, type StreetId } from '../../data/showdown';
+import lookSheet from './Showdown.css?url';
+import dealSheet from './Showdown.deal.css?url';
+import './Showdown.shell.css';
+
+// The loose backs (deck, burns, peel) and the peel's face, as images like the cards themselves.
+const back = cardArt('back');
+const riverFace = cardArt(hand.river.toLowerCase());
+
+const streetIds: StreetId[] = ['preflop', 'flop', 'turn', 'river'];
+const dealt: Exclude<StreetId, 'preflop'>[] = ['flop', 'turn', 'river'];
+
+const ranks: Record<string, [string, string]> = { A: ['A', 'Ace'], K: ['K', 'King'], Q: ['Q', 'Queen'], J: ['J', 'Jack'], T: ['10', 'Ten'], '9': ['9', 'Nine'] };
+const suits: Record<string, ['spade' | 'club' | 'heart' | 'diamond', string]> = { s: ['spade', 'spades'], c: ['club', 'clubs'], h: ['heart', 'hearts'], d: ['diamond', 'diamonds'] };
+const rankOf = (code: CardCode) => ranks[code[0]][0];
+const suitOf = (code: CardCode) => suits[code[1]][0];
+const nameOf = (code: CardCode) => `${ranks[code[0]][1]} of ${suits[code[1]][1]}`;
+const cap = (word: string) => word[0].toUpperCase() + word.slice(1);
+const pair = (cards: CardCode[]) => `${nameOf(cards[0])}, ${nameOf(cards[1]).toLowerCase()}`;
+
+// What a screen reader hears when a street lands. One attribute per street, so the script holds no copy.
+const say = Object.fromEntries(
+  dealt.map((id) => [
+    `data-say-${id}`,
+    `${cap(id)}. ${hand.them.label}: ${streets[id].them.hand}, ${streets[id].them.win}%. ${hand.us.label}: ${streets[id].us.hand}, ${streets[id].us.win}%. ${streets[id].line}`,
+  ]),
+);
+
+const holes: { code: CardCode; side: 'them' | 'us' }[] = [
+  { code: hand.them.cards[0], side: 'them' },
+  { code: hand.them.cards[1], side: 'them' },
+  { code: hand.us.cards[0], side: 'us' },
+  { code: hand.us.cards[1], side: 'us' },
+];
+const seats = [
+  { side: 'them', who: hand.them, wins: streetIds.map((id) => streets[id].them.win), hands: streetIds.map((id) => streets[id].them) },
+  { side: 'us', who: hand.us, wins: streetIds.map((id) => streets[id].us.win), hands: streetIds.map((id) => streets[id].us) },
+] as const;
+---
+<section class="sd on-ink" id={copy.id} data-street="preflop" data-sheets={`${lookSheet} ${dealSheet}`} aria-labelledby="sd-title" {...say}>
+  {/* Without script the look still loads, and lays the section out as a plain list. Never with script: noscript is inert then. */}
+  <noscript><link rel="stylesheet" href={lookSheet} /></noscript>
+  <div class="sd__dusk" aria-hidden="true"></div>
+  <div class="sd__room" data-cta="story">
+    <div class="sd__canvas">
+      <div class="sd__stage">
+        <div class="sd__jolt">
+          <div class="sd__table" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="sd__flood" aria-hidden="true"><i></i><i></i></div>
+          <div class="sd__lattice" aria-hidden="true"></div>
+
+          <header class="sd-intro">
+            <p class="sd-intro__kicker">{copy.kicker}</p>
+            <h2 class="sd-intro__title" id="sd-title">{copy.title}</h2>
+            <p class="sd-intro__line">{streets.preflop.line}</p>
+          </header>
+
+          <div class="sd-slots" aria-hidden="true">
+            {dealt.map((id) => <span class:list={['sd-slots__label', `sd-slots__label--${id}`]}>{cap(id)}</span>)}
+            {reasons.map(() => <span class="sd-slot"></span>)}
+          </div>
+
+          <div class="sd-race">
+            {
+              seats.map((seat) => (
+                <div class:list={['sd-seat', `sd-seat--${seat.side}`]}>
+                  <p class="sd-seat__who">{seat.who.label}<span class="visually-hidden">: {pair(seat.who.cards)}</span></p>
+                  <p class="sd-seat__hand">
+                    {seat.hands.map((now, i) => (
+                      <span class="sd-hand" data-s={streetIds[i]}>{now.hand}<span class="visually-hidden">, {now.win}%</span></span>
+                    ))}
+                  </p>
+                  <p class="sd-seat__win" aria-hidden="true">
+                    <span class="sd-roll">
+                      {seat.wins.map((win) => (
+                        <span>{win}<small>%</small></span>
+                      ))}
+                    </span>
+                  </p>
+                </div>
+              ))
+            }
+            <p class="sd-race__label">{copy.winLabel}</p>
+            <div class="sd-rope" aria-hidden="true">
+              <span class="sd-rope__track"><span class="sd-rope__them"></span><span class="sd-rope__us"></span></span>
+              <span class="sd-rope__mid"></span>
+              <span class="sd-rope__knot"></span>
+            </div>
+          </div>
+
+          <div class="sd-deck" aria-hidden="true">
+            <span class="sd-deck__stack"><i></i><i></i><i></i><img class="pc__art" src={back} alt="" width="65" height="91" loading="lazy" fetchpriority="low" /></span>
+            {[1, 2, 3].map((n) => <span class:list={['sd-burn', `sd-burn--${n}`]}><img class="pc__art" src={back} alt="" width="65" height="91" loading="lazy" fetchpriority="low" /></span>)}
+          </div>
+
+          {
+            holes.map(({ code, side }) => (
+              <div class:list={['sd-c', 'sd-c--hole', `sd-c--${side}`, `c--${code}`]}>
+                <div class="c__y">
+                  <span class="c__shadow" />
+                  <div class="c__pose">
+                    <span class="c__lift">
+                      <PlayingCard code={code} />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+
+          <ul class="sd-board" role="list">
+            {
+              reasons.map((reason) => (
+                <li class:list={['sd-c', `on-${reason.street}`, `c--${reason.card}`]}>
+                  <div class="c__y">
+                    <span class="c__shadow" />
+                    <div class="c__pose">
+                      <div class="c__btn" data-card={reason.card} data-name={`${nameOf(reason.card)}, ${reason.street}: ${reason.title}`}>
+                        <span class="c__lift">
+                          <PlayingCard code={reason.card} faceDown />
+                          {reason.card === hand.river && (
+                            <span class="sd-peel" aria-hidden="true">
+                              <span class="sd-peel__body">
+                                <i class="sd-peel__hole" />
+                                <i class="sd-peel__shade" />
+                              </span>
+                              <span class="sd-peel__hinge">
+                                <span class="sd-peel__m sd-peel__m--back">
+                                  <span class="sd-peel__art">
+                                    <img class="pc__art" src={back} alt="" width="65" height="91" loading="lazy" fetchpriority="low" />
+                                  </span>
+                                </span>
+                                <span class="sd-peel__flip">
+                                  <span class="sd-peel__m sd-peel__m--front">
+                                    <span class="sd-peel__art">
+                                      <img class="pc__art" src={riverFace} alt="" width="65" height="91" loading="lazy" fetchpriority="low" />
+                                    </span>
+                                  </span>
+                                </span>
+                              </span>
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+
+          <div class="sd__dim" aria-hidden="true"></div>
+
+          <button class="sd-puck" type="button" data-deal>
+            <span class="sd-puck__ring" aria-hidden="true"></span>
+            <span class="sd-puck__edge" aria-hidden="true"></span>
+            <span class="sd-puck__top">
+              <span class="sd-puck__d" aria-hidden="true">D</span>
+              <span class="sd-puck__labels">
+                {streetIds.slice(0, 3).map((id) => <span class="sd-puck__label" data-s={id}>{streets[id].cta}</span>)}
+              </span>
+            </span>
+          </button>
+
+          <p class="sd-hint">{copy.selectHint}</p>
+
+          <div class="sd-whys">
+            {/* The plain menu, beside the cards: one numbered button per dealt reason, in deal order, and the carousel's pause. Buttons stay hidden until their card is dealt. */}
+            <div class="sd-menu" role="group" aria-label={copy.menuLabel}>
+              {/* Only at the finale, where the menu lists all five with their titles. */}
+              <p class="sd-menu__head" aria-hidden="true">{copy.menuHead}</p>
+              {
+                reasons.map((reason, i) => (
+                  <button class="sd-menu__item" type="button" data-pick={reason.card} aria-pressed="false" hidden>
+                    {/* The name starts with what the button shows, as WCAG 2.5.3 asks: "1 A" on the felt, where the card's name and the title are for screen readers only,
+                        and "1 A A fair price" at the finale, where the title shows and the card's name drops out. */}
+                    <span class="sd-menu__n">{i + 1}</span>
+                    <span class="sd-menu__card">
+                      {rankOf(reason.card)}
+                      <Icon name={`suit-${suitOf(reason.card)}`} size={12} />
+                    </span>
+                    <span class="sd-menu__sr visually-hidden">, {nameOf(reason.card)}:</span>
+                    <span class="sd-menu__title">{reason.title}</span>
+                    <span class="sd-menu__bar" aria-hidden="true"></span>
+                  </button>
+                ))
+              }
+              <button class="sd-menu__auto" type="button" data-auto-toggle hidden>
+                <span class="sd-menu__pause">{copy.pause}</span>
+                <span class="sd-menu__play">{copy.play}</span>
+              </button>
+            </div>
+            <div class="sd-whys__panels" aria-live="polite">
+            {/* The reason is a card back: one medallion for all five, on the card's top band, as on the back of the deck. */}
+            <Medallion class="sd-why__logo" />
+            {
+              reasons.map((reason, i) => (
+                <article class="sd-why" data-why={reason.card}>
+                  {/* The reason's number is the card's index, the way a card prints its rank in the corner; the poker card it was dealt on is only a small tag. */}
+                  <header class="sd-why__head">
+                    <p class="sd-why__index" aria-hidden="true">{i + 1}</p>
+                    <p class="sd-why__kicker">
+                      {copy.reasonWord} {i + 1} {copy.ofWord} {reasons.length}
+                      <span class="sd-why__card" aria-hidden="true">
+                        {rankOf(reason.card)}
+                        <Icon name={`suit-${suitOf(reason.card)}`} size={12} />
+                        <span class="sd-why__street">{cap(reason.street)}</span>
+                      </span>
+                    </p>
+                    {reason.tag && <p class="slip sd-why__tag">{reason.tag}</p>}
+                    <h3 class="sd-why__title"><span class="visually-hidden">{nameOf(reason.card)}, {reason.street}: </span>{reason.title}</h3>
+                  </header>
+                  {/* The reason itself, on a Face White sheet: its line and how it compares. The points show only in the no-script list. */}
+                  <div class="sd-why__body on-paper">
+                  <p class="sd-why__line">{reason.line}</p>
+                  <ul class="sd-why__points" role="list">
+                    {reason.points.map((point) => (
+                      <li>
+                        <Icon name="suit-diamond" size={12} />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <dl class="sd-why__vs on-paper">
+                    <div>
+                      <dt>{copy.theirsPrefix}</dt>
+                      <dd>{reason.others}</dd>
+                    </div>
+                    <div>
+                      <dt>{copy.oursPrefix}</dt>
+                      <dd>{reason.here}</dd>
+                    </div>
+                  </dl>
+                  </div>
+                </article>
+              ))
+            }
+            </div>
+          </div>
+
+          <div class="sd-end on-red">
+            <h3 class="sd-end__title"><span>{copy.finale}</span></h3>
+            {/* The hand's story, for the no-script list. With script the poster leaves it out: the fan and the score already tell it. */}
+            <p class="sd-end__line">{streets.river.line}</p>
+            <div class="sd-score">
+              <p class="sd-score__them">
+                <span class="sd-score__who">{hand.them.label}</span>
+                <del class="sd-score__hand">{streets.river.them.hand}</del>
+                <span class="sd-score__win">{streets.river.them.win}%</span>
+              </p>
+              <span class="sd-score__bar" aria-hidden="true"></span>
+              <p class="sd-score__us">
+                <span class="sd-score__who">{hand.us.label}</span>
+                <span class="sd-score__hand">{streets.river.us.hand}</span>
+                <span class="sd-score__win">{streets.river.us.win}%</span>
+              </p>
+            </div>
+            <div class="sd-end__actions">
+              <CtaButton dialog="dlg-sample" cta="showdown" label={streets.river.cta} class="sd-end__main" />
+              <CtaButton dialog="dlg-early" cta="showdown-early" label={copy.early} variant="secondary" />
+              {/* A dealer button, like the one that dealt the hand. */}
+              <button class="sd-again" type="button" data-again>
+                <span class="sd-again__d" aria-hidden="true">D</span>
+                <span class="sd-again__label">{copy.again}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="visually-hidden" role="status" data-status></p>
+</section>
+
+<script>
+  // The loader: the script and both stylesheets wait until the table is two screens away, so this section adds almost nothing to the page's on-load budget.
+  // They load side by side; the table shows (data-ready) once all three are in. A press that arrives first is kept, and the module deals as soon as it starts.
+  // If any of them cannot load, the section falls back to its static list.
+  const root = document.getElementById('showdown');
+  if (root) {
+    const sheet = (href: string) =>
+      new Promise((done, failed) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.onload = done;
+        link.onerror = failed;
+        document.head.append(link);
+      });
+    let loading: Promise<void> | undefined;
+    const load = () =>
+      (loading ||= Promise.all([import('./Showdown'), ...root.dataset.sheets!.split(' ').map(sheet)])
+        .then(([table]) => table.start(root))
+        .catch(() => root.setAttribute('data-static', '')));
+    // The table sits right under the hero, so "two screens away" is true at once: wait for the page's own load first, so the hero gets the bandwidth.
+    const watch = () =>
+      new IntersectionObserver(
+        ([entry], watcher) => {
+          if (entry.isIntersecting) {
+            watcher.disconnect();
+            void load();
+          }
+        },
+        { rootMargin: '200%' },
+      ).observe(root);
+    if (document.readyState === 'complete') watch();
+    else addEventListener('load', watch, { once: true });
+    root.addEventListener('click', (event) => {
+      if (!root.hasAttribute('data-ready') && (event.target as Element).closest('[data-deal]')) {
+        root.setAttribute('data-queued', '');
+        void load();
+      }
+    });
+  }
+</script>

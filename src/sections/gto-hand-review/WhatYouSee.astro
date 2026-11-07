@@ -1,0 +1,106 @@
+---
+// WhatYouSee.astro: "What you see for each decision" (UX.md 5.1 block 4, COPY.md "4. What you see for each decision"): four tiles. Each tile's words are COPY.md's. Under the first three sits the same
+// sample hand's own figures (the worked example's data, formatted by worked-example.ts), so the tiles show what they describe. The fourth holds the real preflop chart at the Full level (DESIGN.md 7.1).
+// desk-coach-decision.png is never used (COPY.md, "Decided by the main session"), so the large tile is the chart. Hooks for motion.css: [data-reveal="up"] on the head.
+import BentoTile from '../../components/Bento/BentoTile.astro';
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import RangeChartList from '../../components/RangeChartList/RangeChartList.astro';
+import Figure from '../../assets/svg/chart-bb-vs-btn-100.svg';
+import '../../assets/svg/chart.css';
+import { example } from './worked-example';
+import './WhatYouSee.css';
+
+const { options, setup } = example;
+const stats = [
+  { label: 'Pot', value: setup.pot },
+  { label: 'To call', value: setup.toCall },
+  { label: 'Equity needed', value: example.equityNeeded },
+  { label: 'Your equity', value: example.equity },
+];
+---
+<section class="wys" aria-labelledby="wys-title">
+  <div class="wys__frame">
+    <CornerIndex rank="Q" suit="club" />
+
+    <header class="wys__head" data-reveal="up">
+      <h2 class="wys__title" id="wys-title">What you see for each decision</h2>
+    </header>
+
+    <ul class="wys__grid" role="list">
+      <BentoTile
+        class="wys__tile"
+        name="How often GTO plays each option"
+        icon="tile-insights"
+        description="A bar and a percentage for every option, so strategies that mix two or three plays show as mixes."
+      >
+        <ul class="wys__rows" role="list">
+          {
+            options.map((option) => (
+              <li class="wys__row">
+                <span class="wys__label">{option.label}</span>
+                <span class="wys__value">{option.freq}</span>
+                <svg class:list={['wys__bar', option.best && 'wys__bar--gto']} viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                  <rect class="wys__bar-track" width="100" height="6" />
+                  <rect class="wys__bar-fill" width={option.freqPercent} height="6" />
+                </svg>
+              </li>
+            ))
+          }
+        </ul>
+      </BentoTile>
+
+      <BentoTile
+        class="wys__tile"
+        name="What each option is worth"
+        icon="proof-score"
+        description="Each choice’s average result in big blinds, with folding as zero. See how far yours sits from the best."
+      >
+        <ul class="wys__rows" role="list">
+          {
+            options.map((option) => (
+              <li class="wys__row wys__row--worth">
+                <span class="wys__label">{option.label}</span>
+                <span class:list={['wys__value', option.negative && 'is-neg']}>{option.worth}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </BentoTile>
+
+      <BentoTile
+        class="wys__tile"
+        name="Pot odds and equity"
+        icon="tile-pots"
+        description="The equity you need to break even, next to your equity, your chance of winning the hand."
+      >
+        <dl class="wys__stats">
+          {
+            stats.map((stat) => (
+              <div class="wys__stat">
+                <dt>{stat.label}</dt>
+                <dd>{stat.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </BentoTile>
+
+      <BentoTile
+        class="wys__tile wys__tile--chart"
+        name="Range grids"
+        icon="proof-charts"
+        description="A 13 by 13 grid of the hands each player could hold, so you see what you faced."
+      >
+        <div class="wys__chart-head">
+          <span class="slip">Real chart from the engine</span>
+        </div>
+        <div class="chart wys__chart"><Figure role="img" /></div>
+        <div class="wys__caption">
+          <p>Big blind facing a button open, 100 big blinds, 8-handed. Fold 48.5%, call 38.8%, raise 12.7%.</p>
+          <p class="wys__read">Each square is a starting hand, with the strongest at the top left. Red is raise, black is call, blank is fold. A square split between colours is a mix. The whole grid is a range, every hand a player could hold in this spot.</p>
+          <RangeChartList />
+        </div>
+      </BentoTile>
+    </ul>
+  </div>
+</section>

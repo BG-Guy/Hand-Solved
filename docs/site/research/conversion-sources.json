@@ -1,0 +1,98 @@
+[
+  {
+    "name": "GTO Wizard",
+    "url": "https://gtowizard.com",
+    "category": "poker",
+    "takeaway": "Puts one button ('Begin Your Journey') and two named WSOP winners in the first screen, then splits the product into Analyze, Study and Practice cards."
+  },
+  {
+    "name": "Upswing Poker",
+    "url": "https://www.upswingpoker.com",
+    "category": "poker",
+    "takeaway": "Leads with a named pro and course stats, follows with media logos and verified-customer quotes, and shows real prices ($7 and $999) on the home page."
+  },
+  {
+    "name": "PokerCoaching",
+    "url": "https://pokercoaching.com",
+    "category": "poker",
+    "takeaway": "Puts a stats strip under the hero, repeats one button label ('Start Improving Today') three times, and ends on plan cards, an FAQ and a 30-day money-back guarantee."
+  },
+  {
+    "name": "Run It Once",
+    "url": "https://www.runitonce.com",
+    "category": "poker",
+    "takeaway": "Uses 'Get Started For Free' as the single hero button and sells breadth with counts such as 186 pros, with no testimonials or prices on the page."
+  },
+  {
+    "name": "PokerTracker",
+    "url": "https://www.pokertracker.com",
+    "category": "poker",
+    "takeaway": "Its H1 is a release notice ('Now Available for Mac and Windows') followed by equal BUY NOW and DOWNLOAD buttons and a 14-day free trial, with no ratings or prices on the page."
+  },
+  {
+    "name": "Regroup Poker Tools",
+    "url": "https://regroup.app",
+    "category": "poker",
+    "takeaway": "A short store-badge page with four feature blocks each followed by 'Download Now', a closing 'get the app' band, and no ratings, logos or testimonials."
+  },
+  {
+    "name": "Nash Bankroll",
+    "url": "https://nashbankroll.app",
+    "category": "poker",
+    "takeaway": "Opens with a plain promise ('Know your real poker results.') and one App Store button, then four feature blocks, an FAQ and a closing band, with no proof section."
+  },
+  {
+    "name": "Poker Analytics",
+    "url": "https://www.poker-analytics.net",
+    "category": "poker",
+    "takeaway": "Puts a ratings bar (4.8 stars, 2,000+ ratings, tracking since 2012) under the buttons and gives import its own section, 'Switching trackers? Bring your history.'"
+  },
+  {
+    "name": "Poker Bankroll Tracker",
+    "url": "https://pokerbankrolltracker.net",
+    "category": "poker",
+    "takeaway": "A feature-list page with three download badges, a quote credited to Upswing, seven named players and a plain statement that data can be exported and imported as CSV."
+  },
+  {
+    "name": "Flighty",
+    "url": "https://flighty.com",
+    "category": "tracker-coach",
+    "takeaway": "Holds the first screen to one promise and an Apple Design Award line, puts 'Import your flights in seconds' right before its first 'Give Flighty a try' button, then closes on named reviews, a 3 million user count and a final button."
+  },
+  {
+    "name": "Copilot Money",
+    "url": "https://copilot.money",
+    "category": "tracker-coach",
+    "takeaway": "Puts an award and rating line between the subhead and the single 'Get started' button, and shows one plan with its price on the home page."
+  },
+  {
+    "name": "Aimchess",
+    "url": "https://aimchess.com",
+    "category": "tracker-coach",
+    "takeaway": "Shows what is holding the player back, then personalized lessons, then a weekly study plan, backs it with one cited 31% research claim, and lists Free and paid prices on the page."
+  },
+  {
+    "name": "Strava",
+    "url": "https://www.strava.com",
+    "category": "tracker-coach",
+    "takeaway": "Makes sign-up the hero with Google, Apple and email buttons, puts 'for free' and 100 million people in the subhead, and repeats 'Join Us Now' down the page."
+  },
+  {
+    "name": "Linear",
+    "url": "https://linear.app",
+    "category": "saas",
+    "takeaway": "Lets a real product UI carry the hero, keeps the sign-up button in the header, and saves customer quotes and the 40,000-team count for just before the closing 'Get started' band."
+  },
+  {
+    "name": "Raycast",
+    "url": "https://www.raycast.com",
+    "category": "saas",
+    "takeaway": "Backs its pitch with 24 named user testimonials and concrete numbers such as a 99.8% crash-free rate, and closes with 'Download and use Raycast for free.'"
+  },
+  {
+    "name": "Superhuman",
+    "url": "https://superhuman.com",
+    "category": "saas",
+    "takeaway": "Pairs a quantified outcome ('Save 4+ hours each week') with a button that names the product ('Get Mail') and a customer logo strip right below, and two fetch methods returned different heroes."
+  }
+]

@@ -1,0 +1,55 @@
+---
+// NotFound.astro: the 404 page's content: three cards, a 4 of spades, a face-down card standing in for the zero, a 4 of hearts, then the H1, one sentence, the demo button and three links (DESIGN.md 9.12 "404 block").
+// The route (src/pages/404.astro) is thin and passes the page entry. The cards are a drawing: aria-hidden, no alt. Hooks for motion.css (MOTION.md 8): .nf__cards > .nf__card, each carrying --n from its position, deal in once on load.
+import CtaButton from '../../components/CtaButton/CtaButton.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import TextLink from '../../components/TextLink/TextLink.astro';
+import CardBack from '../../assets/svg/art-card-back.svg';
+import type { PageEntry } from '../../data/pages';
+import './NotFound.css';
+
+interface Props {
+  page: PageEntry;
+}
+
+const { page } = Astro.props;
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'GTO hand review', href: '/gto-hand-review' },
+  { label: 'Live poker hand recorder', href: '/live-poker-hand-recorder' },
+];
+---
+<section class="nf" aria-labelledby="nf-title">
+  <div class="nf__inner">
+    <div class="nf__copy">
+      <h1 class="nf__h1" id="nf-title">{page.h1}</h1>
+      <p class="nf__line">Nothing lives at this address. Pick a real page below, or grade a sample hand.</p>
+      <div class="nf__actions">
+        <CtaButton dialog="dlg-sample" cta="404" size="lg" class="nf__cta" />
+      </div>
+      <nav class="nf__links" aria-label="Pages">
+        <ul role="list">
+          {links.map((link) => <li><TextLink href={link.href}>{link.label}</TextLink></li>)}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="nf__cards" aria-hidden="true">
+      <span class="nf__card">
+        <span class="nf__face">
+          <span class="nf__index"><span class="nf__rank">4</span><Icon name="suit-spade" size={32} class="nf__suit" /></span>
+          <Icon name="suit-spade" size={32} class="nf__pip" />
+        </span>
+      </span>
+      <span class="nf__card">
+        <CardBack class="nf__back" />
+      </span>
+      <span class="nf__card nf__card--red">
+        <span class="nf__face">
+          <span class="nf__index"><span class="nf__rank">4</span><Icon name="suit-heart" size={32} class="nf__suit" /></span>
+          <Icon name="suit-heart" size={32} class="nf__pip" />
+        </span>
+      </span>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,5 @@
+/* ConceptNote.css: small supporting text for the concept note. The ground scope (.on-ink and so on) sets the colour. */
+.concept-note {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}

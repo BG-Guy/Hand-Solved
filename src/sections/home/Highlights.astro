@@ -1,0 +1,100 @@
+---
+// Highlights.astro: #highlights, the personality section. A bento of Hall of Fame, Wall of Shame, Tilt Tower and Monster Pots, plus the tall Hand insights tile (UX.md 4.4).
+// Tiles and rows match desk-highlights.png; every word is from COPY.md 4.4. Amounts are live numbers and follow the BB/$ switch (the $1/$2 assumption: 1 bb is $2).
+// The P2 "Grade it" row buttons are not built: they need a spot argument on the sample-hand pop-up, which does not exist yet.
+import Amount from '../../components/Amount/Amount.astro';
+import AmountUnit from '../../components/Bento/AmountUnit.astro';
+import Bento from '../../components/Bento/Bento.astro';
+import BentoTile from '../../components/Bento/BentoTile.astro';
+import CornerIndex from '../../components/Bento/CornerIndex.astro';
+import HandRow from '../../components/Bento/HandRow.astro';
+import Icon from '../../components/Icon/Icon.astro';
+import UnitSwitch from '../../components/UnitSwitch/UnitSwitch.astro';
+import { labels } from '../../data/site';
+import './Highlights.css';
+---
+<section id="highlights" class="hl" aria-labelledby="highlights-title">
+  <div class="hl__inner">
+    <CornerIndex rank="J" suit="diamond" />
+
+    <header class="hl__head">
+      <div class="hl__intro">
+        <h2 id="highlights-title" class="hl__title">Your best hands, and the other ones</h2>
+        <p class="hl__lead">HandSolved sorts your saved hands by your own ratings and results. Hall of Fame, Wall of Shame, Tilt Tower and Monster Pots fill themselves in.</p>
+      </div>
+      <UnitSwitch class="hl__switch" />
+    </header>
+
+    <div class="hl__stage">
+      <span class="slip hl__chip">{labels.sampleData}</span>
+      <Bento>
+        <BentoTile name="Hall of Fame" icon="tile-fame" description="Your best-played hands, by your own rating" note="Frame these.">
+          <ol class="tile__rows" data-reveal-stagger>
+            <HandRow cards={['Ah', 'Ad', 'Kh', 'Qs']} title="Nut flush on the river">4.8 stars</HandRow>
+            <HandRow cards={['As', 'Kd']} title="Three streets of value with top pair">4.5 stars</HandRow>
+            <HandRow cards={['7s', '6s']} title="Turned straight against a check-raise">4.2 stars</HandRow>
+          </ol>
+        </BentoTile>
+
+        <BentoTile name="Wall of Shame" icon="tile-shame" description="Your lowest-rated hands" note="Every wall needs something on it.">
+          <ol class="tile__rows" data-reveal-stagger>
+            <HandRow cards={['8h', '8c']} title="Called a river shove with a set on a four-straight board">1.5 stars</HandRow>
+            <HandRow cards={['Kh', '9c']} title="Opened K9 offsuit under the gun">2.2 stars</HandRow>
+            <HandRow cards={['Jc', 'Tc']} title="Missed-draw bluff on the river">2.8 stars</HandRow>
+          </ol>
+        </BentoTile>
+
+        <BentoTile name="Tilt Tower" icon="tile-tilt" description="The hands you were most tilted in" note="Tallest tilt on top.">
+          <ol class="tile__rows" data-reveal-stagger>
+            <HandRow cards={['8h', '8c']} title="Called a river shove with a set on a four-straight board">Frustrated</HandRow>
+            <HandRow cards={['Jc', 'Tc']} title="Missed-draw bluff on the river">Uneasy</HandRow>
+            <HandRow cards={['Kh', '9c']} title="Opened K9 offsuit under the gun">Uneasy</HandRow>
+          </ol>
+        </BentoTile>
+
+        <BentoTile name="Monster Pots" icon="tile-pots" description="The biggest pots you won" note="The pots you tell people about.">
+          <ol class="tile__rows" data-reveal-stagger>
+            <HandRow cards={['As', 'Kd']} title="Three streets of value with top pair">Won <Amount bb={109} />, pot <Amount bb={219} /></HandRow>
+            <HandRow cards={['Ah', 'Ad', 'Kh', 'Qs']} title="Nut flush on the river">Won <Amount bb={76} />, pot <Amount bb={153} /></HandRow>
+            <HandRow cards={['7s', '6s']} title="Turned straight against a check-raise">Won <Amount bb={26} />, pot <Amount bb={57} /></HandRow>
+          </ol>
+        </BentoTile>
+
+        <BentoTile name="Hand insights" icon="tile-insights" ink tall>
+          <dl class="hand-insights">
+            <div class="hand-insights__stat">
+              <dt>Hands</dt>
+              <dd>7</dd>
+            </div>
+            <div class="hand-insights__stat">
+              <dt>Net</dt>
+              <dd><Amount bb={-73.5} signed bbSuffix="" usdSuffix="" /><AmountUnit bb=" bb" /></dd>
+            </div>
+            <div class="hand-insights__stat">
+              <dt>Avg rating</dt>
+              <dd>
+                3.4<span class="amt-unit"> stars</span>
+                <span class="stars" aria-hidden="true">
+                  <Icon name="star" size={16} class="stars__star is-on" />
+                  <Icon name="star" size={16} class="stars__star is-on" />
+                  <Icon name="star" size={16} class="stars__star is-on" />
+                  <span class="stars__part"><Icon name="star" size={16} class="stars__star" /><Icon name="star" size={16} class="stars__star stars__star--fill is-on" /></span>
+                  <Icon name="star" size={16} class="stars__star" />
+                </span>
+              </dd>
+            </div>
+            <div class="hand-insights__stat">
+              <dt>Avg tilt</dt>
+              <dd>2.1</dd>
+            </div>
+          </dl>
+          <p class="hand-insights__line"><strong>Tilt shows up in your results.</strong> Tilted hands average <Amount bb={-63} signed />, calm ones <Amount bb={28.9} signed />.</p>
+          <p class="hand-insights__note">Hand results only. Session results are in the next section.</p>
+        </BentoTile>
+      </Bento>
+    </div>
+
+    <p class="hl__more"><span class="slip">The Painful Ones</span> and <span class="slip">Multiway Madness</span> are in there too.</p>
+    <p class="hl__plain">Tilt is when frustration changes how you play. You rate it yourself, from 1 to 5.</p>
+  </div>
+</section>

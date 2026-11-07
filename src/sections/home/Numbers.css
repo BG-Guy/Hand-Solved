@@ -1,0 +1,513 @@
+/* Numbers.css: #numbers. The one Key Black section (.on-ink on the section). The dashboard is a Face White .on-paper sheet on it (DESIGN.md 6 and 9.11).
+   Static layout and every non-motion state only. Motion hooks for motion.css: .chart-card[data-draw], .chart__line (pathLength 1), .dot[data-t], .chart__last, .num > .num__v. */
+
+.nm {
+  background: var(--surface-ink);
+  color: var(--text-main);
+}
+
+.nm__inner {
+  position: relative;
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--gutter);
+}
+
+.nm__layout {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+@media (min-width: 1024px) {
+  .nm__layout {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: start;
+  }
+
+  .nm__copy {
+    grid-column: span 4;
+  }
+
+  .chart-card {
+    grid-column: span 8;
+  }
+}
+
+/* Copy ---------------------------------------------------------------------- */
+
+.nm__copy {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.nm__title {
+  font-size: var(--display-lg);
+  line-height: var(--leading-display);
+}
+
+.nm__lead {
+  max-inline-size: var(--measure-lead);
+  color: var(--text-muted);
+  font-size: var(--text-lg);
+}
+
+.nm__hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+/* The switch sits in the card: on a wide screen the hint points right at it, on a narrow one the card is below. */
+.nm__arrow--side {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .nm__arrow--side {
+    display: inline-block;
+  }
+
+  .nm__arrow--down {
+    display: none;
+  }
+}
+
+/* The dashboard sheet ------------------------------------------------------- */
+
+.chart-card {
+  position: relative;
+  display: grid;
+  gap: var(--space-lg);
+  min-inline-size: 0;
+  padding: var(--space-lg);
+  border-radius: var(--radius-xl);
+  background: var(--surface-raised);
+  color: var(--text-main);
+}
+
+/* The Sample data tag hangs on the sheet's top edge, as on a device. */
+.nm__chip {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: calc(var(--space-sm) * -1.5);
+  inset-inline-start: var(--space-lg);
+  min-block-size: var(--space-lg);
+  padding-block: 0;
+  font-size: var(--text-xs);
+}
+
+.chart-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.chart-card__title {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Four tiles: two by two under 768, four across from 768, one hairline between them. */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-block: var(--border-hair) solid var(--line);
+}
+
+@media (min-width: 768px) {
+  .kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-sm);
+  min-inline-size: 0;
+  padding: var(--space-md) var(--space-md) var(--space-md) 0;
+}
+
+/* Under 768 the second column starts a rule of its own and the second row sits under a rule. */
+.kpi:nth-child(even) {
+  padding-inline-start: var(--space-md);
+  border-inline-start: var(--border-hair) solid var(--line);
+}
+
+.kpi:nth-child(n + 3) {
+  border-block-start: var(--border-hair) solid var(--line);
+}
+
+@media (min-width: 768px) {
+  .kpi:nth-child(n + 2) {
+    padding-inline-start: var(--space-md);
+    border-inline-start: var(--border-hair) solid var(--line);
+  }
+
+  .kpi:nth-child(n + 3) {
+    border-block-start: 0;
+  }
+}
+
+.kpi__label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+}
+
+.kpi__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-xs);
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display-sm);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+.kpis__note {
+  margin-block-start: calc(var(--space-sm) * -1);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* The chart -------------------------------------------------------------------- */
+
+.bankroll {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+/* A grid: the y labels, then the plot, then the x labels under the plot. The labels are HTML at real pixel sizes; the plot is the only SVG. */
+.plot {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-sm);
+  padding-block-end: var(--space-xs);
+  border-radius: var(--radius-md);
+  /* A horizontal drag reads the chart; a vertical one still scrolls the page. */
+  touch-action: pan-y;
+}
+
+.plot__y {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-row: 1;
+}
+
+/* Each label sits on its rule: the bottom edge of its quarter, nudged half a line down. */
+.plot__yl {
+  align-self: end;
+  justify-self: end;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: 1;
+  transform: translateY(50%);
+  white-space: nowrap;
+}
+
+.plot__area {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  /* The container for the width steps below: the SVG is drawn in user units, so its strokes and dots are sized per width band to stay about 2 px and 6 px. */
+  container-type: inline-size;
+}
+
+.plot__svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+/* Two plots print. The wide one shows from 480 px of plot width, the narrow, taller one below it. Without container queries only the wide one shows. */
+.plot__svg--narrow {
+  display: none;
+}
+
+@container (max-width: 479px) {
+  .plot__svg--wide {
+    display: none;
+  }
+
+  .plot__svg--narrow {
+    display: block;
+  }
+}
+
+/* Stroke width, dot radius and last-dot radius, in user units, so they land near 2, 3 and 5 px in every band (the plot scales from 0.4 to 1.1 of its drawing). */
+.plot__svg--wide {
+  --sw: 2;
+  --dr: 3;
+  --lr: 5;
+}
+
+@container (max-width: 599px) {
+  .plot__svg--wide {
+    --sw: 2.6;
+    --dr: 3.9;
+    --lr: 6.4;
+  }
+}
+
+.plot__svg--narrow {
+  --sw: 2.3;
+  --dr: 3.6;
+  --lr: 6.2;
+}
+
+@container (min-width: 300px) {
+  .plot__svg--narrow {
+    --sw: 1.8;
+    --dr: 2.7;
+    --lr: 4.6;
+  }
+}
+
+@container (min-width: 400px) {
+  .plot__svg--narrow {
+    --sw: 1.45;
+    --dr: 2.2;
+    --lr: 3.7;
+  }
+}
+
+.chart__grid line {
+  stroke: var(--line);
+  stroke-width: var(--border-hair);
+  vector-effect: non-scaling-stroke;
+}
+
+.chart__zero {
+  stroke: var(--line-control);
+  stroke-width: var(--border-hair);
+  vector-effect: non-scaling-stroke;
+}
+
+/* The line is not given a non-scaling stroke on purpose: the draw uses stroke-dasharray with pathLength 1 (MOTION.md E24). */
+.chart__line {
+  fill: none;
+  stroke: var(--text-main);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--sw);
+}
+
+.dot {
+  r: var(--dr);
+  fill: var(--text-main);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.dot--last {
+  r: var(--lr);
+  fill: var(--primary);
+}
+
+/* The point under the rule grows from 6 to 10 px. */
+.dot.is-on {
+  transform: scale(1.667);
+}
+
+.chart__rule {
+  stroke: var(--text-main);
+  stroke-width: var(--border-hair);
+  vector-effect: non-scaling-stroke;
+  transform: translateX(calc(var(--rx, 0) * 1px));
+}
+
+/* The last value: Sofia 800 at --display-md in the empty top quarter, over the end of the line. */
+.plot__end {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display-md);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+  text-align: end;
+}
+
+/* The readout slip: Key Black, Face White, centred over the rule and held inside the plot. */
+.plot__readout {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  margin: 0;
+  border-color: var(--surface-ink);
+  background: var(--surface-ink);
+  color: var(--text-inverse);
+  transform: translateX(clamp(0px, calc(var(--rp, 0) * 1cqi - 50%), calc(100cqi - 100%)));
+}
+
+.plot:not(.is-reading) .chart__rule,
+.plot:not(.is-reading) .plot__readout,
+.plot.is-reading .plot__end {
+  visibility: hidden;
+}
+
+.plot__x {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  block-size: calc(var(--text-xs) * var(--leading-mono) + var(--space-sm));
+}
+
+.plot__xl {
+  position: absolute;
+  inset-block-start: var(--space-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  transform: translateX(-50%);
+}
+
+/* 20, 40 and 60 hours of a 70 hour axis. */
+.plot__xl--0 { inset-inline-start: 0; }
+.plot__xl--1 { inset-inline-start: 28.571%; }
+.plot__xl--2 { inset-inline-start: 57.143%; }
+.plot__xl--3 { inset-inline-start: 85.714%; }
+
+.chart__axis {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+  line-height: var(--leading-mono);
+  text-align: end;
+}
+
+.chart__hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Without script the chart cannot be read by key, so the hint steps aside. */
+html:not([data-js]) .chart__hint {
+  display: none;
+}
+
+/* The table disclosure ------------------------------------------------------------ */
+
+.chart__details {
+  margin-block-start: var(--space-sm);
+}
+
+.chart__summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.chart__summary::-webkit-details-marker {
+  display: none;
+}
+
+.chart__chevron {
+  transition: transform var(--dur-2);
+}
+
+.chart__details[open] .chart__chevron {
+  transform: rotate(180deg);
+}
+
+.chart__scroll {
+  max-block-size: 18rem;
+  margin-block-start: var(--space-sm);
+  overflow: auto;
+  border-radius: var(--radius-md);
+}
+
+.chart__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  text-align: start;
+}
+
+.chart__table th,
+.chart__table td {
+  padding: var(--space-sm) var(--space-md) var(--space-sm) 0;
+  border-block-end: var(--border-hair) solid var(--line);
+  text-align: start;
+}
+
+.chart__table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  border-block-end-color: var(--line-control);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-mono);
+}
+
+.chart__table tbody th {
+  font-weight: var(--weight-regular);
+}
+
+.chart__table td:last-child {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-mono);
+}
+
+/* The caption and the dollar note ------------------------------------------------ */
+
+.chart-card__foot {
+  display: grid;
+  gap: var(--space-xs);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* Only in the dollar view. Without script the page reads in big blinds, so it never shows. */
+.chart-card__usd {
+  display: none;
+}
+
+html[data-unit='usd'] .chart-card__usd {
+  display: block;
+}
+
+/* The call to action ----------------------------------------------------------------- */
+
+.nm__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md) var(--space-lg);
+  margin-block-start: var(--space-2xl);
+  padding-block-start: var(--space-lg);
+  border-block-start: var(--border-hair) solid var(--line);
+}
+
+.nm__cta-line {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}

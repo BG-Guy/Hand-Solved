@@ -1,0 +1,18 @@
+---
+// TextLink.astro: the underlined semibold link with an arrow, for secondary actions ("See how it works", "See the concept pricing").
+//   <TextLink href="#how">See how it works</TextLink>
+// The arrow is icon-arrow-right (16 px) and nudges 2 px on hover. Use arrow={false} for a link that does not navigate away.
+import Icon from '../Icon/Icon.astro';
+import './TextLink.css';
+
+interface Props {
+  href: string;
+  /** The data-cta value, when the link is a call to action. */
+  cta?: string;
+  arrow?: boolean;
+  class?: string;
+}
+
+const { href, cta, arrow = true, class: className } = Astro.props;
+---
+<a class:list={['text-link', className]} href={href} data-cta={cta}><slot />{arrow && <Icon name="arrow-right" size={16} />}</a>
